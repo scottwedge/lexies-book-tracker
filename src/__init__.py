@@ -1,7 +1,15 @@
 # -*- encoding: utf-8
 
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
+from src.config import Config
 
 app = Flask(__name__)
+app.config.from_object(Config)
 
-from src import routes
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+from src import models, routes

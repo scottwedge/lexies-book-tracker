@@ -15,5 +15,5 @@ def index():
             "This book was good.",
             "This book was also good.",
             "This book was bad.",
-        ]
+        ],
     )
