@@ -1,5 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
 <main>
-  <h1>{{ name }}&rsquo;s reviews</h1>
+  <h1>{{ current_user.username }}&rsquo;s reviews</h1>
 
   <ul>
   {% for rev in reviews %}
@@ -7,3 +10,4 @@
   {% endfor %}
   </ul>
 </main>
+{% endblock %}
