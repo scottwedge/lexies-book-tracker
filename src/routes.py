@@ -26,12 +26,6 @@ def index():
     return "Welcome to Lexie's library log!"
 
 
-def save_currently_reading(*, note, book, user):
-    currently_reading = Reading(note=note, book_id=book.id, user_id=user.id,)
-    db.session.add(currently_reading)
-    db.session.commit()
-
-
 @app.route("/user/<username>/add-review", methods=["POST"])
 def add_review(username):
     user = User.query.filter_by(username=username).first_or_404()
@@ -136,7 +130,7 @@ def get_reading(username):
     return render_template(
         "reading.html",
         user=user,
-        currently_reading=user.currently_reading.all(),
+        currently_reading=user.reading.all(),
         reading_form=reading_form,
         review_form=review_form,
         edit_form=edit_form,
@@ -258,7 +252,7 @@ def add_reading(username):
         image_url=reading_form.image_url.data,
     )
 
-    save_currently_reading(note=reading_form.note.data, book=book, user=user)
+    Reading.create(note=reading_form.note.data, book=book, user=user)
 
     return redirect(url_for("get_reading", username=username))
 
@@ -361,7 +355,7 @@ def move_plan_to_reading(username, plan_id):
     plan = Plan.query.filter_by(id=plan_id, user_id=user.id).first_or_404()
 
     flash(f"You are reading {plan.book.title}")
-    save_currently_reading(note=plan.note, book=plan.book, user=user)
+    Reading.create(note=plan.note, book=plan.book, user=user)
     db.session.delete(plan)
     db.session.commit()
 
