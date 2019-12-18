@@ -63,8 +63,6 @@ class Review(db.Model):
 
 
 class Plan(db.Model):
-    __tablename__ = "plan"
-
     __table_args__ = (db.UniqueConstraint("book_id", "user_id"),)
 
     id = db.Column(db.Integer, primary_key=True)
@@ -76,6 +74,8 @@ class Plan(db.Model):
 
 
 class CurrentlyReading(db.Model):
+    __table_args__ = (db.UniqueConstraint("book_id", "user_id"),)
+
     id = db.Column(db.Integer, primary_key=True)
     note = db.Column(db.Text)
 
