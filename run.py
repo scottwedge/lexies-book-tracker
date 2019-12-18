@@ -2,10 +2,8 @@
 
 import sys
 
-sys.path.append("src")
-
-from lexies_library_log import app
+from src import app
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(port=7000, debug=True)

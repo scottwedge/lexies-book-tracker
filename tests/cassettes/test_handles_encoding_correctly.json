@@ -1,0 +1,83 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2019-12-18T12:00:53",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "python-requests/2.22.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://www.googleapis.com/books/v1/volumes?q=yU_hAuvMTQUC&key=<API_KEY>"
+      },
+      "response": {
+        "body": {
+          "base64_string": "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",
+          "encoding": "UTF-8"
+        },
+        "headers": {
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000"
+          ],
+          "Cache-Control": [
+            "private, max-age=0, must-revalidate, no-transform"
+          ],
+          "Content-Encoding": [
+            "gzip"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Wed, 18 Dec 2019 12:00:55 GMT"
+          ],
+          "ETag": [
+            "\"RgdeZjgALPmY2bwPiCXV_pRYTP0/ckzioUFW5VMHkO7YKOckYcijO70\""
+          ],
+          "Expires": [
+            "Wed, 18 Dec 2019 12:00:55 GMT"
+          ],
+          "Server": [
+            "GSE"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "Origin",
+            "X-Origin"
+          ],
+          "X-Content-Type-Options": [
+            "nosniff"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.googleapis.com/books/v1/volumes?q=yU_hAuvMTQUC&key=<API_KEY>"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}

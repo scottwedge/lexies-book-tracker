@@ -1,4 +1,9 @@
+-r requirements.txt
+
+betamax
+betamax_serializers
 coverage
+hyperlink
 pytest
 pytest-cov
 selenium

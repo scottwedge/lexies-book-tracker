@@ -5,7 +5,17 @@ from flask_login import current_user, login_required, login_user, logout_user
 
 from . import app, db
 from .booksearch import lookup_google_books
-from .forms import CurrentlyReadingForm, EditCurrentlyReadingForm, EditReviewForm, EditPlanForm, LoginForm, MarkAsReadForm, PlanForm, RegistrationForm, ReviewForm
+from .forms import (
+    CurrentlyReadingForm,
+    EditCurrentlyReadingForm,
+    EditReviewForm,
+    EditPlanForm,
+    LoginForm,
+    MarkAsReadForm,
+    PlanForm,
+    RegistrationForm,
+    ReviewForm,
+)
 from .models import Book, CurrentlyReading, Plan, Review, User
 
 
@@ -28,7 +38,7 @@ def save_book(*, title, author, year, isbn_13, source_id, image_url):
             year=year,
             isbn_13=isbn_13,
             source_id=source_id,
-            image_url=image_url
+            image_url=image_url,
         )
         db.session.add(new_book)
         db.session.commit()
@@ -49,11 +59,7 @@ def save_review(*, review_text, date_read, did_not_finish, is_favourite, book, u
 
 
 def save_currently_reading(*, note, book, user):
-    currently_reading = CurrentlyReading(
-        note=note,
-        book_id=book.id,
-        user_id=user.id,
-    )
+    currently_reading = CurrentlyReading(note=note, book_id=book.id, user_id=user.id,)
     db.session.add(currently_reading)
     db.session.commit()
 
@@ -80,7 +86,7 @@ def add_review(username):
                 did_not_finish=review_form.did_not_finish.data,
                 is_favourite=review_form.is_favourite.data,
                 book=book,
-                user=user
+                user=user,
             )
 
         return redirect(url_for("get_reviews", username=username))
@@ -97,8 +103,8 @@ def edit_review(username):
 
         if edit_form.validate_on_submit():
             review = Review.query.filter_by(
-                id=edit_form.review_id.data,
-                user_id=user.id).first_or_404()
+                id=edit_form.review_id.data, user_id=user.id
+            ).first_or_404()
 
             review.review_text = edit_form.review_text.data
             review.date_read = edit_form.date_read.data
@@ -214,19 +220,14 @@ def add_plan(username):
             note=plan_form.note.data,
             date_added=plan_form.date_added.data,
             book=book,
-            user=user
+            user=user,
         )
 
     return redirect(url_for("get_plans", username=username))
 
 
 def save_plan(*, note, date_added, book, user):
-    plan = Plan(
-        note=note,
-        date_added=date_added,
-        book_id=book.id,
-        user_id=user.id
-    )
+    plan = Plan(note=note, date_added=date_added, book_id=book.id, user_id=user.id)
 
     db.session.add(plan)
     db.session.commit()
@@ -241,8 +242,8 @@ def edit_reading(username, reading_id):
 
         if edit_form.validate_on_submit():
             reading = CurrentlyReading.query.filter_by(
-                id=reading_id,
-                user_id=user.id).first_or_404()
+                id=reading_id, user_id=user.id
+            ).first_or_404()
 
             reading.note = edit_form.note.data
             db.session.commit()
@@ -260,9 +261,7 @@ def edit_plan(username, plan_id):
         edit_form = EditPlanForm()
 
         if edit_form.validate_on_submit():
-            plan = Plan.query.filter_by(
-                id=plan_id,
-                user_id=user.id).first_or_404()
+            plan = Plan.query.filter_by(id=plan_id, user_id=user.id).first_or_404()
 
             plan.note = edit_form.note.data
             plan.date_added = edit_form.date_added.data
@@ -291,11 +290,7 @@ def add_reading(username):
         image_url=reading_form.image_url.data,
     )
 
-    save_currently_reading(
-        note=reading_form.note.data,
-        book=book,
-        user=user
-    )
+    save_currently_reading(note=reading_form.note.data, book=book, user=user)
 
     return redirect(url_for("get_reading", username=username))
 
@@ -307,7 +302,9 @@ def delete_reading(username, reading_id):
     if current_user != user:
         abort(401)
 
-    reading = CurrentlyReading.query.filter_by(id=reading_id, user_id=user.id).first_or_404()
+    reading = CurrentlyReading.query.filter_by(
+        id=reading_id, user_id=user.id
+    ).first_or_404()
 
     db.session.delete(reading)
     db.session.commit()
@@ -338,8 +335,8 @@ def mark_as_read(username, reading_id):
         abort(401)
 
     reading = CurrentlyReading.query.filter_by(
-        id=reading_id,
-        user_id=user.id).first_or_404()
+        id=reading_id, user_id=user.id
+    ).first_or_404()
 
     mark_as_read_form = MarkAsReadForm()
 
@@ -396,11 +393,7 @@ def move_plan_to_reading(username, plan_id):
     plan = Plan.query.filter_by(id=plan_id, user_id=user.id).first_or_404()
 
     flash(f"You are reading {plan.book.title}")
-    save_currently_reading(
-        note=plan.note,
-        book=plan.book,
-        user=user
-    )
+    save_currently_reading(note=plan.note, book=plan.book, user=user)
     db.session.delete(plan)
     db.session.commit()
 
@@ -417,8 +410,7 @@ def search_books():
     search_query = request.args["search"]
 
     lookup_result = lookup_google_books(
-        api_key=app.config["GOOGLE_BOOKS_API_KEY"],
-        search_query=search_query
+        api_key=app.config["GOOGLE_BOOKS_API_KEY"], search_query=search_query
     )
 
     return jsonify({"books": lookup_result})
