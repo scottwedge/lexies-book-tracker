@@ -92,6 +92,24 @@ class Review(db.Model):
     book_id = db.Column(db.Integer, db.ForeignKey("book.id"))
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
+    @classmethod
+    def create(
+        cls, *, review_text, date_read, did_not_finish, is_favourite, book, user
+    ):
+        review = Review(
+            review_text=review_text,
+            date_read=date_read,
+            did_not_finish=did_not_finish,
+            is_favourite=is_favourite,
+            book=book,
+            user=user,
+        )
+
+        db.session.add(review)
+        db.session.commit()
+
+        return review
+
 
 class Plan(db.Model):
     __table_args__ = (db.UniqueConstraint("book_id", "user_id"),)

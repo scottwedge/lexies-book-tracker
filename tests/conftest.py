@@ -5,7 +5,7 @@ import random
 import sys
 
 from faker import Faker
-from faker.providers import internet
+from faker.providers import date_time, internet, misc
 import pytest
 
 sys.path.append(str(pathlib.Path(__file__).parent.parent / "src"))
@@ -17,7 +17,9 @@ from src.models import Book, User
 @pytest.fixture(scope="session")
 def fake():
     faker_inst = Faker()
+    faker_inst.add_provider(date_time)
     faker_inst.add_provider(internet)
+    faker_inst.add_provider(misc)
     return faker_inst
 
 

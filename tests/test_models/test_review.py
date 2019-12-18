@@ -5,12 +5,9 @@ import datetime as dt
 from src.models import Review
 
 
-def test_can_store_and_retrieve_review(session, book, user):
+def test_can_store_and_retrieve_review(session, fake, book, user):
     review = Review(
-        review_text="I enjoyed this book",
-        date_read=dt.datetime(2019, 7, 1).date(),
-        book=book,
-        user=user,
+        review_text=fake.text(), date_read=fake.date_object(), book=book, user=user,
     )
     session.add(review)
 
@@ -19,8 +16,8 @@ def test_can_store_and_retrieve_review(session, book, user):
     assert Review.query.get(review.id) == review
 
 
-def test_review_defaults(session, book, user):
-    review = Review(review_text="I enjoyed this book", book=book, user=user)
+def test_review_defaults(session, fake, book, user):
+    review = Review(review_text=fake.text(), book=book, user=user)
     session.add(review)
 
     session.commit()
@@ -30,10 +27,24 @@ def test_review_defaults(session, book, user):
     assert not review.is_favourite
 
 
-def test_can_review_a_book_multiple_times(session, book, user):
-    review1 = Review(book=book, user=user, review_text="I read this book")
-    review2 = Review(book=book, user=user, review_text="I re-read this book")
+def test_can_review_a_book_multiple_times(session, fake, book, user):
+    review1 = Review(review_text=fake.text(), book=book, user=user)
+    review2 = Review(review_text=fake.text(), book=book, user=user)
     session.add(review1)
     session.add(review2)
 
     session.commit()
+
+
+def test_can_create_review(session, fake, book, user):
+    review = Review.create(
+        review_text=fake.text(),
+        date_read=fake.date_object(),
+        did_not_finish=fake.boolean(),
+        is_favourite=fake.boolean(),
+        book=book,
+        user=user,
+    )
+
+    assert Review.query.count() == 1
+    assert Review.query.get(review.id) == review

@@ -26,19 +26,6 @@ def index():
     return "Welcome to Lexie's library log!"
 
 
-def save_review(*, review_text, date_read, did_not_finish, is_favourite, book, user):
-    review = Review(
-        review_text=review_text,
-        date_read=date_read,
-        did_not_finish=did_not_finish,
-        is_favourite=is_favourite,
-        book_id=book.id,
-        user_id=user.id,
-    )
-    db.session.add(review)
-    db.session.commit()
-
-
 def save_currently_reading(*, note, book, user):
     currently_reading = CurrentlyReading(note=note, book_id=book.id, user_id=user.id,)
     db.session.add(currently_reading)
@@ -61,7 +48,7 @@ def add_review(username):
                 source_id=review_form.source_id.data,
                 image_url=review_form.image_url.data,
             )
-            save_review(
+            Review.create(
                 review_text=review_form.review_text.data,
                 date_read=review_form.date_read.data,
                 did_not_finish=review_form.did_not_finish.data,
@@ -323,7 +310,7 @@ def mark_as_read(username, reading_id):
 
     if mark_as_read_form.validate_on_submit():
         flash(f"Marking {reading.book.title} as read")
-        save_review(
+        Review.create(
             review_text=mark_as_read_form.review_text.data,
             date_read=mark_as_read_form.date_read.data,
             did_not_finish=mark_as_read_form.did_not_finish.data,
@@ -350,7 +337,7 @@ def mark_plan_as_read(username, plan_id):
 
     if mark_as_read_form.validate_on_submit():
         flash(f"Marking {plan.book.title} as read")
-        save_review(
+        Review.create(
             review_text=mark_as_read_form.review_text.data,
             date_read=mark_as_read_form.date_read.data,
             did_not_finish=mark_as_read_form.did_not_finish.data,
