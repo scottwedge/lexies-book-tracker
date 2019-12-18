@@ -110,7 +110,12 @@ def _get_published_year(item):
 
     try:
         return m.group("year")
-    except AttributeError:
+    except AttributeError:  # pragma: no cover
+        # In theory this error could be hit if the publishedDate doesn't
+        # match this regex.  I've never seen it happen in practice, so
+        # this is here defensively.
+        # TODO: If you see a value that would cause this error to throw,
+        # write a test for it and remove 'pragma: no cover'.
         return ""
 
 

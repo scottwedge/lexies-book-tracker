@@ -10,17 +10,15 @@ import requests
 from booksearch import lookup_google_books
 
 
-def sanitize_google_books_api_key(interaction, current_cassette):
+def sanitize_google_books_api_key(interaction, _):  # pragma: no cover
     req = interaction.data["request"]
     req["uri"] = req["uri"].replace(
-        os.environ.get("GOOGLE_BOOKS_API_KEY", "<API_KEY>"),
-        "<API_KEY>"
+        os.environ.get("GOOGLE_BOOKS_API_KEY", "<API_KEY>"), "<API_KEY>"
     )
 
     resp = interaction.data["response"]
     resp["url"] = resp["url"].replace(
-        os.environ.get("GOOGLE_BOOKS_API_KEY", "<API_KEY>"),
-        "<API_KEY>"
+        os.environ.get("GOOGLE_BOOKS_API_KEY", "<API_KEY>"), "<API_KEY>"
     )
 
 
@@ -42,7 +40,15 @@ with betamax.Betamax.configure() as config:
 def sess(request):
     session = requests.Session()
 
-    with betamax.Betamax(session).use_cassette(request.node.name):
+    # This creates a cassette based on the pytest name.  Sometimes test
+    # data contains URLs (e.g. parametrised tests), and the node.name
+    # has slashes and colons (which are illegal in filesystems).
+    #
+    # Turn it into something usable.  It's very unlikely we'll have collisions,
+    # and if we do they'll cause a failing test.
+    cassette_name = request.node.name.replace("/", "_").replace(":", "_")
+
+    with betamax.Betamax(session).use_cassette(cassette_name):
         yield session
 
 
@@ -94,7 +100,7 @@ def test_handles_encoding_correctly(sess, api_key):
 def test_gets_identifiers_correctly(sess, api_key, book_id, expected_identifiers):
     result = lookup_google_books(sess=sess, api_key=api_key, search_query=book_id)
 
-    book = next(r for r in result if r["id"] == book_id)
+    book = [r for r in result if r["id"] == book_id].pop()
     assert book["identifiers"] == expected_identifiers
 
 
@@ -103,7 +109,7 @@ def test_handles_no_identifiers(sess, api_key):
         sess=sess, api_key=api_key, search_query="PediaPress Foo Fighters"
     )
 
-    book = next(r for r in result if r["id"] == "FI4eaajjC7sC")
+    book = [r for r in result if r["id"] == "FI4eaajjC7sC"].pop()
     assert book["identifiers"] == []
 
 
@@ -123,5 +129,32 @@ def test_handles_no_identifiers(sess, api_key):
 def test_gets_year_correctly(sess, api_key, book_id, expected_year):
     result = lookup_google_books(sess=sess, api_key=api_key, search_query=book_id)
 
-    book = next(r for r in result if r["id"] == book_id)
+    book = [r for r in result if r["id"] == book_id].pop()
     assert book["year"] == expected_year
+
+
+@pytest.mark.parametrize(
+    "book_id, expected_image_url",
+    [
+        # API doesn't have an "imageLinks" block
+        ("chcnvwEACAAJ", ""),
+        # API has an "imageLinks" dict and a "thumbnail" field
+        (
+            "DJN_72oR4gkC",
+            "http://books.google.com/books/content?id=DJN_72oR4gkC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+        ),
+    ],
+)
+def test_gets_image_url_correctly(sess, api_key, book_id, expected_image_url):
+    result = lookup_google_books(sess=sess, api_key=api_key, search_query=book_id)
+
+    book = [r for r in result if r["id"] == book_id].pop()
+    assert book["image_url"] == expected_image_url
+
+
+def test_search_with_no_results_is_empty(sess, api_key):
+    result = lookup_google_books(
+        sess=sess, api_key=api_key, search_query="F4744518-1E7B-44F8-9AA1-D837FCD2E679"
+    )
+
+    assert result == []

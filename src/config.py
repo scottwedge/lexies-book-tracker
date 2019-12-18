@@ -10,7 +10,7 @@ basedir = pathlib.Path(__file__).parent.resolve()
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY") or "you-will-never-guess"
 
-    GOOGLE_BOOKS_API_KEY = os.environ.get("GOOGLE_BOOKS_API_KEY", "")
+    GOOGLE_BOOKS_API_KEY = os.environ.get("GOOGLE_BOOKS_API_KEY", "<API_KEY>")
 
     try:
         SQLALCHEMY_DATABASE_URI = os.environ["DATABASE_URL"]
