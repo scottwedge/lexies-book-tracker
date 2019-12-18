@@ -10,7 +10,7 @@ sys.path.append(str(pathlib.Path(__file__).parent.parent / "src"))
 from src import app, db as _db  # noqa
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def test_app(request):
     """Session-wide test `Flask` application."""
     app.config["TESTING"] = True
@@ -27,9 +27,10 @@ def test_app(request):
     return app
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def db(test_app, request):
     """Session-wide test database."""
+
     def teardown():
         _db.drop_all()
 
@@ -40,7 +41,7 @@ def db(test_app, request):
     return _db
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def session(db, request):
     """Creates a new database session for a test."""
     connection = db.engine.connect()

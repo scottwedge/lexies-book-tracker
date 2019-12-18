@@ -34,7 +34,7 @@ class Book(db.Model):
     author = db.Column(db.String(500))
     year = db.Column(db.String(4))
     identifiers = db.Column(db.String(500))
-    source_id = db.Column(db.String(64), unique=True)
+    source_id = db.Column(db.String(64), index=True, unique=True, nullable=False)
     image_url = db.Column(db.String(500))
 
     reviews = db.relationship("Review", backref="book", lazy="dynamic")

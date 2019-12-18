@@ -46,8 +46,7 @@ def test_requires_username(session):
     session.add(u)
 
     with pytest.raises(
-        IntegrityError,
-        match="NOT NULL constraint failed: user.username"
+        IntegrityError, match="NOT NULL constraint failed: user.username"
     ):
         session.commit()
 
@@ -59,10 +58,7 @@ def test_usernames_must_be_unique(session):
     u2 = User(username="example")
     session.add(u2)
 
-    with pytest.raises(
-        IntegrityError,
-        match="UNIQUE constraint failed: user.username"
-    ):
+    with pytest.raises(IntegrityError, match="UNIQUE constraint failed: user.username"):
         session.commit()
 
 
@@ -85,8 +81,7 @@ def test_email_addresses_must_be_unique(session):
     session.add(u2)
 
     with pytest.raises(
-        IntegrityError,
-        match="UNIQUE constraint failed: user.email_address"
+        IntegrityError, match="UNIQUE constraint failed: user.email_address"
     ):
         session.commit()
 
