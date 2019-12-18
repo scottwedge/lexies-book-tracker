@@ -46,7 +46,7 @@ class BookFormMixin:
     title = StringField("title", validators=[DataRequired()])
     author = StringField("author")
     year = StringField("year")
-    isbn_13 = StringField("isbn_13")
+    identifiers = StringField("identifiers")
     source_id = StringField("source_id")
     image_url = StringField("image_url")
 

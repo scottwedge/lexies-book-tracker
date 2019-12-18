@@ -1,5 +1,7 @@
 # -*- encoding: utf-8
 
+import json
+
 from flask import abort, flash, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 
@@ -26,7 +28,7 @@ def index():
     return "Welcome to Lexie's library log!"
 
 
-def save_book(*, title, author, year, isbn_13, source_id, image_url):
+def save_book(*, title, author, year, identifiers, source_id, image_url):
     book = Book.query.filter_by(source_id=source_id).first()
 
     if book is not None:
@@ -36,7 +38,7 @@ def save_book(*, title, author, year, isbn_13, source_id, image_url):
             title=title,
             author=author,
             year=year,
-            isbn_13=isbn_13,
+            identifiers=json.dumps(identifiers),
             source_id=source_id,
             image_url=image_url,
         )
@@ -76,7 +78,7 @@ def add_review(username):
                 title=review_form.title.data,
                 author=review_form.author.data,
                 year=review_form.year.data,
-                isbn_13=review_form.isbn_13.data,
+                identifiers=review_form.identifiers.data,
                 source_id=review_form.source_id.data,
                 image_url=review_form.image_url.data,
             )
@@ -212,7 +214,7 @@ def add_plan(username):
             title=plan_form.title.data,
             author=plan_form.author.data,
             year=plan_form.year.data,
-            isbn_13=plan_form.isbn_13.data,
+            identifiers=plan_form.identifiers.data,
             source_id=plan_form.source_id.data,
             image_url=plan_form.image_url.data,
         )
@@ -285,7 +287,7 @@ def add_reading(username):
         title=reading_form.title.data,
         author=reading_form.author.data,
         year=reading_form.year.data,
-        isbn_13=reading_form.isbn_13.data,
+        identifiers=reading_form.identifiers.data,
         source_id=reading_form.source_id.data,
         image_url=reading_form.image_url.data,
     )

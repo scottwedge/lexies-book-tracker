@@ -1,0 +1,83 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2019-12-18T13:02:12",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "python-requests/2.22.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://www.googleapis.com/books/v1/volumes?q=PediaPress+Foo+Fighters&key=<API_KEY>"
+      },
+      "response": {
+        "body": {
+          "base64_string": "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",
+          "encoding": "UTF-8"
+        },
+        "headers": {
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000"
+          ],
+          "Cache-Control": [
+            "private, max-age=0, must-revalidate, no-transform"
+          ],
+          "Content-Encoding": [
+            "gzip"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Wed, 18 Dec 2019 13:02:14 GMT"
+          ],
+          "ETag": [
+            "\"RgdeZjgALPmY2bwPiCXV_pRYTP0/ePkD3qzbVZE7CpRGLxqkq5pVqnc\""
+          ],
+          "Expires": [
+            "Wed, 18 Dec 2019 13:02:14 GMT"
+          ],
+          "Server": [
+            "GSE"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "Origin",
+            "X-Origin"
+          ],
+          "X-Content-Type-Options": [
+            "nosniff"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.googleapis.com/books/v1/volumes?q=PediaPress+Foo+Fighters&key=<API_KEY>"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}

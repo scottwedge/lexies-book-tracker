@@ -62,7 +62,7 @@
       {{ reading_form.image_url(type="hidden", id="image_url") }}
       {{ reading_form.source_id(type="hidden", id="source_id") }}
       {{ reading_form.year(type="hidden", id="year") }}
-      {{ reading_form.isbn_13(type="hidden", id="isbn_13") }}
+      {{ reading_form.identifiers(type="hidden", id="identifiers") }}
 
       <p>
         {{ reading_form.note.label }}
@@ -135,7 +135,7 @@
           this.div.querySelector("#year").value = this.selected.year;
           this.div.querySelector("#author").value = this.selected.author;
           this.div.querySelector("#image_url").value = this.selected.image_url;
-          this.div.querySelector("#isbn_13").value = this.selected.isbn_13;
+          this.div.querySelector("#identifiers").value = this.selected.identifiers;
           this.div.querySelector("#source_id").value = this.selected.id;
         } else {
           this.div.classList.add("hidden");

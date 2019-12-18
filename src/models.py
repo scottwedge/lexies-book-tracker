@@ -44,7 +44,7 @@ class Book(db.Model):
     title = db.Column(db.String(500))
     author = db.Column(db.String(500))
     year = db.Column(db.String(4))
-    isbn_13 = db.Column(db.String(13))
+    identifers = db.Column(db.String(500))
     source_id = db.Column(db.String(64))
     image_url = db.Column(db.String(500))
 

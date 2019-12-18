@@ -6,30 +6,6 @@ import re
 import requests
 
 
-def _get_published_year(date_string):
-    # The Google Books API returns the publishedDate field in a number of
-    # forms, including 2010, 2009-08, 2019-04-15.
-    m = re.match(r"^(?P<year>\d{4})(?:-\d{2}(?:-\d{2}))?$", date_string)
-
-    try:
-        return m.group("year")
-    except AttributeError:
-        pass
-
-
-def _get_isbn13(item):
-    try:
-        identifier = next(
-            ind_id
-            for ind_id in item["volumeInfo"].get("industryIdentifiers", [])
-            if ind_id["type"] == "ISBN_13"
-        )
-    except StopIteration:
-        return ""
-    else:
-        return identifier["identifier"]
-
-
 def _fix_encoding(s):
     # The data in the Google Books API sometimes returns mangled encodings, e.g.:
     # https://www.googleapis.com/books/v1/volumes?q=Present%20Laughter%20yU_hAuvMTQUC
@@ -38,7 +14,7 @@ def _fix_encoding(s):
     # substitutions over the string to catch common encoding bugs.
 
     # See http://www.i18nqa.com/debug/utf8-debug.html
-    if b'\xC3' in s.encode("utf8"):
+    if b"\xC3" in s.encode("utf8"):
         for old, new in [
             ("\xC3\x80", "\xC0"),
             ("\xC3\x81", "\xC1"),
@@ -115,6 +91,29 @@ def _get_authors(item):
     return ", ".join(authors)
 
 
+def _get_identifiers(item):
+    try:
+        return item["volumeInfo"]["industryIdentifiers"]
+    except KeyError:
+        return []
+
+
+def _get_published_year(item):
+    try:
+        published_date = item["volumeInfo"]["publishedDate"]
+    except KeyError:
+        return ""
+
+    # The Google Books API returns the publishedDate field in a number of
+    # forms, including 2010, 2009-08, 2019-04-15.
+    m = re.match(r"^(?P<year>\d{4})(?:-\d{2})?(?:-\d{2})?$", published_date)
+
+    try:
+        return m.group("year")
+    except AttributeError:
+        return ""
+
+
 def lookup_google_books(*, sess=requests.Session(), api_key, search_query):
     resp = sess.get(
         "https://www.googleapis.com/books/v1/volumes",
@@ -123,15 +122,18 @@ def lookup_google_books(*, sess=requests.Session(), api_key, search_query):
     resp.raise_for_status()
 
     json_text = _fix_encoding(resp.text)
-    all_items = json.loads(json_text)["items"]
+    try:
+        all_items = json.loads(json_text)["items"]
+    except KeyError:
+        return []
 
     return [
         {
             "id": item["id"],
             "title": item["volumeInfo"]["title"],
             "author": _get_authors(item),
-            "isbn13": _get_isbn13(item),
-            "year": _get_published_year(item["volumeInfo"]["publishedDate"]),
+            "identifiers": _get_identifiers(item),
+            "year": _get_published_year(item),
             "image_url": item["volumeInfo"].get("imageLinks", {}).get("thumbnail", ""),
         }
         for item in all_items
