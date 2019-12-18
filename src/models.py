@@ -18,11 +18,11 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     email_address = db.Column(db.String(256), unique=True)
 
-    reviews = db.relationship("Review", backref="author", lazy="dynamic")
+    reviews = db.relationship("Review", backref="user", lazy="dynamic")
     currently_reading = db.relationship(
-        "CurrentlyReading", backref="reader", lazy="dynamic"
+        "CurrentlyReading", backref="user", lazy="dynamic"
     )
-    plans = db.relationship("Plan", backref="planner", lazy="dynamic")
+    plans = db.relationship("Plan", backref="user", lazy="dynamic")
 
     def __repr__(self):
         return f"<User {self.username!r}>"
@@ -63,12 +63,16 @@ class Review(db.Model):
 
 
 class Plan(db.Model):
+    __tablename__ = "plan"
+
+    __table_args__ = (db.UniqueConstraint("book_id", "user_id"),)
+
     id = db.Column(db.Integer, primary_key=True)
     note = db.Column(db.Text)
     date_added = db.Column(db.Date, index=True, default=today)
 
-    book_id = db.Column(db.Integer, db.ForeignKey("book.id"))
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    book_id = db.Column(db.Integer, db.ForeignKey("book.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
 
 class CurrentlyReading(db.Model):

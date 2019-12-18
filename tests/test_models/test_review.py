@@ -15,15 +15,14 @@ def test_can_store_and_retrieve_review(session):
     review = Review(
         review_text="I enjoyed this book",
         date_read=dt.datetime(2019, 7, 1).date(),
-        book_id=book.id,
-        user_id=user.id
+        book=book,
+        user=user,
     )
     session.add(review)
 
     session.commit()
 
-    retrieved_review = Review.query.get(review.id)
-    assert retrieved_review == review
+    assert Review.query.get(review.id) == review
 
 
 def test_review_defaults(session):
@@ -33,9 +32,7 @@ def test_review_defaults(session):
     session.add(book)
     session.add(user)
 
-    review = Review(
-        review_text="I enjoyed this book", book_id=book.id, user_id=user.id
-    )
+    review = Review(review_text="I enjoyed this book", book=book, user=user)
     session.add(review)
 
     session.commit()
@@ -52,12 +49,8 @@ def test_can_review_a_book_multiple_times(session):
     session.add(book)
     session.add(user)
 
-    review1 = Review(
-        review_text="I read this book", book_id=book.id, user_id=user.id
-    )
-    review2 = Review(
-        review_text="I re-read this book", book_id=book.id, user_id=user.id
-    )
+    review1 = Review(book=book, user=user, review_text="I read this book")
+    review2 = Review(book=book, user=user, review_text="I re-read this book")
     session.add(review1)
     session.add(review2)
 
