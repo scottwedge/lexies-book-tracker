@@ -1,6 +1,10 @@
 # -*- encoding: utf-8
 
-from src import app
+import sys
+
+sys.path.append("src")
+
+from lexies_library_log import app
 
 
 if __name__ == '__main__':

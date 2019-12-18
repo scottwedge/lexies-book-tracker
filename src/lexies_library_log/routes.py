@@ -3,24 +3,17 @@
 from flask import abort, flash, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 
-from src import app, db
-from src.booksearch import lookup_google_books
-from src.forms import CurrentlyReadingForm, EditCurrentlyReadingForm, EditReviewForm, EditPlanForm, LoginForm, MarkAsReadForm, PlanForm, RegistrationForm, ReviewForm
-from src.models import Book, CurrentlyReading, Plan, Review, User
+from . import app, db
+from .booksearch import lookup_google_books
+from .forms import CurrentlyReadingForm, EditCurrentlyReadingForm, EditReviewForm, EditPlanForm, LoginForm, MarkAsReadForm, PlanForm, RegistrationForm, ReviewForm
+from .models import Book, CurrentlyReading, Plan, Review, User
 
 
 @app.route("/")
 @app.route("/index")
 @login_required
 def index():
-    return render_template(
-        "reviews.html",
-        reviews=[
-            "This book was good.",
-            "This book was also good.",
-            "This book was bad.",
-        ],
-    )
+    return "Welcome to Lexie's library log!"
 
 
 def save_book(*, title, author, year, isbn_13, source_id, image_url):
