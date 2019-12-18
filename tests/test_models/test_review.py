@@ -2,16 +2,10 @@
 
 import datetime as dt
 
-from src.models import Book, Review, User
+from src.models import Review
 
 
-def test_can_store_and_retrieve_review(session):
-    book = Book(title="Exhalation", source_id="1234")
-    user = User(username="ted")
-
-    session.add(book)
-    session.add(user)
-
+def test_can_store_and_retrieve_review(session, book, user):
     review = Review(
         review_text="I enjoyed this book",
         date_read=dt.datetime(2019, 7, 1).date(),
@@ -25,13 +19,7 @@ def test_can_store_and_retrieve_review(session):
     assert Review.query.get(review.id) == review
 
 
-def test_review_defaults(session):
-    book = Book(title="White Fragility", source_id="1234")
-    user = User(username="vlad")
-
-    session.add(book)
-    session.add(user)
-
+def test_review_defaults(session, book, user):
     review = Review(review_text="I enjoyed this book", book=book, user=user)
     session.add(review)
 
@@ -42,13 +30,7 @@ def test_review_defaults(session):
     assert not review.is_favourite
 
 
-def test_can_review_a_book_multiple_times(session):
-    book = Book(title="IBM and the Holocaust", source_id="1234")
-    user = User(username="edwin")
-
-    session.add(book)
-    session.add(user)
-
+def test_can_review_a_book_multiple_times(session, book, user):
     review1 = Review(book=book, user=user, review_text="I read this book")
     review2 = Review(book=book, user=user, review_text="I re-read this book")
     session.add(review1)

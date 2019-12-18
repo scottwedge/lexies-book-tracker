@@ -3,21 +3,11 @@
 import pytest
 from sqlalchemy.exc import IntegrityError
 
-from src.models import Book, CurrentlyReading, User
+from src.models import CurrentlyReading
 
 
-def test_can_store_and_retrieve_currently_reading(session):
-    book = Book(title="Pretty Monsters", source_id="1234")
-    user = User(username="kelly link")
-
-    session.add(book)
-    session.add(user)
-
-    reading = CurrentlyReading(
-        note="I am reading this book",
-        book=book,
-        user=user,
-    )
+def test_can_store_and_retrieve_currently_reading(session, book, user):
+    reading = CurrentlyReading(note="I am reading this book", book=book, user=user,)
     session.add(reading)
 
     session.commit()
@@ -25,13 +15,7 @@ def test_can_store_and_retrieve_currently_reading(session):
     assert CurrentlyReading.query.get(reading.id) == reading
 
 
-def test_same_user_cannot_be_reading_book_twice(session):
-    book = Book(title="Foyle's War", source_id="1234")
-    user = User(username="felicity")
-
-    session.add(book)
-    session.add(user)
-
+def test_same_user_cannot_be_reading_book_twice(session, book, user):
     reading1 = CurrentlyReading(book=book, user=user, note="I am reading this book")
     reading2 = CurrentlyReading(book=book, user=user, note="I am still reading it")
     session.add(reading1)

@@ -3,6 +3,7 @@
 betamax
 betamax_serializers
 coverage
+faker
 pytest
 pytest-cov
 selenium
