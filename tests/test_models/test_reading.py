@@ -23,7 +23,7 @@ def test_same_user_cannot_be_reading_book_twice(session, fake, book, user):
 
     with pytest.raises(
         IntegrityError,
-        match="UNIQUE constraint failed: reading.book_id, reading.user_id"
+        match="UNIQUE constraint failed: reading.book_id, reading.user_id",
     ):
         session.commit()
 
@@ -41,7 +41,6 @@ def test_does_not_create_duplicate_reading(session, fake, book, user):
     session.commit()
 
     with pytest.raises(
-        AlreadyReadingException,
-        match=f"You are already reading {book.title}"
+        AlreadyReadingException, match=f"You are already reading {book.title}"
     ):
         Reading.create(note=fake.text(), book=book, user=user)

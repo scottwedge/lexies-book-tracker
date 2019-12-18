@@ -178,7 +178,7 @@ def add_plan(username):
             source_id=plan_form.source_id.data,
             image_url=plan_form.image_url.data,
         )
-        save_plan(
+        Plan.create(
             note=plan_form.note.data,
             date_added=plan_form.date_added.data,
             book=book,
@@ -186,13 +186,6 @@ def add_plan(username):
         )
 
     return redirect(url_for("get_plans", username=username))
-
-
-def save_plan(*, note, date_added, book, user):
-    plan = Plan(note=note, date_added=date_added, book_id=book.id, user_id=user.id)
-
-    db.session.add(plan)
-    db.session.commit()
 
 
 @app.route("/user/<username>/edit-reading/<reading_id>", methods=["POST"])
@@ -264,9 +257,7 @@ def delete_reading(username, reading_id):
     if current_user != user:
         abort(401)
 
-    reading = Reading.query.filter_by(
-        id=reading_id, user_id=user.id
-    ).first_or_404()
+    reading = Reading.query.filter_by(id=reading_id, user_id=user.id).first_or_404()
 
     db.session.delete(reading)
     db.session.commit()
@@ -296,9 +287,7 @@ def mark_as_read(username, reading_id):
     if current_user != user:
         abort(401)
 
-    reading = Reading.query.filter_by(
-        id=reading_id, user_id=user.id
-    ).first_or_404()
+    reading = Reading.query.filter_by(id=reading_id, user_id=user.id).first_or_404()
 
     mark_as_read_form = MarkAsReadForm()
 
