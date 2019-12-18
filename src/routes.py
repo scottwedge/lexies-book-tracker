@@ -1,7 +1,5 @@
 # -*- encoding: utf-8
 
-import json
-
 from flask import abort, flash, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 
@@ -26,25 +24,6 @@ from .models import Book, CurrentlyReading, Plan, Review, User
 @login_required
 def index():
     return "Welcome to Lexie's library log!"
-
-
-def save_book(*, title, author, year, identifiers, source_id, image_url):
-    book = Book.query.filter_by(source_id=source_id).first()
-
-    if book is not None:
-        return book
-    else:
-        new_book = Book(
-            title=title,
-            author=author,
-            year=year,
-            identifiers=json.dumps(identifiers),
-            source_id=source_id,
-            image_url=image_url,
-        )
-        db.session.add(new_book)
-        db.session.commit()
-        return new_book
 
 
 def save_review(*, review_text, date_read, did_not_finish, is_favourite, book, user):
@@ -74,7 +53,7 @@ def add_review(username):
         review_form = ReviewForm()
 
         if review_form.validate_on_submit():
-            book = save_book(
+            book = Book.create_or_get(
                 title=review_form.title.data,
                 author=review_form.author.data,
                 year=review_form.year.data,
@@ -210,7 +189,7 @@ def add_plan(username):
     plan_form = PlanForm()
 
     if plan_form.validate_on_submit():
-        book = save_book(
+        book = Book.create_or_get(
             title=plan_form.title.data,
             author=plan_form.author.data,
             year=plan_form.year.data,
@@ -283,7 +262,7 @@ def add_reading(username):
 
     reading_form = CurrentlyReadingForm()
 
-    book = save_book(
+    book = Book.create_or_get(
         title=reading_form.title.data,
         author=reading_form.author.data,
         year=reading_form.year.data,
