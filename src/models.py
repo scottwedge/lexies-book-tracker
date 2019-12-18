@@ -18,6 +18,12 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     email_address = db.Column(db.String(256), unique=True)
 
+    reviews = db.relationship("Review", backref="author", lazy="dynamic")
+    currently_reading = db.relationship(
+        "CurrentlyReading", backref="reader", lazy="dynamic"
+    )
+    plans = db.relationship("Plan", backref="planner", lazy="dynamic")
+
     def __repr__(self):
         return f"<User {self.username!r}>"
 
@@ -42,9 +48,6 @@ class Book(db.Model):
         "CurrentlyReading", backref="book", lazy="dynamic"
     )
     plans = db.relationship("Plan", backref="book", lazy="dynamic")
-
-    def __repr__(self):
-        return f"<Book {self.id}>"
 
 
 class Review(db.Model):
