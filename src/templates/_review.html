@@ -1,0 +1,119 @@
+<style>
+  body {
+    font-family: monospace;
+  }
+
+  div.book {
+    border: 1px solid red;
+    display: inline-block;
+    margin: 1em;
+    border-radius: 5px;
+    padding: 10px;
+    background: rgba(255, 0, 0, 0.2);
+    width: 300px;
+  }
+
+  div.book--is_favourite {
+    border: 2.5px solid red;
+  }
+
+  div.book--did_not_finish {
+    opacity: 0.5;
+  }
+</style>
+
+<div class="book {% if review.did_not_finish %}book--did_not_finish{% endif %} {% if review.is_favourite %}book--is_favourite{% endif %}" id="book-{{ review.id }}">
+  <h2>
+    <a href="{{ url_for('get_review', username=user.username, review_id=review.id) }}">{{ review.book.title }}</a>
+  </h2>
+  <p>
+    {{ review.book.year }}
+  </p>
+
+  <p>{{ review.book.authors }}</p>
+
+  <p>
+    Read: {{ review.date_read }}
+  </p>
+
+  <div class="image">
+    <img src="{{ review.book.image_url }}" alt="Cover of {{ review.book.title }}"/>
+    <div class="review-container">
+      {% for line in review.review.split(".") %}
+      <p class="review">
+        {{ line }}
+      </p>
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if user == current_user %}
+  <button class="edit-book" data-bookid="{{ review.id }}">
+    edit
+  </button>
+
+  <script>
+    function confirmDeletion{{ review.id }}() {
+      return confirm('Are you sure you want to delete your review for ' + {{ review.book.title|to_json|safe }} + '?');
+    }
+  </script>
+
+  <form
+    action="{{ url_for('delete_review', username=user.username, review_id=review.id) }}"
+    method="POST"
+    class="delete-button"
+    onsubmit="return confirmDeletion{{ review.id }}();"
+  >
+    <button type="submit" class="delete-book">
+      delete
+    </button>
+  </form>
+  {% endif %}
+
+  <form
+    action="{{ url_for('edit_review', username=user.username ) }}"
+    method="POST"
+    class="hidden book-edit-form"
+  >
+    <button type="button" class="cancel-edit">
+      Cancel
+    </button>
+
+    {{ edit_form.hidden_tag() }}
+
+    {{ edit_form.review_id(value=review.id, type="hidden") }}
+
+    <p>
+      {{ edit_form.review.label }}
+
+      {#
+        As far as I can tell, because "review" is a text area, you can't just do
+
+            edit_form.review(value=review.review)
+
+        The value is set as an attribute on the HTML tag, but not rendered into
+        the text area where the user can see it.
+      #}
+      <textarea id="review" name="review">{{ review.review }}</textarea>
+    </p>
+
+    <p>
+      {{ edit_form.did_not_finish.label }}
+      <input type="checkbox" id="did_not_finish" name="did_not_finish" {% if review.did_not_finish %}checked{% endif %}>
+    </p>
+
+    <p>
+      {{ edit_form.is_favourite.label }}
+      <input type="checkbox" id="is_favourite" name="is_favourite" {% if review.is_favourite %}checked{% endif %}>
+    </p>
+
+    <p>
+      {{ edit_form.date_read.label }}
+      {{ edit_form.date_read(value=review.date_read) }}
+    </p>
+
+    <button type="submit">
+      Update
+    </button>
+  </form>
+</div>

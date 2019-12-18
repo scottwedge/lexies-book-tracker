@@ -1,5 +1,7 @@
 # -*- encoding: utf-8
 
+import json
+
 from flask import Flask
 from flask_login import LoginManager
 from flask_migrate import Migrate
@@ -9,6 +11,8 @@ from src.config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
+
+app.jinja_env.filters["to_json"] = json.dumps
 
 login = LoginManager(app)
 login.login_view = "login"

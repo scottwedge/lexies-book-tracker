@@ -2,12 +2,217 @@
 
 {% block content %}
 <main>
-  <h1>{{ current_user.username }}&rsquo;s reviews</h1>
+  <h1>
+    {% if user == current_user %}
+      my
+    {% else %}
+      {{ user.username }}&rsquo;s
+    {% endif %}
+    reviews
+  </h1>
 
-  <ul>
-  {% for rev in reviews %}
-    <li>{{ rev }}</li>
-  {% endfor %}
-  </ul>
+  <style>
+    .hidden {
+      display: none;
+    }
+
+    .search-result {
+      background-color: yellow;
+      cursor: pointer;
+    }
+
+    .search-result:hover {
+      background-color: red;
+    }
+
+    .search-result img {
+      height: 50px;
+    }
+  </style>
+
+  {% if user == current_user %}
+  <form id="search">
+    <input id="query" name="query" type="text" placeholder="search to add..." />
+    <button type="submit">
+      search
+    </button>
+  </form>
+
+  <div id="results"></div>
+
+  <div id="loading" class="hidden">
+    searching...
+  </div>
+
+  <div>
+    <form method="POST" id="selected" action="{{ url_for('add_review', username=user.username) }}" class="hidden">
+      {{ review_form.hidden_tag() }}
+      <div id="info">
+
+      </div>
+      {{ review_form.title(type="hidden", id="title") }}
+      {{ review_form.author(type="hidden", id="author") }}
+      {{ review_form.image_url(type="hidden", id="image_url") }}
+      {{ review_form.source_id(type="hidden", id="source_id") }}
+      {{ review_form.year(type="hidden", id="year") }}
+      {{ review_form.isbn_13(type="hidden", id="isbn_13") }}
+
+      <p>
+        {{ review_form.review.label }}
+        {{ review_form.review() }}
+      </p>
+
+      <p>
+        {{ review_form.did_not_finish.label }}
+        {{ review_form.did_not_finish() }}
+      </p>
+
+      <p>
+        {{ review_form.is_favourite.label }}
+        {{ review_form.is_favourite() }}
+      </p>
+
+      <p>
+        {{ review_form.date_read.label }}
+        {{ review_form.date_read() }}
+      </p>
+      <button type="submit">
+        Add
+      </button>
+    </form>
+  </div>
+  {% endif %}
+
+  <script>
+    class Booksearch {
+      constructor(form, input, results, selected, loader) {
+        this.books = [];
+        this.selected = null;
+        this.form = form;
+        this.input = input;
+        this.loader = loader;
+        this.results = results;
+        this.div = selected;
+        this.editing = null;
+      }
+
+      searchBooks(query) {
+        this.loader.classList.remove("hidden");
+        fetch("/booksearch?search=" + query).then(data => {
+          this.loader.classList.add("hidden");
+          data.json().then(results => {
+            this.books = results.books;
+            this.renderResults();
+          });
+        });
+      }
+
+      bindEventListeners() {
+        this.form.addEventListener("submit", evt => {
+          evt.preventDefault();
+          this.searchBooks(this.input.value);
+        });
+        this.results.addEventListener("click", evt => {
+          if (evt.target && evt.target.nodeName == "LI") {
+            const book = this.books.find(book => book.id === evt.target.id);
+            this.selected = book;
+            this.books = [];
+            this.renderResults();
+            this.renderSelected();
+          }
+        });
+      }
+
+      renderResults() {
+        this.results.innerHTML = "";
+        this.books.forEach(result => {
+          const li = document.createElement("li");
+          li.setAttribute("id", result.id);
+          li.classList.add("search-result");
+          li.textContent = result.title + " — " + result.author;
+          this.results.appendChild(li);
+        });
+      }
+
+      renderSelected() {
+        if (this.selected) {
+          this.input.value = "";
+          this.div.classList.remove("hidden");
+          this.div.querySelector("#info").innerHTML = "<img src=" + this.selected.image_url + "/>" + "<strong>" + this.selected.title + "</strong><br />" + this.selected.author + ", " + this.selected.year;
+          this.div.querySelector("#title").value = this.selected.title;
+          this.div.querySelector("#year").value = this.selected.year;
+          this.div.querySelector("#author").value = this.selected.author;
+          this.div.querySelector("#image_url").value = this.selected.image_url;
+          this.div.querySelector("#isbn_13").value = this.selected.isbn_13;
+          this.div.querySelector("#source_id").value = this.selected.id;
+        } else {
+          this.div.classList.add("hidden");
+        }
+      }
+    }
+
+    const search = document.getElementById("search");
+    const query = document.getElementById("query");
+    const resultsList = document.getElementById("results");
+    const selected = document.getElementById("selected");
+    const loader = document.getElementById("loading");
+
+    const books = new Booksearch(search, query, resultsList, selected, loader);
+    books.bindEventListeners();
+  </script>
+
+  {% if reviews %}
+    <div class="books">
+    {% for review in reviews %}
+      {% include "_review.html" %}
+    {% endfor %}
+    </div>
+  {% else %}
+    There are no reviews yet!
+  {% endif %}
+
+  <script>
+    class Books {
+      constructor(container) {
+        this.container = container;
+        this.editing = null;
+      }
+
+      addEventListeners() {
+        [...document.querySelectorAll(".edit-book")].forEach(item => {
+          item.addEventListener("click", evt => {
+            this.editing = parseInt(evt.target.dataset["bookid"]);
+            this.renderEditing();
+          });
+        });
+        [...document.querySelectorAll(".cancel-edit")].forEach(item => {
+          item.addEventListener("click", evt => {
+            this.editing = null;
+            this.renderEditing();
+          });
+        });
+      }
+
+      renderEditing() {
+        const div = document.getElementById("book-" + this.editing);
+
+        if (this.editing) {
+          const form = div.querySelector(".book-edit-form");
+
+          form.classList.remove("hidden");
+        } else {
+          [...document.querySelectorAll(".book-edit-form")].forEach(item => {
+            item.classList.add("hidden");
+          });
+        }
+      }
+    }
+
+    const container = document.querySelector(".books");
+    if (container) {
+      const books = new Books(container);
+      books.addEventListeners();
+    }
+  </script>
 </main>
 {% endblock %}

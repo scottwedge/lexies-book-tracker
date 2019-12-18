@@ -41,15 +41,17 @@ def load_user(id):
 
 class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    isbn_13 = db.Column(db.String(13))
     title = db.Column(db.String(500))
     author = db.Column(db.String(500))
+    year = db.Column(db.String(4))
+    isbn_13 = db.Column(db.String(13))
     source_id = db.Column(db.String(64))
     image_url = db.Column(db.String(500))
-    source_blob = db.Column(db.Text)
+
+    reviews = db.relationship('Review', backref='book', lazy='dynamic')
 
     def __repr__(self):
-        return f"<Book ISBN13={isbn_13!r}>"
+        return f"<Book {self.id}>"
 
 
 class Review(db.Model):
