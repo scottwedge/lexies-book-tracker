@@ -42,7 +42,7 @@ def lookup_google_books(api_key, search_query):
         {
             "id": item["id"],
             "title": item["volumeInfo"]["title"],
-            "author": ", ".join(item["volumeInfo"]["authors"]),
+            "author": ", ".join(item["volumeInfo"].get("authors", [])),
             "isbn13": get_isbn13(item),
             "year": get_published_year(item["volumeInfo"].get("publishedDate", "")),
             "image_url": item["volumeInfo"].get("imageLinks", {}).get("thumbnail", ""),

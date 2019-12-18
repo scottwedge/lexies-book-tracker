@@ -5,8 +5,8 @@ from flask_login import current_user, login_required, login_user, logout_user
 
 from src import app, db
 from src.booksearch import lookup_google_books
-from src.forms import CurrentlyReadingForm, EditCurrentlyReadingForm, EditReviewForm, LoginForm, MarkAsReadForm, RegistrationForm, ReviewForm
-from src.models import Book, CurrentlyReading, Review, User
+from src.forms import CurrentlyReadingForm, EditCurrentlyReadingForm, EditReviewForm, EditPlanForm, LoginForm, MarkAsReadForm, PlanForm, RegistrationForm, ReviewForm
+from src.models import Book, CurrentlyReading, Plan, Review, User
 
 
 @app.route("/")
@@ -176,6 +176,69 @@ def get_reading(username):
     )
 
 
+@app.route("/user/<username>/to-read")
+def get_plans(username):
+    user = User.query.filter_by(username=username).first_or_404()
+
+    if current_user == user:
+        plan_form = PlanForm()
+        review_form = ReviewForm()
+        edit_form = EditPlanForm()
+    else:
+        plan_form = None
+        review_form = None
+        edit_form = None
+
+    return render_template(
+        "plans.html",
+        user=user,
+        plans=user.plans.all(),
+        plan_form=plan_form,
+        review_form=review_form,
+        edit_form=edit_form,
+    )
+
+
+@app.route("/user/<username>/add-plan", methods=["POST"])
+def add_plan(username):
+    user = User.query.filter_by(username=username).first_or_404()
+
+    if current_user != user:
+        return abort(401)
+
+    plan_form = PlanForm()
+
+    if plan_form.validate_on_submit():
+        book = save_book(
+            title=plan_form.title.data,
+            author=plan_form.author.data,
+            year=plan_form.year.data,
+            isbn_13=plan_form.isbn_13.data,
+            source_id=plan_form.source_id.data,
+            image_url=plan_form.image_url.data,
+        )
+        save_plan(
+            note=plan_form.note.data,
+            date_added=plan_form.date_added.data,
+            book=book,
+            user=user
+        )
+
+    return redirect(url_for("get_plans", username=username))
+
+
+def save_plan(*, note, date_added, book, user):
+    plan = Plan(
+        note=note,
+        date_added=date_added,
+        book_id=book.id,
+        user_id=user.id
+    )
+
+    db.session.add(plan)
+    db.session.commit()
+
+
 @app.route("/user/<username>/edit-reading/<reading_id>", methods=["POST"])
 def edit_reading(username, reading_id):
     user = User.query.filter_by(username=username).first_or_404()
@@ -192,6 +255,27 @@ def edit_reading(username, reading_id):
             db.session.commit()
 
         return redirect(url_for("get_reading", username=username))
+    else:
+        abort(401)
+
+
+@app.route("/user/<username>/edit-plan/<plan_id>", methods=["POST"])
+def edit_plan(username, plan_id):
+    user = User.query.filter_by(username=username).first_or_404()
+
+    if current_user == user:
+        edit_form = EditPlanForm()
+
+        if edit_form.validate_on_submit():
+            plan = Plan.query.filter_by(
+                id=plan_id,
+                user_id=user.id).first_or_404()
+
+            plan.note = edit_form.note.data
+            plan.date_added = edit_form.date_added.data
+            db.session.commit()
+
+        return redirect(url_for("get_plans", username=username))
     else:
         abort(401)
 
@@ -238,6 +322,21 @@ def delete_reading(username, reading_id):
     return redirect(url_for("get_reading", username=username))
 
 
+@app.route("/user/<username>/delete-plan/<plan_id>", methods=["POST"])
+def delete_plan(username, plan_id):
+    user = User.query.filter_by(username=username).first_or_404()
+
+    if current_user != user:
+        abort(401)
+
+    plan = Plan.query.filter_by(id=plan_id, user_id=user.id).first_or_404()
+
+    db.session.delete(plan)
+    db.session.commit()
+
+    return redirect(url_for("get_plans", username=username))
+
+
 @app.route("/user/<username>/mark_as_read/<reading_id>", methods=["POST"])
 def mark_as_read(username, reading_id):
     user = User.query.filter_by(username=username).first_or_404()
@@ -263,6 +362,54 @@ def mark_as_read(username, reading_id):
         )
         db.session.delete(reading)
         db.session.commit()
+
+    return redirect(url_for("get_reviews", username=username))
+
+
+@app.route("/user/<username>/mark_plan_as_read/<plan_id>", methods=["POST"])
+def mark_plan_as_read(username, plan_id):
+    user = User.query.filter_by(username=username).first_or_404()
+
+    if current_user != user:
+        abort(401)
+
+    plan = Plan.query.filter_by(id=plan_id, user_id=user.id).first_or_404()
+
+    mark_as_read_form = MarkAsReadForm()
+
+    if mark_as_read_form.validate_on_submit():
+        flash(f"Marking {plan.book.title} as read")
+        save_review(
+            review_text=mark_as_read_form.review_text.data,
+            date_read=mark_as_read_form.date_read.data,
+            did_not_finish=mark_as_read_form.did_not_finish.data,
+            is_favourite=mark_as_read_form.is_favourite.data,
+            book=plan.book,
+            user=user,
+        )
+        db.session.delete(plan)
+        db.session.commit()
+
+    return redirect(url_for("get_reviews", username=username))
+
+
+@app.route("/user/<username>/move_plan_to_reading/<plan_id>", methods=["POST"])
+def move_plan_to_reading(username, plan_id):
+    user = User.query.filter_by(username=username).first_or_404()
+
+    if current_user != user:
+        abort(401)
+
+    plan = Plan.query.filter_by(id=plan_id, user_id=user.id).first_or_404()
+
+    flash(f"You are reading {plan.book.title}")
+    save_currently_reading(
+        note=plan.note,
+        book=plan.book,
+        user=user
+    )
+    db.session.delete(plan)
+    db.session.commit()
 
     return redirect(url_for("get_reading", username=username))
 

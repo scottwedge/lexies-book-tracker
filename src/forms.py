@@ -72,3 +72,16 @@ class EditCurrentlyReadingForm(CurrentlyReadingFormMixin, FlaskForm):
 
 class MarkAsReadForm(ReviewFormMixin, FlaskForm):
     pass
+
+
+class PlanFormMixin:
+    note = TextAreaField("note")
+    date_added = DateField("date_added", default=today)
+
+
+class PlanForm(PlanFormMixin, BookFormMixin, FlaskForm):
+    pass
+
+
+class EditPlanForm(PlanFormMixin, FlaskForm):
+    pass

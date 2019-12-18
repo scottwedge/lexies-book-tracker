@@ -3,50 +3,58 @@
     font-family: monospace;
   }
 
-  div.reading {
-    border: 1px solid green;
+  div.plan {
+    border: 1px solid blue;
     display: inline-block;
     margin: 1em;
     border-radius: 5px;
     padding: 10px;
-    background: rgba(0, 255, 0, 0.2);
+    background: rgba(0, 0, 255, 0.2);
     width: 300px;
   }
 </style>
 
-<div class="reading" id="reading-{{ reading.id }}">
+<div class="plan" id="plan-{{ plan.id }}">
   <h2>
-    {{ reading.book.title }}
+    {{ plan.book.title }}
   </h2>
 
-  <p>{{ reading.book.author }}</p>
+  <p>{{ plan.book.author }}</p>
 
   <div class="image">
-    <img src="{{ reading.book.image_url }}" alt="Cover of {{ reading.book.title }}"/>
+    <img src="{{ plan.book.image_url }}" alt="Cover of {{ plan.book.title }}"/>
   </div>
 
-  <p>{{ reading.note }}</p>
+  <p>{{ plan.note }}</p>
 
   {% if user == current_user %}
-    <button class="edit-reading" data-readingid="{{ reading.id }}">
+    <button class="edit-plan" data-planid="{{ plan.id }}">
       edit
     </button>
 
-    <button class="mark-as-read" data-readingid="{{ reading.id }}">
+    <form
+      action="{{ url_for('move_plan_to_reading', username=user.username, plan_id=plan.id) }}"
+      method="POST">
+      <button class="mark-as-reading" data-planid="{{ plan.id }}">
+        mark as reading
+      </button>
+    </form>
+
+    <button class="mark-as-read" data-planid="{{ plan.id }}">
       mark as read
     </button>
 
     <script>
-      function confirmDeletion{{ reading.id }}() {
-        return confirm('Are you sure you want to remove ' + {{ reading.book.title|to_json|safe }} + '?');
+      function confirmDeletion{{ plan.id }}() {
+        return confirm('Are you sure you want to remove ' + {{ plan.book.title|to_json|safe }} + '?');
       }
     </script>
 
     <form
-      action="{{ url_for('delete_reading', username=user.username, reading_id=reading.id) }}"
+      action="{{ url_for('delete_plan', username=user.username, plan_id=plan.id) }}"
       method="POST"
       class="delete-button"
-      onsubmit="return confirmDeletion{{ reading.id }}();"
+      onsubmit="return confirmDeletion{{ plan.id }}();"
     >
       <button type="submit" class="delete-book">
         delete
@@ -54,7 +62,7 @@
     </form>
 
     <form
-      action="{{ url_for('edit_reading', username=user.username, reading_id=reading.id) }}"
+      action="{{ url_for('edit_plan', username=user.username, plan_id=plan.id) }}"
       method="POST"
       class="hidden book-edit-form"
     >
@@ -66,7 +74,7 @@
 
       <p>
         {{ edit_form.note.label }}
-        <textarea id="note" name="note">{{ reading.note }}</textarea>
+        <textarea id="note" name="note">{{ plan.note }}</textarea>
       </p>
 
       <button type="submit">
@@ -75,7 +83,7 @@
     </form>
 
     <form
-      action="{{ url_for('mark_as_read', username=user.username, reading_id=reading.id) }}"
+      action="{{ url_for('mark_plan_as_read', username=user.username, plan_id=plan.id) }}"
       method="POST"
       class="hidden add-review-form"
     >
@@ -87,7 +95,7 @@
 
       <p>
         {{ review_form.review_text.label }}
-        <textarea id="review_text" name="review_text">{{ reading.note }}</textarea>
+        <textarea id="review_text" name="review_text">{{ plan.note }}</textarea>
       </p>
 
       <p>

@@ -50,6 +50,7 @@ class Book(db.Model):
 
     reviews = db.relationship('Review', backref='book', lazy='dynamic')
     currently_reading = db.relationship('CurrentlyReading', backref='book', lazy='dynamic')
+    plans = db.relationship("Plan", backref="book", lazy='dynamic')
 
     def __repr__(self):
         return f"<Book {self.id}>"
