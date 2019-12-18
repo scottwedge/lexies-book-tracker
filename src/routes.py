@@ -6,8 +6,8 @@ from flask_login import current_user, login_required, login_user, logout_user
 from . import app, db
 from .booksearch import lookup_google_books
 from .forms import (
-    CurrentlyReadingForm,
-    EditCurrentlyReadingForm,
+    ReadingForm,
+    EditReadingForm,
     EditReviewForm,
     EditPlanForm,
     LoginForm,
@@ -16,7 +16,7 @@ from .forms import (
     RegistrationForm,
     ReviewForm,
 )
-from .models import Book, CurrentlyReading, Plan, Review, User
+from .models import Book, Reading, Plan, Review, User
 
 
 @app.route("/")
@@ -27,7 +27,7 @@ def index():
 
 
 def save_currently_reading(*, note, book, user):
-    currently_reading = CurrentlyReading(note=note, book_id=book.id, user_id=user.id,)
+    currently_reading = Reading(note=note, book_id=book.id, user_id=user.id,)
     db.session.add(currently_reading)
     db.session.commit()
 
@@ -125,9 +125,9 @@ def get_reading(username):
     user = User.query.filter_by(username=username).first_or_404()
 
     if current_user == user:
-        reading_form = CurrentlyReadingForm()
+        reading_form = ReadingForm()
         review_form = ReviewForm()
-        edit_form = EditCurrentlyReadingForm()
+        edit_form = EditReadingForm()
     else:
         reading_form = None
         review_form = None
@@ -206,10 +206,10 @@ def edit_reading(username, reading_id):
     user = User.query.filter_by(username=username).first_or_404()
 
     if current_user == user:
-        edit_form = EditCurrentlyReadingForm()
+        edit_form = EditReadingForm()
 
         if edit_form.validate_on_submit():
-            reading = CurrentlyReading.query.filter_by(
+            reading = Reading.query.filter_by(
                 id=reading_id, user_id=user.id
             ).first_or_404()
 
@@ -247,7 +247,7 @@ def add_reading(username):
     if current_user != user:
         abort(401)
 
-    reading_form = CurrentlyReadingForm()
+    reading_form = ReadingForm()
 
     book = Book.create_or_get(
         title=reading_form.title.data,
@@ -270,7 +270,7 @@ def delete_reading(username, reading_id):
     if current_user != user:
         abort(401)
 
-    reading = CurrentlyReading.query.filter_by(
+    reading = Reading.query.filter_by(
         id=reading_id, user_id=user.id
     ).first_or_404()
 
@@ -302,7 +302,7 @@ def mark_as_read(username, reading_id):
     if current_user != user:
         abort(401)
 
-    reading = CurrentlyReading.query.filter_by(
+    reading = Reading.query.filter_by(
         id=reading_id, user_id=user.id
     ).first_or_404()
 

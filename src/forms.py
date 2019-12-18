@@ -1,5 +1,7 @@
 # -*- encoding: utf-8
 
+import datetime
+
 from flask_wtf import FlaskForm
 from wtforms import (
     DateField,
@@ -12,7 +14,11 @@ from wtforms import (
 )
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 
-from .models import User, today
+from .models import User
+
+
+def today():
+    return datetime.datetime.now().date()
 
 
 class LoginForm(FlaskForm):
@@ -66,15 +72,15 @@ class EditReviewForm(ReviewFormMixin, FlaskForm):
     review_id = IntegerField("id", validators=[DataRequired()])
 
 
-class CurrentlyReadingFormMixin:
+class ReadingFormMixin:
     note = TextAreaField("note")
 
 
-class CurrentlyReadingForm(CurrentlyReadingFormMixin, BookFormMixin, FlaskForm):
+class ReadingForm(ReadingFormMixin, BookFormMixin, FlaskForm):
     pass
 
 
-class EditCurrentlyReadingForm(CurrentlyReadingFormMixin, FlaskForm):
+class EditReadingForm(ReadingFormMixin, FlaskForm):
     pass
 
 
