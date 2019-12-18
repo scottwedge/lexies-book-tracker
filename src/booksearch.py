@@ -117,7 +117,7 @@ def _get_published_year(item):
 def lookup_google_books(*, sess=requests.Session(), api_key, search_query):
     resp = sess.get(
         "https://www.googleapis.com/books/v1/volumes",
-        params={"q": search_query, "key": api_key},
+        params=[("q", search_query), ("key", api_key)],
     )
     resp.raise_for_status()
 

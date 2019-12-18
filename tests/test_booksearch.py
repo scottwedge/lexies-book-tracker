@@ -12,8 +12,13 @@ from booksearch import lookup_google_books
 
 def sanitize_google_books_api_key(interaction, current_cassette):
     req = interaction.data["request"]
-
     req["uri"] = req["uri"].replace(
+        os.environ.get("GOOGLE_BOOKS_API_KEY", "<API_KEY>"),
+        "<API_KEY>"
+    )
+
+    resp = interaction.data["response"]
+    resp["url"] = resp["url"].replace(
         os.environ.get("GOOGLE_BOOKS_API_KEY", "<API_KEY>"),
         "<API_KEY>"
     )
