@@ -7,12 +7,13 @@
   <a href="{{ url_for('get_reading', username=user.username) }}">reading</a>
 
   <h1>
+    what
     {% if user == current_user %}
-      my
+      i&rsquo;m
     {% else %}
-      {{ user.username }}&rsquo;s
+      {{ user.username }} is
     {% endif %}
-    reviews
+    reading
   </h1>
 
   <style>
@@ -49,36 +50,21 @@
   </div>
 
   <div>
-    <form method="POST" id="selected" action="{{ url_for('add_review', username=user.username) }}" class="hidden">
-      {{ review_form.hidden_tag() }}
+    <form method="POST" id="selected" action="{{ url_for('add_reading', username=user.username) }}" class="hidden">
+      {{ reading_form.hidden_tag() }}
       <div id="info">
 
       </div>
-      {{ review_form.title(type="hidden", id="title") }}
-      {{ review_form.author(type="hidden", id="author") }}
-      {{ review_form.image_url(type="hidden", id="image_url") }}
-      {{ review_form.source_id(type="hidden", id="source_id") }}
-      {{ review_form.year(type="hidden", id="year") }}
-      {{ review_form.isbn_13(type="hidden", id="isbn_13") }}
+      {{ reading_form.title(type="hidden", id="title") }}
+      {{ reading_form.author(type="hidden", id="author") }}
+      {{ reading_form.image_url(type="hidden", id="image_url") }}
+      {{ reading_form.source_id(type="hidden", id="source_id") }}
+      {{ reading_form.year(type="hidden", id="year") }}
+      {{ reading_form.isbn_13(type="hidden", id="isbn_13") }}
 
       <p>
-        {{ review_form.review.label }}
-        {{ review_form.review() }}
-      </p>
-
-      <p>
-        {{ review_form.did_not_finish.label }}
-        {{ review_form.did_not_finish() }}
-      </p>
-
-      <p>
-        {{ review_form.is_favourite.label }}
-        {{ review_form.is_favourite() }}
-      </p>
-
-      <p>
-        {{ review_form.date_read.label }}
-        {{ review_form.date_read() }}
+        {{ reading_form.note.label }}
+        {{ reading_form.note() }}
       </p>
       <button type="submit">
         Add
@@ -165,17 +151,17 @@
     books.bindEventListeners();
   </script>
 
-  {% if reviews %}
+  {% if currently_reading %}
     <div class="books">
-    {% for review in reviews %}
-      {% include "_review.html" %}
+    {% for reading in currently_reading %}
+      {% include "_reading.html" %}
     {% endfor %}
     </div>
   {% else %}
     {% if user == current_user %}
-      You haven't reviewed any books yet!
+      You aren't reading any books right now!
     {% else %}
-      {{ user }} hasn't reviewed any books yet!
+      {{ user }} isn't reading any books right now!
     {% endif %}
   {% endif %}
 
@@ -187,7 +173,7 @@
       }
 
       addEventListeners() {
-        [...document.querySelectorAll(".edit-book")].forEach(item => {
+        [...document.querySelectorAll(".edit-reading")].forEach(item => {
           item.addEventListener("click", evt => {
             this.editing = parseInt(evt.target.dataset["bookid"]);
             this.renderEditing();
@@ -202,7 +188,7 @@
       }
 
       renderEditing() {
-        const div = document.getElementById("book-" + this.editing);
+        const div = document.getElementById("reading-" + this.editing);
 
         if (this.editing) {
           const form = div.querySelector(".book-edit-form");
@@ -222,5 +208,21 @@
       books.addEventListeners();
     }
   </script>
+
+    <script>
+      [...document.querySelectorAll(".mark-as-read")].forEach(item => {
+        item.addEventListener("click", evt => {
+          const div = document.getElementById("reading-" + evt.target.dataset.readingid);
+          div.querySelector(".add-review-form").classList.remove("hidden");
+          [...div.querySelectorAll(".datepicker")].forEach((input) => input.value = new Date().toISOString().substr(0, 10))});
+      });
+      [...document.querySelectorAll(".cancel-add-review")].forEach(item => {
+        item.addEventListener("click", evt => {
+          [...document.querySelectorAll(".add-review-form")].forEach(form =>
+            form.classList.add("hidden")
+          );
+        });
+      });
+    </script>
 </main>
 {% endblock %}

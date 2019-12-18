@@ -5,8 +5,8 @@ from flask_login import current_user, login_required, login_user, logout_user
 
 from src import app, db
 from src.booksearch import lookup_google_books
-from src.forms import EditReviewForm, LoginForm, RegistrationForm, ReviewForm
-from src.models import Book, Review, User
+from src.forms import CurrentlyReadingForm, EditCurrentlyReadingForm, EditReviewForm, LoginForm, MarkAsReadForm, RegistrationForm, ReviewForm
+from src.models import Book, CurrentlyReading, Review, User
 
 
 @app.route("/")
@@ -42,9 +42,9 @@ def save_book(*, title, author, year, isbn_13, source_id, image_url):
         return new_book
 
 
-def save_review(*, review, date_read, did_not_finish, is_favourite, book, user):
+def save_review(*, review_text, date_read, did_not_finish, is_favourite, book, user):
     review = Review(
-        review=review,
+        review_text=review_text,
         date_read=date_read,
         did_not_finish=did_not_finish,
         is_favourite=is_favourite,
@@ -52,6 +52,16 @@ def save_review(*, review, date_read, did_not_finish, is_favourite, book, user):
         user_id=user.id,
     )
     db.session.add(review)
+    db.session.commit()
+
+
+def save_currently_reading(*, note, book, user):
+    currently_reading = CurrentlyReading(
+        note=note,
+        book_id=book.id,
+        user_id=user.id,
+    )
+    db.session.add(currently_reading)
     db.session.commit()
 
 
@@ -72,7 +82,7 @@ def add_review(username):
                 image_url=review_form.image_url.data,
             )
             save_review(
-                review=review_form.review.data,
+                review_text=review_form.review_text.data,
                 date_read=review_form.date_read.data,
                 did_not_finish=review_form.did_not_finish.data,
                 is_favourite=review_form.is_favourite.data,
@@ -97,7 +107,7 @@ def edit_review(username):
                 id=edit_form.review_id.data,
                 user_id=user.id).first_or_404()
 
-            review.review = edit_form.review.data
+            review.review_text = edit_form.review_text.data
             review.date_read = edit_form.date_read.data
             review.did_not_finish = edit_form.did_not_finish.data
             review.is_favourite = edit_form.is_favourite.data
@@ -123,7 +133,7 @@ def delete_review(username, review_id):
     return redirect(url_for("get_reviews", username=username))
 
 
-@app.route("/user/<username>", methods=["GET", "POST"])
+@app.route("/user/<username>")
 def get_reviews(username):
     user = User.query.filter_by(username=username).first_or_404()
 
@@ -141,6 +151,120 @@ def get_reviews(username):
         review_form=review_form,
         edit_form=edit_form,
     )
+
+
+@app.route("/user/<username>/reading")
+def get_reading(username):
+    user = User.query.filter_by(username=username).first_or_404()
+
+    if current_user == user:
+        reading_form = CurrentlyReadingForm()
+        review_form = ReviewForm()
+        edit_form = EditCurrentlyReadingForm()
+    else:
+        reading_form = None
+        review_form = None
+        edit_form = None
+
+    return render_template(
+        "reading.html",
+        user=user,
+        currently_reading=user.currently_reading.all(),
+        reading_form=reading_form,
+        review_form=review_form,
+        edit_form=edit_form,
+    )
+
+
+@app.route("/user/<username>/edit-reading/<reading_id>", methods=["POST"])
+def edit_reading(username, reading_id):
+    user = User.query.filter_by(username=username).first_or_404()
+
+    if current_user == user:
+        edit_form = EditCurrentlyReadingForm()
+
+        if edit_form.validate_on_submit():
+            reading = CurrentlyReading.query.filter_by(
+                id=reading_id,
+                user_id=user.id).first_or_404()
+
+            reading.note = edit_form.note.data
+            db.session.commit()
+
+        return redirect(url_for("get_reading", username=username))
+    else:
+        abort(401)
+
+
+@app.route("/user/<username>/add-reading", methods=["POST"])
+def add_reading(username):
+    user = User.query.filter_by(username=username).first_or_404()
+
+    if current_user != user:
+        abort(401)
+
+    reading_form = CurrentlyReadingForm()
+
+    book = save_book(
+        title=reading_form.title.data,
+        author=reading_form.author.data,
+        year=reading_form.year.data,
+        isbn_13=reading_form.isbn_13.data,
+        source_id=reading_form.source_id.data,
+        image_url=reading_form.image_url.data,
+    )
+
+    save_currently_reading(
+        note=reading_form.note.data,
+        book=book,
+        user=user
+    )
+
+    return redirect(url_for("get_reading", username=username))
+
+
+@app.route("/user/<username>/delete-reading/<reading_id>", methods=["POST"])
+def delete_reading(username, reading_id):
+    user = User.query.filter_by(username=username).first_or_404()
+
+    if current_user != user:
+        abort(401)
+
+    reading = CurrentlyReading.query.filter_by(id=reading_id, user_id=user.id).first_or_404()
+
+    db.session.delete(reading)
+    db.session.commit()
+
+    return redirect(url_for("get_reading", username=username))
+
+
+@app.route("/user/<username>/mark_as_read/<reading_id>", methods=["POST"])
+def mark_as_read(username, reading_id):
+    user = User.query.filter_by(username=username).first_or_404()
+
+    if current_user != user:
+        abort(401)
+
+    reading = CurrentlyReading.query.filter_by(
+        id=reading_id,
+        user_id=user.id).first_or_404()
+
+    mark_as_read_form = MarkAsReadForm()
+
+    if mark_as_read_form.validate_on_submit():
+        flash(f"Marking {reading.book.title} as read")
+        save_review(
+            review_text=mark_as_read_form.review_text.data,
+            date_read=mark_as_read_form.date_read.data,
+            did_not_finish=mark_as_read_form.did_not_finish.data,
+            is_favourite=mark_as_read_form.is_favourite.data,
+            book=reading.book,
+            user=user,
+        )
+        db.session.delete(reading)
+        db.session.commit()
+
+    return redirect(url_for("get_reading", username=username))
 
 
 @app.route("/user/<username>/reviews/<review_id>")
@@ -163,7 +287,7 @@ def search_books():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("index"))
+        return redirect(url_for("get_reviews", username=current_user.username))
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -172,7 +296,7 @@ def login():
             flash("Unrecognised username or password")
             return redirect(url_for("login"))
         login_user(user, remember=form.remember_me.data)
-        return redirect(url_for("index"))
+        return redirect(url_for("get_reviews", username=user.username))
     return render_template("login.html", title="Log In", form=form)
 
 
@@ -185,7 +309,7 @@ def logout():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for("index"))
+        return redirect(url_for("get_reviews", username=current_user.username))
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(username=form.username.data, email_address=form.email_address.data)

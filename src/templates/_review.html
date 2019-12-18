@@ -39,7 +39,7 @@
   <div class="image">
     <img src="{{ review.book.image_url }}" alt="Cover of {{ review.book.title }}"/>
     <div class="review-container">
-      {% for line in review.review.split(".") %}
+      {% for line in review.review_text.split(".") %}
       <p class="review">
         {{ line }}
       </p>
@@ -48,72 +48,72 @@
   </div>
 
   {% if user == current_user %}
-  <button class="edit-book" data-bookid="{{ review.id }}">
-    edit
-  </button>
-
-  <script>
-    function confirmDeletion{{ review.id }}() {
-      return confirm('Are you sure you want to delete your review for ' + {{ review.book.title|to_json|safe }} + '?');
-    }
-  </script>
-
-  <form
-    action="{{ url_for('delete_review', username=user.username, review_id=review.id) }}"
-    method="POST"
-    class="delete-button"
-    onsubmit="return confirmDeletion{{ review.id }}();"
-  >
-    <button type="submit" class="delete-book">
-      delete
+    <button class="edit-book" data-bookid="{{ review.id }}">
+      edit
     </button>
-  </form>
+
+    <script>
+      function confirmDeletion{{ review.id }}() {
+        return confirm('Are you sure you want to delete your review for ' + {{ review.book.title|to_json|safe }} + '?');
+      }
+    </script>
+
+    <form
+      action="{{ url_for('delete_review', username=user.username, review_id=review.id) }}"
+      method="POST"
+      class="delete-button"
+      onsubmit="return confirmDeletion{{ review.id }}();"
+    >
+      <button type="submit" class="delete-book">
+        delete
+      </button>
+    </form>
+
+    <form
+      action="{{ url_for('edit_review', username=user.username) }}"
+      method="POST"
+      class="hidden book-edit-form"
+    >
+      <button type="button" class="cancel-edit">
+        Cancel
+      </button>
+
+      {{ edit_form.hidden_tag() }}
+
+      {{ edit_form.review_id(value=review.id, type="hidden") }}
+
+      <p>
+        {{ edit_form.review_text.label }}
+
+        {#
+          As far as I can tell, because "review_text" is a text area, you can't just do
+
+              edit_form.review_text(value=review.review_text)
+
+          The value is set as an attribute on the HTML tag, but not rendered into
+          the text area where the user can see it.
+        #}
+        <textarea id="review_text" name="review_text">{{ review.review_text }}</textarea>
+      </p>
+
+      <p>
+        {{ edit_form.did_not_finish.label }}
+        <input type="checkbox" id="did_not_finish" name="did_not_finish" {% if review.did_not_finish %}checked{% endif %}>
+      </p>
+
+      <p>
+        {{ edit_form.is_favourite.label }}
+        <input type="checkbox" id="is_favourite" name="is_favourite" {% if review.is_favourite %}checked{% endif %}>
+      </p>
+
+      <p>
+        {{ edit_form.date_read.label }}
+        {{ edit_form.date_read(value=review.date_read) }}
+      </p>
+
+      <button type="submit">
+        Update
+      </button>
+    </form>
   {% endif %}
-
-  <form
-    action="{{ url_for('edit_review', username=user.username ) }}"
-    method="POST"
-    class="hidden book-edit-form"
-  >
-    <button type="button" class="cancel-edit">
-      Cancel
-    </button>
-
-    {{ edit_form.hidden_tag() }}
-
-    {{ edit_form.review_id(value=review.id, type="hidden") }}
-
-    <p>
-      {{ edit_form.review.label }}
-
-      {#
-        As far as I can tell, because "review" is a text area, you can't just do
-
-            edit_form.review(value=review.review)
-
-        The value is set as an attribute on the HTML tag, but not rendered into
-        the text area where the user can see it.
-      #}
-      <textarea id="review" name="review">{{ review.review }}</textarea>
-    </p>
-
-    <p>
-      {{ edit_form.did_not_finish.label }}
-      <input type="checkbox" id="did_not_finish" name="did_not_finish" {% if review.did_not_finish %}checked{% endif %}>
-    </p>
-
-    <p>
-      {{ edit_form.is_favourite.label }}
-      <input type="checkbox" id="is_favourite" name="is_favourite" {% if review.is_favourite %}checked{% endif %}>
-    </p>
-
-    <p>
-      {{ edit_form.date_read.label }}
-      {{ edit_form.date_read(value=review.date_read) }}
-    </p>
-
-    <button type="submit">
-      Update
-    </button>
-  </form>
 </div>

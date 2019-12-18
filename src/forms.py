@@ -34,14 +34,7 @@ class RegistrationForm(FlaskForm):
             raise ValidationError("Please use a different email address.")
 
 
-class ReviewFormMixin:
-    review = TextAreaField("review")
-    date_read = DateField("date_read", default=today)
-    did_not_finish = BooleanField("did_not_finish", default=False)
-    is_favourite = BooleanField("is_favourite", default=False)
-
-
-class ReviewForm(ReviewFormMixin, FlaskForm):
+class BookFormMixin:
     title = StringField("title", validators=[DataRequired()])
     author = StringField("author")
     year = StringField("year")
@@ -50,6 +43,32 @@ class ReviewForm(ReviewFormMixin, FlaskForm):
     image_url = StringField("image_url")
 
 
+class ReviewFormMixin:
+    review_text = TextAreaField("review_text")
+    date_read = DateField("date_read", default=today)
+    did_not_finish = BooleanField("did_not_finish", default=False)
+    is_favourite = BooleanField("is_favourite", default=False)
+
+
+class ReviewForm(ReviewFormMixin, BookFormMixin, FlaskForm):
+    pass
+
 
 class EditReviewForm(ReviewFormMixin, FlaskForm):
     review_id = IntegerField("id", validators=[DataRequired()])
+
+
+class CurrentlyReadingFormMixin:
+    note = TextAreaField("note")
+
+
+class CurrentlyReadingForm(CurrentlyReadingFormMixin, BookFormMixin, FlaskForm):
+    pass
+
+
+class EditCurrentlyReadingForm(CurrentlyReadingFormMixin, FlaskForm):
+    pass
+
+
+class MarkAsReadForm(ReviewFormMixin, FlaskForm):
+    pass
