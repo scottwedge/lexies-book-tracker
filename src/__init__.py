@@ -1,11 +1,14 @@
 # -*- encoding: utf-8
 
 import json
+import pathlib
 
 from flask import Flask
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+import scss
+from scss.types import Color
 
 from .config import Config
 
@@ -27,3 +30,15 @@ from .models import User
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+
+@app.before_first_request
+def compile_css():
+    print("Rebuilding CSS")
+    src_root = pathlib.Path(__file__).parent
+    static_dir = src_root / "static"
+
+    css = scss.Compiler(root=src_root / "assets").compile("style.scss")
+
+    css_path = static_dir / "style.css"
+    css_path.write_text(css)

@@ -1,0 +1,20 @@
+@import "_settings.scss";
+@import "_mixins.scss";
+
+body {
+  margin: 0;
+  padding: 0;
+  font: 12pt monospace;
+  line-height: 1.35em;
+}
+
+main {
+  padding: 1em;
+  @include centred($max-width);
+}
+
+a {
+  @include link_styles($accent-color, 0.3);
+}
+
+@import "_aside.scss";
