@@ -1,5 +1,6 @@
 # -*- encoding: utf-8
 
+import datetime as dt
 import json
 import pathlib
 
@@ -30,6 +31,20 @@ from .models import User
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+
+@app.template_filter("render_date")
+def render_date(date_val):
+    delta = dt.datetime.now().date() - date_val
+
+    if delta.days == 0:
+        return "today"
+    elif delta.days == 1:
+        return "yesterday"
+    elif delta.days <= 7:
+        return f"{delta.days} days ago"
+    else:
+        return date_val.strftime("%d %B %Y")
 
 
 @app.before_first_request

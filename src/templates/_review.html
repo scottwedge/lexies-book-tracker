@@ -15,7 +15,7 @@
           {{ review.book.year }}
           <br/>
         {% endif %}
-        Read: {{ review.date_read }}
+        Read: {{ review.date_read | render_date }}
       </div>
     </div>
   </div>
