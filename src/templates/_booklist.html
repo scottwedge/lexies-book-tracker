@@ -44,4 +44,22 @@
 
 {% block booklist_content %}{% endblock %}
 
+<script>
+  const search = document.getElementById("search");
+  const query = document.getElementById("query");
+  const resultsList = document.getElementById("results");
+  const selected = document.getElementById("selected");
+  const loader = document.getElementById("loading");
+
+  const books = new Booksearch(
+    "{{ url_for('search_books') }}",
+    search,
+    query,
+    resultsList,
+    selected,
+    loader
+  );
+  books.bindEventListeners();
+</script>
+
 {% endblock %}
