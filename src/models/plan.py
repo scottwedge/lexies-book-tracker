@@ -35,9 +35,9 @@ class Plan(db.Model):
             db.session.commit()
             return new_plan
 
-    def mark_as_reading(self, *, note, date_started):
+    def mark_as_reading(self):
         reading = Reading.create(
-            note=note, date_started=date_started, book=self.book, user=self.user
+            note=self.note, date_started=today(), book=self.book, user=self.user
         )
 
         db.session.delete(self)

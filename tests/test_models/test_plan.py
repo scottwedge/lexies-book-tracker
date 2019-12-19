@@ -62,17 +62,14 @@ def test_mark_as_reading(session, fake, book, user):
 
     assert Plan.query.count() == 1
 
-    new_note = fake.text()
-    date_started = fake.date_object()
-
-    reading = plan.mark_as_reading(note=new_note, date_started=date_started)
+    reading = plan.mark_as_reading()
 
     assert Plan.query.count() == 0
     assert Reading.query.count() == 1
 
     assert Reading.query.get(reading.id) == reading
-    assert reading.note == new_note
-    assert reading.date_started == date_started
+    assert reading.note == plan.note
+    assert reading.date_started == dt.datetime.now().date()
     assert reading.book == book
     assert reading.user == user
 

@@ -335,10 +335,8 @@ def move_plan_to_reading(username, plan_id):
 
     plan = Plan.query.filter_by(id=plan_id, user_id=user.id).first_or_404()
 
-    flash(f"You are reading {plan.book.title}")
-    Reading.create(note=plan.note, book=plan.book, user=user)
-    db.session.delete(plan)
-    db.session.commit()
+    flash(f"You have started reading {plan.book.title}")
+    plan.mark_as_reading()
 
     return redirect(url_for("get_reading", username=username))
 
