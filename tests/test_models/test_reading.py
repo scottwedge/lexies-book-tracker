@@ -3,7 +3,7 @@
 import pytest
 from sqlalchemy.exc import IntegrityError
 
-from src.models import AlreadyReadingException, Reading
+from src.models import AlreadyReadingException, Reading, Review
 
 
 def test_can_store_and_retrieve_currently_reading(session, fake, book, user):
@@ -44,3 +44,32 @@ def test_does_not_create_duplicate_reading(session, fake, book, user):
         AlreadyReadingException, match=f"You are already reading {book.title}"
     ):
         Reading.create(note=fake.text(), book=book, user=user)
+
+
+def test_mark_as_reviewed(session, fake, book, user):
+    reading = Reading(note=fake.text(), book=book, user=user)
+    session.add(reading)
+    session.commit()
+
+    assert Reading.query.count() == 1
+
+    review_text = fake.text()
+    date_read = fake.date_object()
+    did_not_finish = fake.boolean()
+    is_favourite = fake.boolean()
+
+    review = reading.mark_as_reviewed(
+        review_text=review_text,
+        date_read=date_read,
+        did_not_finish=did_not_finish,
+        is_favourite=is_favourite
+    )
+
+    assert Reading.query.count() == 0
+    assert Review.query.count() == 1
+
+    assert Review.query.get(review.id) == review
+    assert review.review_text == review_text
+    assert review.date_read == date_read
+    assert review.did_not_finish == did_not_finish
+    assert review.is_favourite == is_favourite

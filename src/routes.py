@@ -293,16 +293,12 @@ def mark_as_read(username, reading_id):
 
     if mark_as_read_form.validate_on_submit():
         flash(f"Marking {reading.book.title} as read")
-        Review.create(
+        reading.mark_as_read(
             review_text=mark_as_read_form.review_text.data,
             date_read=mark_as_read_form.date_read.data,
             did_not_finish=mark_as_read_form.did_not_finish.data,
-            is_favourite=mark_as_read_form.is_favourite.data,
-            book=reading.book,
-            user=user,
+            is_favourite=mark_as_read_form.is_favourite.data
         )
-        db.session.delete(reading)
-        db.session.commit()
 
     return redirect(url_for("get_reviews", username=username))
 
@@ -320,16 +316,12 @@ def mark_plan_as_read(username, plan_id):
 
     if mark_as_read_form.validate_on_submit():
         flash(f"Marking {plan.book.title} as read")
-        Review.create(
+        plan.mark_as_read(
             review_text=mark_as_read_form.review_text.data,
             date_read=mark_as_read_form.date_read.data,
             did_not_finish=mark_as_read_form.did_not_finish.data,
             is_favourite=mark_as_read_form.is_favourite.data,
-            book=plan.book,
-            user=user,
         )
-        db.session.delete(plan)
-        db.session.commit()
 
     return redirect(url_for("get_reviews", username=username))
 
