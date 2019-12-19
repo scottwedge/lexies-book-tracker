@@ -58,10 +58,10 @@ class BookFormMixin:
 
 
 class ReviewFormMixin:
-    review_text = TextAreaField("review_text")
-    date_read = DateField("date_read", default=today)
-    did_not_finish = BooleanField("did_not_finish", default=False)
-    is_favourite = BooleanField("is_favourite", default=False)
+    review_text = TextAreaField("review")
+    date_read = DateField("date read", default=today)
+    did_not_finish = BooleanField("didn’t finish 😔", default=False)
+    is_favourite = BooleanField("loved it! 😍", default=False)
 
 
 class ReviewForm(ReviewFormMixin, BookFormMixin, FlaskForm):

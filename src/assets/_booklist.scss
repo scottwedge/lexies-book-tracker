@@ -23,3 +23,35 @@
     }
   }
 }
+
+#results {
+  list-style-type: none;
+  padding-left: 0;
+
+  .search-result {
+    background-color: rgba(255, 237, 158, 0.6);
+    cursor: pointer;
+    border: 1px solid black;
+    padding: 3px;
+    display: flex;
+    align-items: center;
+
+    &:not(:last-child) {
+      margin-bottom: -1px;
+    }
+
+    &:hover {
+      background-color: #ffd30f;
+    }
+
+    img {
+      height: 45px;
+    }
+  }
+
+  .search-result-thumbnail {
+    width: 75px;
+    text-align: center;
+    line-height: 0;
+  }
+}

@@ -1,5 +1,7 @@
 # -*- encoding: utf-8
 
+import collections
+import concurrent.futures
 import json
 import re
 
@@ -119,6 +121,41 @@ def _get_published_year(item):
         return ""
 
 
+def _get_image_url(sess, item):
+    google_books_thumb = item["volumeInfo"].get("imageLinks", {}).get("thumbnail", "")
+
+    # If there isn't a thumbnail in the Google Books API, we try the
+    # Open Library API with the ISBN.  This can potentially be very slow,
+    # if multiple books in a result don't have thumbnails.
+    if google_books_thumb:
+        return google_books_thumb
+    else:
+        identifiers = _get_identifiers(item)
+
+        try:
+            isbn = next(
+                ident for ident in identifiers if ident["type"].startswith("ISBN_")
+            )
+        except StopIteration:
+            return ""
+        else:
+            open_library_id = f"ISBN:{isbn['identifier']}"
+            resp = sess.get(
+                "https://openlibrary.org/api/books",
+                params=[
+                    ("bibkeys", open_library_id),
+                    ("jscmd", "data"),
+                    ("format", "json"),
+                ],
+            )
+            try:
+                return resp.json()[open_library_id]["cover"]["medium"]
+            except (KeyError, ValueError):
+                pass
+
+    return ""
+
+
 def lookup_google_books(*, sess=requests.Session(), api_key, search_query):
     resp = sess.get(
         "https://www.googleapis.com/books/v1/volumes",
@@ -132,14 +169,27 @@ def lookup_google_books(*, sess=requests.Session(), api_key, search_query):
     except KeyError:
         return []
 
-    return [
-        {
+    def _create_item(item):
+        return {
             "id": item["id"],
             "title": item["volumeInfo"]["title"],
             "author": _get_authors(item),
             "identifiers": _get_identifiers(item),
             "year": _get_published_year(item),
-            "image_url": item["volumeInfo"].get("imageLinks", {}).get("thumbnail", ""),
+            "image_url": _get_image_url(sess, item=item),
         }
-        for item in all_items
-    ]
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        # concurrent.futures.wait() may return the results in the wrong order
+        # so hold their positions to rearrange them later.
+        futures = collections.OrderedDict(
+            [
+                (executor.submit(_create_item, item), i)
+                for i, item in enumerate(all_items)
+            ]
+        )
+
+        completed_futures, _ = concurrent.futures.wait(futures)
+        return [
+            fut.result() for fut in sorted(completed_futures, key=lambda f: futures[f])
+        ]

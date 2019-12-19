@@ -109,6 +109,7 @@ def get_reviews(username):
         reviews=user.reviews.all(),
         review_form=review_form,
         edit_form=edit_form,
+        title=f"{user.username}’s books"
     )
 
 

@@ -1,91 +1,99 @@
 {% extends "_booklist.html" %}
 
-{% block title %}
-  {{ user.username }}&rsquo;s books
+{% block add_book_form %}
+<style>
+  .add_book_form form {
+    background-color: rgba(193, 255, 179, 0.6);
+    border: 1px solid #24c200;
+    border-radius: 5px;
+    padding: 10px;
+
+    max-width: 500px;
+  }
+
+  .add_book_form form button {
+    font-size: 1em;
+    padding: 3px 7px;
+  }
+
+  .add_book_form #info img {
+    height: 80px;
+  }
+
+  textarea {
+    width: calc(100% - 10px);
+  }
+
+  .book-preview {
+    display: flex;
+    align-items: center;
+  }
+
+  .book-thumbnail {
+    margin-right: 1em;
+  }
+
+  label {
+    font-size: 0.85em;
+  }
+
+  input {
+    border: 1px solid #24c200;
+    font-size: 1em;
+  }
+
+  input[type="checkbox"] {
+    transform: scale(2);
+  }
+
+  textarea {
+    border: 1px solid #24c200;
+    font-size: 1em;
+    line-height: 1.35em;
+  }
+
+  .half-width {
+    width: 40%;
+    display: inline-block;
+  }
+</style>
+
+<div class="add_book_form">
+  <form method="POST" id="selected" action="{{ url_for('add_review', username=user.username) }}" class="hidden">
+    {{ review_form.hidden_tag() }}
+    <div id="info"></div>
+
+    {{ review_form.title(type="hidden", id="title") }}
+    {{ review_form.author(type="hidden", id="author") }}
+    {{ review_form.image_url(type="hidden", id="image_url") }}
+    {{ review_form.source_id(type="hidden", id="source_id") }}
+    {{ review_form.year(type="hidden", id="year") }}
+    {{ review_form.identifiers(type="hidden", id="identifiers") }}
+
+    <p>
+      {{ review_form.review_text.label }}<br/>
+      {{ review_form.review_text(rows=3) }}
+    </p>
+
+    <div class="half-width">
+      {{ review_form.is_favourite() }}
+      {{ review_form.is_favourite.label }}
+    </div>
+    <div class="half-width">
+      {{ review_form.did_not_finish() }}
+      {{ review_form.did_not_finish.label }}
+    </div>
+
+    <p>
+      {{ review_form.date_read.label }}<br/>
+      {{ review_form.date_read() }}
+    </p>
+    <button type="submit">add</button>
+  </form>
+</div>
 {% endblock %}
 
 {% block booklist_content %}
-  <h1>
-    {% if user == current_user %}
-      my
-    {% else %}
-      {{ user.username }}&rsquo;s
-    {% endif %}
-    reviews
-  </h1>
-
-  <style>
-    .hidden {
-      display: none;
-    }
-
-    .search-result {
-      background-color: yellow;
-      cursor: pointer;
-    }
-
-    .search-result:hover {
-      background-color: red;
-    }
-
-    .search-result img {
-      height: 50px;
-    }
-  </style>
-
-  {% if user == current_user %}
-    <!-- <form id="search">
-      <input id="query" name="query" type="text" placeholder="search to add..." />
-      <button type="submit">
-        search
-      </button>
-    </form>
-
-    <div id="results"></div>
-
-    <div id="loading" class="hidden">
-      searching...
-    </div> -->
-
-  <div>
-    <form method="POST" id="selected" action="{{ url_for('add_review', username=user.username) }}" class="hidden">
-      {{ review_form.hidden_tag() }}
-      <div id="info">
-
-      </div>
-      {{ review_form.title(type="hidden", id="title") }}
-      {{ review_form.author(type="hidden", id="author") }}
-      {{ review_form.image_url(type="hidden", id="image_url") }}
-      {{ review_form.source_id(type="hidden", id="source_id") }}
-      {{ review_form.year(type="hidden", id="year") }}
-      {{ review_form.identifiers(type="hidden", id="identifiers") }}
-
-      <p>
-        {{ review_form.review_text.label }}
-        {{ review_form.review_text() }}
-      </p>
-
-      <p>
-        {{ review_form.did_not_finish.label }}
-        {{ review_form.did_not_finish() }}
-      </p>
-
-      <p>
-        {{ review_form.is_favourite.label }}
-        {{ review_form.is_favourite() }}
-      </p>
-
-      <p>
-        {{ review_form.date_read.label }}
-        {{ review_form.date_read() }}
-      </p>
-      <button type="submit">
-        Add
-      </button>
-    </form>
-  </div>
-  {% endif %}
-
   {% if reviews %}
     <div class="books">
     {% for review in reviews %}
@@ -93,11 +101,13 @@
     {% endfor %}
     </div>
   {% else %}
-    {% if user == current_user %}
-      You haven't reviewed any books yet!
-    {% else %}
-      {{ user }} hasn't reviewed any books yet!
-    {% endif %}
+    <p>
+      {% if user == current_user %}
+        You haven't read any books yet!
+      {% else %}
+        {{ user }} hasn't read any books yet!
+      {% endif %}
+    </p>
   {% endif %}
 
   <script>

@@ -21,6 +21,30 @@ a {
   @include link_styles($accent-color, 0.3);
 }
 
+.hidden {
+  display: none;
+}
+
+.book-title {
+  font-style: italic;
+}
+
+input, textarea {
+  font-family: monospace;
+  border-radius: 4px;
+  padding: 4px;
+}
+
+button {
+  height: 100%;
+  font-family: monospace;
+  border: 1px solid #3586e3;
+  background: none;
+  color: #175cab;
+  background-color: #F2F7FD;
+  border-radius: 3px;
+}
+
 @import "_aside.scss";
 @import "_booklist.scss";
 @import "_booksearch.scss";

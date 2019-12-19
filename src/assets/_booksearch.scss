@@ -8,30 +8,14 @@
 
     input#query {
       font-size: 0.9em;
-      font-family: monospace;
-      border-radius: 4px;
       border: 1px solid #4c3dae;
       background-color: rgba(76, 61, 174, 0.05);
       padding: 4px;
     }
 
-  }
-
-  form#search button:active {
-  }
-}
-
-button {
-  height: 100%;
-  font-family: monospace;
-  border: 1px solid #3586e3;
-  background: none;
-  color: #175cab;
-  background-color: rgba(53, 134, 227, 0.07);
-  border-radius: 3px;
-
-  &:active {
-    margin-top: 2px;
-    color: #175cab;
+    button:active {
+      margin-top: 2px;
+      color: #175cab;
+    }
   }
 }

@@ -28,7 +28,8 @@ class Booksearch {
       this.searchBooks(this.input.value);
     });
     this.results.addEventListener("click", evt => {
-      if (evt.target && evt.target.nodeName == "LI") {
+      console.log(evt);
+      if (evt.target) {
         const book = this.books.find(book => book.id === evt.target.id);
         this.selected = book;
         this.books = [];
@@ -44,7 +45,29 @@ class Booksearch {
       const li = document.createElement("li");
       li.setAttribute("id", result.id);
       li.classList.add("search-result");
-      li.textContent = result.title + " — " + result.author;
+
+      const thumbnail = document.createElement("div");
+      thumbnail.setAttribute("id", result.id);
+      thumbnail.classList.add("search-result-thumbnail");
+
+      const img = document.createElement("img");
+      img.setAttribute("id", result.id);
+      img.setAttribute("src", result.image_url);
+      thumbnail.appendChild(img);
+      li.appendChild(thumbnail);
+
+      const text = document.createElement("div");
+      text.setAttribute("id", result.id);
+      text.classList.add("search-result-text");
+
+      const titleHtml = "<span class=\"book-title\" id=\"" + result.id + "\">" + result.title + "</span>";
+      if (result.author !== "") {
+        text.innerHTML += titleHtml + "<span>&nbsp;&ndash; " + result.author + "</span>";
+      } else {
+        text.innerHTML += titleHtml;
+      }
+
+      li.appendChild(text);
       this.results.appendChild(li);
     });
   }
@@ -53,7 +76,39 @@ class Booksearch {
     if (this.selected) {
       this.input.value = "";
       this.div.classList.remove("hidden");
-      this.div.querySelector("#info").innerHTML = "<img src=" + this.selected.image_url + "/>" + "<strong>" + this.selected.title + "</strong><br />" + this.selected.author + ", " + this.selected.year;
+
+      const bookDisplay = document.createElement("div");
+      bookDisplay.classList.add("book-preview")
+
+      const thumbnail = document.createElement("div");
+      thumbnail.classList.add("book-thumbnail");
+      const img = document.createElement("img");
+      img.setAttribute("src", this.selected.image_url);
+      thumbnail.appendChild(img);
+      bookDisplay.appendChild(thumbnail);
+
+      const metadata = document.createElement("div");
+      metadata.classList.add("book-metadata")
+      metadata.innerHTML = "<span class=\"book-title\">" + this.selected.title + "</span>";
+
+      if (this.selected.year !== "" || this.selected.year != "") {
+        metadata.innerHTML += "<br />";
+
+        if (this.selected.author !== "") {
+          metadata.innerHTML += this.selected.author;
+        }
+
+        if (this.selected.year !== "" && this.selected.year != "") {
+          metadata.innerHTML += ", "
+        }
+
+        if (this.selected.year !== "") {
+          metadata.innerHTML += this.selected.year;
+        }
+      }
+      bookDisplay.appendChild(metadata);
+
+      this.div.querySelector("#info").appendChild(bookDisplay);
       this.div.querySelector("#title").value = this.selected.title;
       this.div.querySelector("#year").value = this.selected.year;
       this.div.querySelector("#author").value = this.selected.author;

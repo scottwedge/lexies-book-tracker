@@ -4,7 +4,7 @@
 
 <div id="booklist_nav">
   <div id="booklist_title">
-    <h2>{% block title %}{% endblock %}</h2>
+    <h2>{{ title }}</h2>
   </div>
 
   <div id="booklist_links">
@@ -34,12 +34,14 @@
     </button>
   </form>
 
-  <div id="results"></div>
+  <ul id="results"></ul>
 
   <div id="loading" class="hidden">
     searching...
   </div>
 </div>
+
+{% block add_book_form %}{% endblock %}
 {% endif %}
 
 {% block booklist_content %}{% endblock %}
