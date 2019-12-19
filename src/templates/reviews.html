@@ -35,6 +35,71 @@
 {% endblock %}
 
 {% block booklist_content %}
+<style>
+  .book {
+    border: 1px solid #00a892;
+/*    display: inline-block;*/
+    margin-bottom: 1em;
+    border-radius: 5px;
+    background: rgba(0, 255, 221, 0.2);
+  }
+
+  .book-description, .actions {
+    padding: 15px;
+  }
+
+  .book-description {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .actions button, .actions form {
+    display: inline-block;
+  }
+
+  .actions {
+    text-align: right;
+  }
+
+  div.book--is_favourite {
+    border-width: 5px;
+    margin-top: -4px;
+    margin-right: -4px;
+    margin-left: -4px;
+    margin-bottom: calc(1em - 4px);
+  }
+
+  div.book--did_not_finish {
+    opacity: 0.5;
+  }
+
+  div.book h3 {
+    margin-top: 0;
+    font-weight: normal;
+    line-height: 1.25em;
+  }
+
+  .book .image {
+    text-align: center;
+  }
+
+  .book a, .book a:visited {
+    color: black;
+  }
+
+  .book-metadata a:hover {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  div.actions {
+    padding-top: 0;
+  }
+
+  .actions button {
+    cursor: pointer;
+  }
+</style>
+
   {% if reviews %}
     <div class="books">
     {% for review in reviews %}
@@ -61,7 +126,11 @@
       addEventListeners() {
         [...document.querySelectorAll(".edit-book")].forEach(item => {
           item.addEventListener("click", evt => {
-            this.editing = parseInt(evt.target.dataset["bookid"]);
+            if (this.editing === null) {
+              this.editing = parseInt(evt.target.dataset["bookid"]);
+            } else {
+              this.editing = null;
+            }
             this.renderEditing();
           });
         });

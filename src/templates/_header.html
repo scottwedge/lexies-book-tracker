@@ -11,7 +11,7 @@
       {% else %}
 
         <li>
-          logged in as <a href="{{ url_for('get_reviews', username=current_user.username) }}">{{ current_user.username }}</a>
+          logged in as <a href="{{ url_for('list_reviews', username=current_user.username) }}">{{ current_user.username }}</a>
           (<a href="{{ url_for('logout') }}">log out</a>)
         </li>
         <li><a href="{{ url_for('settings') }}">settings</a></li>

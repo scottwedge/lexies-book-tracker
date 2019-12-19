@@ -1,83 +1,89 @@
-<style>
-  body {
-    font-family: monospace;
-  }
-
-  div.book {
-    border: 1px solid red;
-    display: inline-block;
-    margin: 1em;
-    border-radius: 5px;
-    padding: 10px;
-    background: rgba(255, 0, 0, 0.2);
-    width: 300px;
-  }
-
-  div.book--is_favourite {
-    border: 2.5px solid red;
-  }
-
-  div.book--did_not_finish {
-    opacity: 0.5;
-  }
-</style>
-
 <div class="book {% if review.did_not_finish %}book--did_not_finish{% endif %} {% if review.is_favourite %}book--is_favourite{% endif %}" id="book-{{ review.id }}">
-  <h2>
-    <a href="{{ url_for('get_review', username=user.username, review_id=review.id) }}">{{ review.book.title }}</a>
-  </h2>
-  <p>
-    {{ review.book.year }}
-  </p>
 
-  <p>{{ review.book.authors }}</p>
+  <style>
+    .book .info img {
+      max-height: 120px;
+      max-width: 80px;
+    }
 
-  <p>
-    Read: {{ review.date_read }}
-  </p>
+    .book {
+      width: 100%;
+    }
 
-  <div class="image">
-    <img src="{{ review.book.image_url }}" alt="Cover of {{ review.book.title }}"/>
-    <div class="review-container">
-      {% for line in review.review_text.split(".") %}
-      <p class="review">
-        {{ line }}
-      </p>
-      {% endfor %}
+    .book .info {
+      padding: 15px;
+    }
+
+    .book .info:not(:last-child) {
+      padding-bottom: 0;
+    }
+
+    .book .info .book-thumbnail {
+      width: 90px;
+      text-align: center;
+      line-height: 0;
+    }
+  </style>
+
+  <div class="info">
+    <div class="book-preview">
+      <div class="book-thumbnail"><img src="{{ review.book.image_url}}"></div>
+      <div class="book-metadata">
+        <h3 class="book-title">
+          <a
+            href="{{ url_for('get_review', username=user.username, review_id=review.id) }}">
+            {{ review.book.title }}
+          </a>
+        </h3>
+        {% if review.book.author or review.book.year %}
+          {{ review.book.author }}
+          {%- if review.book.author and review.book.year %},{% endif %}
+          {{ review.book.year }}
+          <br/>
+        {% endif %}
+        Read: {{ review.date_read }}
+      </div>
     </div>
   </div>
 
-  {% if user == current_user %}
-    <button class="edit-book" data-bookid="{{ review.id }}">
-      edit
-    </button>
+  {% if show_reviews %}
+    <div class="book-description">
+      {% for line in review.review_text.split(".") %}
+        {% if line %}
+          <p class="review">{{ line }}</p>
+        {% endif %}
+      {% endfor %}
+    </div>
 
+    {% if user == current_user %}
     <script>
       function confirmDeletion{{ review.id }}() {
         return confirm('Are you sure you want to delete your review for ' + {{ review.book.title|to_json|safe }} + '?');
       }
     </script>
 
-    <form
-      action="{{ url_for('delete_review', username=user.username, review_id=review.id) }}"
-      method="POST"
-      class="delete-button"
-      onsubmit="return confirmDeletion{{ review.id }}();"
-    >
-      <button type="submit" class="delete-book">
-        delete
+    <div class="actions">
+      <button class="edit-book" data-bookid="{{ review.id }}">
+        edit
       </button>
-    </form>
+
+      <form
+        action="{{ url_for('delete_review', username=user.username, review_id=review.id) }}"
+        method="POST"
+        class="delete-button"
+        onsubmit="return confirmDeletion{{ review.id }}();"
+      >
+        <button type="submit" class="delete-book">
+          delete
+        </button>
+      </form>
+    </div>
 
     <form
       action="{{ url_for('edit_review', username=user.username) }}"
       method="POST"
       class="hidden book-edit-form"
     >
-      <button type="button" class="cancel-edit">
-        Cancel
-      </button>
-
       {{ edit_form.hidden_tag() }}
 
       {{ edit_form.review_id(value=review.id, type="hidden") }}
@@ -93,27 +99,30 @@
           The value is set as an attribute on the HTML tag, but not rendered into
           the text area where the user can see it.
         #}
-        <textarea id="review_text" name="review_text">{{ review.review_text }}</textarea>
+        <textarea id="review_text" name="review_text" rows="4">{{ review.review_text }}</textarea>
       </p>
 
       <p>
-        {{ edit_form.did_not_finish.label }}
         <input type="checkbox" id="did_not_finish" name="did_not_finish" {% if review.did_not_finish %}checked{% endif %}>
+        {{ edit_form.did_not_finish.label }}
       </p>
-
       <p>
-        {{ edit_form.is_favourite.label }}
         <input type="checkbox" id="is_favourite" name="is_favourite" {% if review.is_favourite %}checked{% endif %}>
+        {{ edit_form.is_favourite.label }}
       </p>
 
       <p>
-        {{ edit_form.date_read.label }}
+        {{ edit_form.date_read.label }}<br/>
         {{ edit_form.date_read(value=review.date_read) }}
       </p>
 
+      <button type="button" class="cancel-edit">
+        cancel
+      </button>
       <button type="submit">
-        Update
+        update
       </button>
     </form>
+    {% endif %}
   {% endif %}
 </div>

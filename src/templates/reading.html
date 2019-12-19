@@ -2,7 +2,7 @@
 
 {% block content %}
 <main>
-  <a href="{{ url_for('get_reviews', username=user.username) }}">reviews</a>
+  <a href="{{ url_for('list_reviews', username=user.username) }}">reviews</a>
   /
   <a href="{{ url_for('get_reading', username=user.username) }}">reading</a>
   /

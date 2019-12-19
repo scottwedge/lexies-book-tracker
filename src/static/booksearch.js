@@ -85,7 +85,10 @@ class Booksearch {
       const img = document.createElement("img");
       img.setAttribute("src", this.selected.image_url);
       thumbnail.appendChild(img);
-      bookDisplay.appendChild(thumbnail);
+
+      if (this.selected.image_url !== "") {
+        bookDisplay.appendChild(thumbnail);
+      }
 
       const metadata = document.createElement("div");
       metadata.classList.add("book-metadata")

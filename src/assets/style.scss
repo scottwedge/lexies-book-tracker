@@ -36,7 +36,6 @@ input, textarea {
 }
 
 button {
-  height: 100%;
   font-family: monospace;
   border: 1px solid #3586e3;
   background: none;
@@ -45,8 +44,14 @@ button {
   border-radius: 3px;
 }
 
-@import "_addbook.scss";
+button.delete-book {
+  border-color: #a80000;
+  background-color: #fff5f5;
+  color: #a80000;
+}
+
 @import "_aside.scss";
 @import "_booklist.scss";
 @import "_booksearch.scss";
 @import "_footer.scss";
+@import "_review_form.scss";

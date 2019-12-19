@@ -9,8 +9,8 @@
 
   <div id="booklist_links">
     <a
-      href="{{ url_for('get_reviews', username=user.username) }}"
-      {% if request.path == url_for('get_reviews', username=user.username) %}class="selected"{% endif %}
+      href="{{ url_for('list_reviews', username=user.username) }}"
+      {% if request.path == url_for('list_reviews', username=user.username) %}class="selected"{% endif %}
     >read</a>
       /
     <a
@@ -36,12 +36,12 @@
 
   <ul id="results"></ul>
 
-  <div id="loading" class="hidden">
+  <p id="loading" class="hidden">
     searching...
-  </div>
+  </p>
 </div>
 
-<div class="add_book_form">
+<div class="book-add-form">
 {% block add_book_form %}{% endblock %}
 </div>
 {% endif %}

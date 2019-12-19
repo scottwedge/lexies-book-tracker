@@ -49,7 +49,7 @@ def add_review(username):
                 user=user,
             )
 
-        return redirect(url_for("get_reviews", username=username))
+        return redirect(url_for("list_reviews", username=username))
     else:
         abort(401)
 
@@ -72,7 +72,7 @@ def edit_review(username):
             review.is_favourite = edit_form.is_favourite.data
             db.session.commit()
 
-        return redirect(url_for("get_reviews", username=username))
+        return redirect(url_for("get_review", username=username, review_id=review.id))
     else:
         abort(401)
 
@@ -89,11 +89,11 @@ def delete_review(username, review_id):
     db.session.delete(review)
     db.session.commit()
 
-    return redirect(url_for("get_reviews", username=username))
+    return redirect(url_for("list_reviews", username=username))
 
 
 @app.route("/user/<username>")
-def get_reviews(username):
+def list_reviews(username):
     user = User.query.filter_by(username=username).first_or_404()
 
     if current_user == user:
@@ -106,10 +106,43 @@ def get_reviews(username):
     return render_template(
         "reviews.html",
         user=user,
-        reviews=user.reviews.all(),
+        reviews=user.reviews.order_by(Review.date_read.desc()).all(),
         review_form=review_form,
         edit_form=edit_form,
         title=f"{user.username}’s books"
+    )
+
+
+@app.route("/user/<username>/reviews/<review_id>")
+def get_review(username, review_id):
+    review = Review.query.filter_by(id=int(review_id)).first_or_404()
+
+    if review.user.username != username:
+        return redirect(
+            url_for(
+                "get_review",
+                username=review.user.username,
+                review_id=review_id
+            )
+        )
+
+    user = User.query.filter_by(username=username).first_or_404()
+
+    if current_user == user:
+        review_form = ReviewForm()
+        edit_form = EditReviewForm()
+    else:
+        review_form = None
+        edit_form = None
+
+    return render_template(
+        "reviews.html",
+        user=user,
+        reviews=[review],
+        review_form=review_form,
+        edit_form=edit_form,
+        title=f"{user.username}’s books",
+        show_reviews=True
     )
 
 
@@ -299,7 +332,7 @@ def mark_as_read(username, reading_id):
             is_favourite=mark_as_read_form.is_favourite.data,
         )
 
-    return redirect(url_for("get_reviews", username=username))
+    return redirect(url_for("list_reviews", username=username))
 
 
 @app.route("/user/<username>/mark_plan_as_read/<plan_id>", methods=["POST"])
@@ -322,7 +355,7 @@ def mark_plan_as_read(username, plan_id):
             is_favourite=mark_as_read_form.is_favourite.data,
         )
 
-    return redirect(url_for("get_reviews", username=username))
+    return redirect(url_for("list_reviews", username=username))
 
 
 @app.route("/user/<username>/move_plan_to_reading/<plan_id>", methods=["POST"])
@@ -340,11 +373,6 @@ def move_plan_to_reading(username, plan_id):
     return redirect(url_for("get_reading", username=username))
 
 
-@app.route("/user/<username>/reviews/<review_id>")
-def get_review(username, review_id):
-    pass
-
-
 @app.route("/booksearch")
 def search_books():
     search_query = request.args["search"]
@@ -359,7 +387,7 @@ def search_books():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("get_reviews", username=current_user.username))
+        return redirect(url_for("list_reviews", username=current_user.username))
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -368,7 +396,7 @@ def login():
             flash("Unrecognised username or password")
             return redirect(url_for("login"))
         login_user(user, remember=form.remember_me.data)
-        return redirect(url_for("get_reviews", username=user.username))
+        return redirect(url_for("list_reviews", username=user.username))
     return render_template("login.html", title="Log In", form=form)
 
 
@@ -386,7 +414,7 @@ def settings():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for("get_reviews", username=current_user.username))
+        return redirect(url_for("list_reviews", username=current_user.username))
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(username=form.username.data, email_address=form.email_address.data)
