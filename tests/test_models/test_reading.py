@@ -77,3 +77,5 @@ def test_mark_as_reviewed(session, fake, book, user):
     assert review.date_read == date_read
     assert review.did_not_finish == did_not_finish
     assert review.is_favourite == is_favourite
+    assert review.book == book
+    assert review.user == user

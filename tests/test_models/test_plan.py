@@ -5,7 +5,7 @@ import datetime as dt
 import pytest
 from sqlalchemy.exc import IntegrityError
 
-from src.models import Plan, PlanAlreadyExistsException, Review
+from src.models import Plan, PlanAlreadyExistsException, Reading, Review
 
 
 def test_can_store_and_retrieve_plan(session, fake, book, user):
@@ -55,6 +55,28 @@ def test_does_not_create_duplicate_plan(session, fake, book, user):
         Plan.create(note=fake.text(), book=book, user=user)
 
 
+def test_mark_as_reading(session, fake, book, user):
+    plan = Plan(note=fake.text(), book=book, user=user)
+    session.add(plan)
+    session.commit()
+
+    assert Plan.query.count() == 1
+
+    new_note = fake.text()
+    date_started = fake.date_object()
+
+    reading = plan.mark_as_reading(note=new_note, date_started=date_started)
+
+    assert Plan.query.count() == 0
+    assert Reading.query.count() == 1
+
+    assert Reading.query.get(reading.id) == reading
+    assert reading.note == new_note
+    assert reading.date_started == date_started
+    assert reading.book == book
+    assert reading.user == user
+
+
 def test_mark_as_reviewed(session, fake, book, user):
     plan = Plan(note=fake.text(), book=book, user=user)
     session.add(plan)
@@ -82,3 +104,5 @@ def test_mark_as_reviewed(session, fake, book, user):
     assert review.date_read == date_read
     assert review.did_not_finish == did_not_finish
     assert review.is_favourite == is_favourite
+    assert review.book == book
+    assert review.user == user

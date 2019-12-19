@@ -2,6 +2,7 @@
 
 from src import db
 from .defaults import today
+from .reading import AlreadyReadingException, Reading
 from .review import Review
 
 
@@ -33,6 +34,15 @@ class Plan(db.Model):
             db.session.add(new_plan)
             db.session.commit()
             return new_plan
+
+    def mark_as_reading(self, *, note, date_started):
+        reading = Reading.create(
+            note=note, date_started=date_started, book=self.book, user=self.user
+        )
+
+        db.session.delete(self)
+        db.session.commit()
+        return reading
 
     def mark_as_reviewed(self, *, review_text, date_read, did_not_finish, is_favourite):
         review = Review.create(
