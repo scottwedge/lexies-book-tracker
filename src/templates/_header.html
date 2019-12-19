@@ -1,0 +1,67 @@
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font: 12pt monospace;
+  }
+
+  aside {
+    background: url('/static/specktre_tQt7j.png') #333366;
+    background-size: auto 100%;
+    color: white;
+    padding: 8px 10px;
+    font-size: 10.5pt;
+  }
+
+  aside h1 {
+    margin-top: 0;
+    margin-bottom: 0;
+    display: inline;
+    font-size: 1em;
+  }
+
+  aside h1::after {
+    content: " /";
+  }
+
+  aside ul.dot_list {
+    list-style-type: none;
+    padding-left: 0px;
+    display: inline;
+  }
+
+  aside ul.dot_list li {
+    display: inline;
+  }
+
+  aside ul.dot_list li a {
+    color: white;
+  }
+
+  aside ul.dot_list li a:hover {
+    background: rgba(255, 255, 255, 0.5);
+  }
+
+  aside ul.dot_list li:not(:first-child)::before {
+    content: " · ";
+  }
+</style>
+
+<aside>
+  <div id="aside_inner">
+    <h1 id="brand">lexie&rsquo;s book tracker</h1>
+
+    <ul class="dot_list">
+      <li><a href="{{ url_for('index') }}">home</a></li>
+
+      {% if current_user.is_anonymous %}
+        <li><a href="{{ url_for('login') }}">log in</a></li>
+        <li><a href="{{ url_for('register') }}">register</a></li>
+      {% else %}
+
+        <li>logged in as {{ current_user.username }} (<a href="{{ url_for('logout') }}">log out</a>)</li>
+        <li><a href="{{ url_for('export') }}">export my data</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</aside>

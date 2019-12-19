@@ -20,10 +20,8 @@ from .models import Book, Reading, Plan, Review, User
 
 
 @app.route("/")
-@app.route("/index")
-@login_required
 def index():
-    return "Welcome to Lexie's library log!"
+    return render_template("index.html")
 
 
 @app.route("/user/<username>/add-review", methods=["POST"])
@@ -377,6 +375,11 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for("index"))
+
+
+@app.route("/export")
+def export():
+    pass
 
 
 @app.route("/register", methods=["GET", "POST"])

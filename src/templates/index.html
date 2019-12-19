@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <main>
+    <h1>Welcome to my book tracker!</h1>
+
+    <p>
+      This is a small app I created to track the books I&rsquo;m reading.
+      In this app, I can:
+    </p>
+
+    <ul>
+      <li>Write down what books I want to reading, and why I want to read them</li>
+      <li>Keep track of what I&rsquo;m currently reading</li>
+      <li>Write mini-reviews of the books I've read</li>
+    </ul>
+
+    <p>
+      You can see <a href="{{ url_for('get_reviews', username='lexie') }}">what I&rsquo;m reading</a>, or <a href="{{ url_for('register') }}">create an account</a> to track your own books.
+    </p>
+
+    <p>
+      Reader beware: this site is quite idiosyncratic, and built to my tastes: for example, rather than five-star ratings, I just give a book a 👎 (did not finish) or a 👍 (really good).
+      If you&rsquo;re looking for a way to track your own books, you may prefer something more like Goodreads, LibraryThing, or a spreadsheet you designed yourself.
+    </p>
+
+    <p>
+      If you&rsquo;re confident with code, you can see it all my code <a href="https://github.com/alexwlchan/lexies-library-log">on GitHub</a>.
+      It's written in Python, using Flask as the web server.
+    </p>
+
+    <p>
+      This was inspired by a <a href="http://tessa-books.glitch.me">similar book tracker</a> created by <a href="https://twitter.com/tessthornton">Tessa Thornton</a>.
+    </p>
+  </main>
+{% endblock %}
