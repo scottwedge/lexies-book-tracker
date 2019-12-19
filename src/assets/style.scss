@@ -42,12 +42,18 @@ button {
   color: #175cab;
   background-color: #F2F7FD;
   border-radius: 3px;
+  cursor: pointer;
 }
 
 button.delete-book {
   border-color: #a80000;
   background-color: #fff5f5;
   color: #a80000;
+}
+
+.half-width {
+  width: 40%;
+  display: inline-block;
 }
 
 @import "_aside.scss";

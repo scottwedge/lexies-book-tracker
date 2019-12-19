@@ -22,7 +22,7 @@
 
   {% if show_reviews %}
     <div class="book-description">
-      {% for line in review.review_text.split(".") %}
+      {% for line in review.review_text.splitlines() %}
         {% if line %}
           <p class="review">{{ line }}</p>
         {% endif %}
@@ -76,14 +76,14 @@
         <textarea id="review_text" name="review_text" rows="4">{{ review.review_text }}</textarea>
       </p>
 
-      <p>
-        <input type="checkbox" id="did_not_finish" name="did_not_finish" {% if review.did_not_finish %}checked{% endif %}>
-        {{ edit_form.did_not_finish.label }}
-      </p>
-      <p>
+      <div class="half-width">
         <input type="checkbox" id="is_favourite" name="is_favourite" {% if review.is_favourite %}checked{% endif %}>
         {{ edit_form.is_favourite.label }}
-      </p>
+      </div>
+      <div class="half-width">
+        <input type="checkbox" id="did_not_finish" name="did_not_finish" {% if review.did_not_finish %}checked{% endif %}>
+        {{ edit_form.did_not_finish.label }}
+      </div>
 
       <p>
         {{ edit_form.date_read.label }}<br/>
