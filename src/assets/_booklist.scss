@@ -1,0 +1,25 @@
+#booklist_nav {
+  margin-top: 0.25em;
+
+  // Vertically align the two divs.
+  // See https://stackoverflow.com/q/2743989/1558022
+  display: flex;
+  align-items: center;
+
+  #booklist_title, #booklist_links {
+    display: inline-block;
+  }
+
+  #booklist_title h2 {
+    margin: 0;
+  }
+
+  #booklist_links {
+    margin-left: 2em;
+    margin-bottom: 0.2em;
+
+    a.selected {
+      font-weight: bold;
+    }
+  }
+}
