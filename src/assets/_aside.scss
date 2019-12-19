@@ -2,8 +2,9 @@ aside {
   background: url('/static/specktre_tQt7j.png') #333366;
   background-size: auto 100%;
   color: white;
-  padding: 5px 1em;
+  padding: 8px 1em;
   font-size: 10.5pt;
+  line-height: 1.3em;
 
   #aside_inner {
     @include centred($max-width);
@@ -16,7 +17,7 @@ aside {
     font-size: 1em;
 
     &::after {
-      content: " /";
+      content: " 📚";
     }
   }
 

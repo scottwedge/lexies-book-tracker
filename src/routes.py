@@ -377,8 +377,8 @@ def logout():
     return redirect(url_for("index"))
 
 
-@app.route("/export")
-def export():
+@app.route("/settings")
+def settings():
     pass
 
 

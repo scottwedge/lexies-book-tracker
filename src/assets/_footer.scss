@@ -1,0 +1,16 @@
+footer {
+  border-top: 1px solid $accent-grey;
+  color: $accent-grey;
+  font-size: 0.75em;
+  margin-top: 2em;
+  padding: 1em;
+  padding-bottom: 2em;
+
+  a {
+    @include link_styles(darken($accent-grey, 10%), 0.3);
+  }
+
+  #footer_inner {
+    @include centred($max-width);
+  }
+}
