@@ -4,6 +4,7 @@ betamax
 betamax_serializers
 coverage
 faker
+flask-testing
 pytest
 pytest-cov
 selenium
