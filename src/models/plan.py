@@ -1,13 +1,8 @@
 # -*- encoding: utf-8
 
-import datetime
-
 from src import db
+from .defaults import today
 from .review import Review
-
-
-def today():
-    return datetime.datetime.now().date()
 
 
 class PlanAlreadyExistsException(Exception):

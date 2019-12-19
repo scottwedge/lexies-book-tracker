@@ -1,6 +1,7 @@
 # -*- encoding: utf-8
 
 from src import db
+from .defaults import today
 from .review import Review
 
 
@@ -13,6 +14,7 @@ class AlreadyReadingException(Exception):
 class Reading(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     note = db.Column(db.Text)
+    date_started = db.Column(db.Date, index=True, default=today)
 
     book_id = db.Column(db.Integer, db.ForeignKey("book.id"), index=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), index=True)
@@ -28,7 +30,9 @@ class Reading(db.Model):
         if reading is not None:
             raise AlreadyReadingException(book)
         else:
-            new_reading = Reading(note=note, date_started=date_started, book=book, user=user)
+            new_reading = Reading(
+                note=note, date_started=date_started, book=book, user=user
+            )
             db.session.add(new_reading)
             db.session.commit()
             return new_reading

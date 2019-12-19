@@ -1,12 +1,7 @@
 # -*- encoding: utf-8
 
-import datetime
-
 from src import db
-
-
-def today():
-    return datetime.datetime.now().date()
+from .defaults import today
 
 
 class Review(db.Model):

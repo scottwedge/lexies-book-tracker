@@ -29,7 +29,9 @@ def test_same_user_cannot_be_reading_book_twice(session, fake, book, user):
 
 
 def test_creates_new_reading(session, fake, book, user):
-    reading = Reading.create(note=fake.text(), book=book, user=user)
+    reading = Reading.create(
+        note=fake.text(), date_started=fake.date_object(), book=book, user=user
+    )
 
     assert Reading.query.count() == 1
     assert Reading.query.get(reading.id) == reading
@@ -43,7 +45,9 @@ def test_does_not_create_duplicate_reading(session, fake, book, user):
     with pytest.raises(
         AlreadyReadingException, match=f"You are already reading {book.title}"
     ):
-        Reading.create(note=fake.text(), book=book, user=user)
+        Reading.create(
+            note=fake.text(), date_started=fake.date_object(), book=book, user=user
+        )
 
 
 def test_mark_as_reviewed(session, fake, book, user):
@@ -62,7 +66,7 @@ def test_mark_as_reviewed(session, fake, book, user):
         review_text=review_text,
         date_read=date_read,
         did_not_finish=did_not_finish,
-        is_favourite=is_favourite
+        is_favourite=is_favourite,
     )
 
     assert Reading.query.count() == 0

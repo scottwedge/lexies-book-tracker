@@ -71,7 +71,7 @@ def test_mark_as_reviewed(session, fake, book, user):
         review_text=review_text,
         date_read=date_read,
         did_not_finish=did_not_finish,
-        is_favourite=is_favourite
+        is_favourite=is_favourite,
     )
 
     assert Plan.query.count() == 0

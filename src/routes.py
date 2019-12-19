@@ -297,7 +297,7 @@ def mark_as_read(username, reading_id):
             review_text=mark_as_read_form.review_text.data,
             date_read=mark_as_read_form.date_read.data,
             did_not_finish=mark_as_read_form.did_not_finish.data,
-            is_favourite=mark_as_read_form.is_favourite.data
+            is_favourite=mark_as_read_form.is_favourite.data,
         )
 
     return redirect(url_for("get_reviews", username=username))
