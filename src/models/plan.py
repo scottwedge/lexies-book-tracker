@@ -44,7 +44,7 @@ class Plan(db.Model):
         db.session.commit()
         return reading
 
-    def mark_as_reviewed(self, *, review_text, date_read, did_not_finish, is_favourite):
+    def mark_as_read(self, *, review_text, date_read, did_not_finish, is_favourite):
         review = Review.create(
             review_text=review_text,
             date_read=date_read,

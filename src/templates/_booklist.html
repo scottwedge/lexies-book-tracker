@@ -10,7 +10,10 @@
   <div id="booklist_links">
     <a
       href="{{ url_for('list_reviews', username=user.username) }}"
-      {% if request.path == url_for('list_reviews', username=user.username) %}class="selected"{% endif %}
+      {% if (request.path == url_for('list_reviews', username=user.username)) or (
+        request.path != url_for('list_reading', username=user.username) and
+        request.path != url_for('list_plans', username=user.username)
+      ) %}class="selected"{% endif %}
     >read</a>
       /
     <a
@@ -19,8 +22,8 @@
     >reading</a>
       /
     <a
-      href="{{ url_for('get_plans', username=user.username) }}"
-      {% if request.path == url_for('get_plans', username=user.username) %}class="selected"{% endif %}
+      href="{{ url_for('list_plans', username=user.username) }}"
+      {% if request.path == url_for('list_plans', username=user.username) %}class="selected"{% endif %}
     >to read</a>
   </div>
 </div>

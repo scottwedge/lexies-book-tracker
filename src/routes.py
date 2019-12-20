@@ -171,7 +171,7 @@ def list_reading(username):
 
 
 @app.route("/user/<username>/to-read")
-def get_plans(username):
+def list_plans(username):
     user = User.query.filter_by(username=username).first_or_404()
 
     if current_user == user:
@@ -190,6 +190,7 @@ def get_plans(username):
         plan_form=plan_form,
         review_form=review_form,
         edit_form=edit_form,
+        title=f"what {user.username} wants to read"
     )
 
 
@@ -213,12 +214,11 @@ def add_plan(username):
         )
         Plan.create(
             note=plan_form.note.data,
-            date_added=plan_form.date_added.data,
             book=book,
             user=user,
         )
 
-    return redirect(url_for("get_plans", username=username))
+    return redirect(url_for("list_plans", username=username))
 
 
 @app.route("/user/<username>/edit-reading/<reading_id>", methods=["POST"])
@@ -255,7 +255,7 @@ def edit_plan(username, plan_id):
             plan.date_added = edit_form.date_added.data
             db.session.commit()
 
-        return redirect(url_for("get_plans", username=username))
+        return redirect(url_for("list_plans", username=username))
     else:
         abort(401)
 
@@ -310,7 +310,7 @@ def delete_plan(username, plan_id):
     db.session.delete(plan)
     db.session.commit()
 
-    return redirect(url_for("get_plans", username=username))
+    return redirect(url_for("list_plans", username=username))
 
 
 @app.route("/user/<username>/mark_as_read/<reading_id>", methods=["POST"])

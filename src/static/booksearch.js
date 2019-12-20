@@ -173,8 +173,6 @@ class Reading {
   addEventListeners() {
     [...document.querySelectorAll(".edit-reading")].forEach(item => {
       item.addEventListener("click", evt => {
-        console.log(evt);
-        console.log(evt.target.dataset);
         if (this.editing === null) {
           this.editing = parseInt(evt.target.dataset["readingid"]);
         } else {
@@ -203,6 +201,48 @@ class Reading {
       form.classList.remove("hidden");
     } else {
       [...document.querySelectorAll(".reading-edit-form")].forEach(item => {
+        item.classList.add("hidden");
+      });
+    }
+  }
+}
+
+class Plans {
+  constructor(container) {
+    this.container = container;
+    this.editing = null;
+  }
+
+  addEventListeners() {
+    [...document.querySelectorAll(".edit-plan")].forEach(item => {
+      item.addEventListener("click", evt => {
+        console.log(evt);
+        if (this.editing === null) {
+          this.editing = parseInt(evt.target.dataset["planid"]);
+          console.log(this.editing);
+        } else {
+          this.editing = null;
+        }
+        this.renderEditing();
+      });
+    });
+    [...document.querySelectorAll(".cancel-edit")].forEach(item => {
+      item.addEventListener("click", evt => {
+        this.editing = null;
+        this.renderEditing();
+      });
+    });
+  }
+
+  renderEditing() {
+    const div = document.getElementById("plan-" + this.editing);
+
+    if (this.editing) {
+      const form = div.querySelector(".plan-edit-form");
+
+      form.classList.remove("hidden");
+    } else {
+      [...document.querySelectorAll(".plan-edit-form")].forEach(item => {
         item.classList.add("hidden");
       });
     }

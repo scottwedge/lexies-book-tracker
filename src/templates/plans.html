@@ -1,156 +1,29 @@
-{% extends "base.html" %}
+{% extends "_booklist.html" %}
 
-{% block content %}
-<main>
-  <a href="{{ url_for('list_reviews', username=user.username) }}">reviews</a>
-  /
-  <a href="{{ url_for('list_reading', username=user.username) }}">reading</a>
+{% block add_book_form %}
+<form method="POST" id="selected" action="{{ url_for('add_plan', username=user.username) }}" class="hidden">
+  {{ plan_form.hidden_tag() }}
+  <div id="info">
 
-  <h1>
-    what
-    {% if user == current_user %}
-      i want
-    {% else %}
-      {{ user.username }} wants
-    {% endif %}
-    to read
-  </h1>
-
-  <style>
-    .hidden {
-      display: none;
-    }
-
-    .search-result {
-      background-color: yellow;
-      cursor: pointer;
-    }
-
-    .search-result:hover {
-      background-color: red;
-    }
-
-    .search-result img {
-      height: 50px;
-    }
-  </style>
-
-  {% if user == current_user %}
-  <form id="search">
-    <input id="query" name="query" type="text" placeholder="search to add..." />
-    <button type="submit">
-      search
-    </button>
-  </form>
-
-  <div id="results"></div>
-
-  <div id="loading" class="hidden">
-    searching...
   </div>
+  {{ plan_form.title(type="hidden", id="title") }}
+  {{ plan_form.author(type="hidden", id="author") }}
+  {{ plan_form.image_url(type="hidden", id="image_url") }}
+  {{ plan_form.source_id(type="hidden", id="source_id") }}
+  {{ plan_form.year(type="hidden", id="year") }}
+  {{ plan_form.identifiers(type="hidden", id="identifiers") }}
 
-  <div>
-    <form method="POST" id="selected" action="{{ url_for('add_plan', username=user.username) }}" class="hidden">
-      {{ plan_form.hidden_tag() }}
-      <div id="info">
+  <p>
+    {{ plan_form.note.label }}
+    {{ plan_form.note() }}
+  </p>
+  <button type="submit">
+    add
+  </button>
+</form>
+{% endblock %}
 
-      </div>
-      {{ plan_form.title(type="hidden", id="title") }}
-      {{ plan_form.author(type="hidden", id="author") }}
-      {{ plan_form.image_url(type="hidden", id="image_url") }}
-      {{ plan_form.source_id(type="hidden", id="source_id") }}
-      {{ plan_form.year(type="hidden", id="year") }}
-      {{ plan_form.identifiers(type="hidden", id="identifiers") }}
-
-      <p>
-        {{ plan_form.note.label }}
-        {{ plan_form.note() }}
-      </p>
-      <button type="submit">
-        Add
-      </button>
-    </form>
-  </div>
-  {% endif %}
-
-  <script>
-    class Booksearch {
-      constructor(form, input, results, selected, loader) {
-        this.books = [];
-        this.selected = null;
-        this.form = form;
-        this.input = input;
-        this.loader = loader;
-        this.results = results;
-        this.div = selected;
-        this.editing = null;
-      }
-
-      searchBooks(query) {
-        this.loader.classList.remove("hidden");
-        fetch("/booksearch?search=" + query).then(data => {
-          this.loader.classList.add("hidden");
-          data.json().then(results => {
-            this.books = results.books;
-            this.renderResults();
-          });
-        });
-      }
-
-      bindEventListeners() {
-        this.form.addEventListener("submit", evt => {
-          evt.preventDefault();
-          this.searchBooks(this.input.value);
-        });
-        this.results.addEventListener("click", evt => {
-          if (evt.target && evt.target.nodeName == "LI") {
-            const book = this.books.find(book => book.id === evt.target.id);
-            this.selected = book;
-            this.books = [];
-            this.renderResults();
-            this.renderSelected();
-          }
-        });
-      }
-
-      renderResults() {
-        this.results.innerHTML = "";
-        this.books.forEach(result => {
-          const li = document.createElement("li");
-          li.setAttribute("id", result.id);
-          li.classList.add("search-result");
-          li.textContent = result.title + " — " + result.author;
-          this.results.appendChild(li);
-        });
-      }
-
-      renderSelected() {
-        if (this.selected) {
-          this.input.value = "";
-          this.div.classList.remove("hidden");
-          this.div.querySelector("#info").innerHTML = "<img src=" + this.selected.image_url + "/>" + "<strong>" + this.selected.title + "</strong><br />" + this.selected.author + ", " + this.selected.year;
-          this.div.querySelector("#title").value = this.selected.title;
-          this.div.querySelector("#year").value = this.selected.year;
-          this.div.querySelector("#author").value = this.selected.author;
-          this.div.querySelector("#image_url").value = this.selected.image_url;
-          this.div.querySelector("#identifiers").value = this.selected.identifiers;
-          this.div.querySelector("#source_id").value = this.selected.id;
-        } else {
-          this.div.classList.add("hidden");
-        }
-      }
-    }
-
-    const search = document.getElementById("search");
-    const query = document.getElementById("query");
-    const resultsList = document.getElementById("results");
-    const selected = document.getElementById("selected");
-    const loader = document.getElementById("loading");
-
-    const books = new Booksearch(search, query, resultsList, selected, loader);
-    books.bindEventListeners();
-  </script>
-
+{% block booklist_content %}
   {% if plans %}
     <div class="books">
     {% for plan in plans %}
@@ -159,70 +32,33 @@
     </div>
   {% else %}
     {% if user == current_user %}
-      You haven't marked anything to read right now!
+      You don&rsquo;t have anything to read right now!
     {% else %}
-      {{ user }} hasn't marked anything to read right now!
+      {{ user }} doesn&rsquo;t have anything to read right now!
     {% endif %}
   {% endif %}
 
   <script>
-    class Books {
-      constructor(container) {
-        this.container = container;
-        this.editing = null;
-      }
-
-      addEventListeners() {
-        [...document.querySelectorAll(".edit-plan")].forEach(item => {
-          item.addEventListener("click", evt => {
-            this.editing = parseInt(evt.target.dataset["planid"]);
-            this.renderEditing();
-          });
-        });
-        [...document.querySelectorAll(".cancel-edit")].forEach(item => {
-          item.addEventListener("click", evt => {
-            this.editing = null;
-            this.renderEditing();
-          });
-        });
-      }
-
-      renderEditing() {
-        const div = document.getElementById("plan-" + this.editing);
-
-        if (this.editing) {
-          const form = div.querySelector(".book-edit-form");
-
-          form.classList.remove("hidden");
-        } else {
-          [...document.querySelectorAll(".book-edit-form")].forEach(item => {
-            item.classList.add("hidden");
-          });
-        }
-      }
-    }
-
     const container = document.querySelector(".books");
     if (container) {
-      const books = new Books(container);
-      books.addEventListeners();
+      const plans = new Plans(container);
+      plans.addEventListeners();
     }
   </script>
 
-    <script>
-      [...document.querySelectorAll(".mark-as-read")].forEach(item => {
-        item.addEventListener("click", evt => {
-          const div = document.getElementById("plan-" + evt.target.dataset.planid);
-          div.querySelector(".add-review-form").classList.remove("hidden");
-          [...div.querySelectorAll(".datepicker")].forEach((input) => input.value = new Date().toISOString().substr(0, 10))});
+  <script>
+    [...document.querySelectorAll(".mark-as-read")].forEach(item => {
+      item.addEventListener("click", evt => {
+        const div = document.getElementById("plan-" + evt.target.dataset.planid);
+        div.querySelector(".mark-as-read-form").classList.remove("hidden");
+        [...div.querySelectorAll(".datepicker")].forEach((input) => input.value = new Date().toISOString().substr(0, 10))});
+    });
+    [...document.querySelectorAll(".cancel-add-review")].forEach(item => {
+      item.addEventListener("click", evt => {
+        [...document.querySelectorAll(".mark-as-read-form")].forEach(form =>
+          form.classList.add("hidden")
+        );
       });
-      [...document.querySelectorAll(".cancel-add-review")].forEach(item => {
-        item.addEventListener("click", evt => {
-          [...document.querySelectorAll(".add-review-form")].forEach(form =>
-            form.classList.add("hidden")
-          );
-        });
-      });
-    </script>
-</main>
+    });
+  </script>
 {% endblock %}
