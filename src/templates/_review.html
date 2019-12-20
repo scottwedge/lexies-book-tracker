@@ -36,7 +36,7 @@
     <div class="book-description">
       {% for line in review.review_text.splitlines() %}
         {% if line %}
-          <p class="review">{{ line }}</p>
+          <p class="review">{{ line | smartypants | safe }}</p>
         {% endif %}
       {% endfor %}
     </div>

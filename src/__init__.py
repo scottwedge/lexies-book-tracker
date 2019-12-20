@@ -10,6 +10,7 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 import scss
 from scss.types import Color
+import smartypants
 
 from .config import Config
 
@@ -17,6 +18,7 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 app.jinja_env.filters["to_json"] = json.dumps
+app.jinja_env.filters["smartypants"] = smartypants.smartypants
 
 login = LoginManager(app)
 login.login_view = "login"

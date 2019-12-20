@@ -6,4 +6,5 @@ flask-wtf
 isbnlib
 pyscss
 requests
+smartypants
 werkzeug

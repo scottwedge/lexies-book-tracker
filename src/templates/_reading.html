@@ -16,7 +16,7 @@
           {% if reading.note %}
             {% for line in reading.note.splitlines() %}
               {% if line %}
-                <p>{{ line }}</p>
+                <p>{{ line | smartypants | safe }}</p>
               {% endif %}
             {% endfor %}
           {% endif %}
