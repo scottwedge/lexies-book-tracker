@@ -147,7 +147,7 @@ def get_review(username, review_id):
 
 
 @app.route("/user/<username>/reading")
-def get_reading(username):
+def list_reading(username):
     user = User.query.filter_by(username=username).first_or_404()
 
     if current_user == user:
@@ -166,6 +166,7 @@ def get_reading(username):
         reading_form=reading_form,
         review_form=review_form,
         edit_form=edit_form,
+        title=f"what {user.username} is reading"
     )
 
 
@@ -235,7 +236,7 @@ def edit_reading(username, reading_id):
             reading.note = edit_form.note.data
             db.session.commit()
 
-        return redirect(url_for("get_reading", username=username))
+        return redirect(url_for("list_reading", username=username))
     else:
         abort(401)
 
@@ -279,7 +280,7 @@ def add_reading(username):
 
     Reading.create(note=reading_form.note.data, book=book, user=user)
 
-    return redirect(url_for("get_reading", username=username))
+    return redirect(url_for("list_reading", username=username))
 
 
 @app.route("/user/<username>/delete-reading/<reading_id>", methods=["POST"])
@@ -294,7 +295,7 @@ def delete_reading(username, reading_id):
     db.session.delete(reading)
     db.session.commit()
 
-    return redirect(url_for("get_reading", username=username))
+    return redirect(url_for("list_reading", username=username))
 
 
 @app.route("/user/<username>/delete-plan/<plan_id>", methods=["POST"])
@@ -370,7 +371,7 @@ def move_plan_to_reading(username, plan_id):
     flash(f"You have started reading {plan.book.title}")
     plan.mark_as_reading()
 
-    return redirect(url_for("get_reading", username=username))
+    return redirect(url_for("list_reading", username=username))
 
 
 @app.route("/booksearch")

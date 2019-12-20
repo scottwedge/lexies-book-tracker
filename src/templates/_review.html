@@ -1,4 +1,10 @@
-<div class="book {% if review.did_not_finish %}book--did_not_finish{% endif %} {% if review.is_favourite %}book--is_favourite{% endif %}" id="book-{{ review.id }}">
+<div class="book
+  {% if request.path == url_for('list_reviews', username=user.username) %}
+    {% if review.did_not_finish %}book--did_not_finish{% endif %}
+    {% if review.is_favourite %}book--is_favourite{% endif %}"
+  {% endif %}
+  id="book-{{ review.id }}"
+>
   <div class="info">
     <div class="book-preview">
       <div class="book-thumbnail"><img src="{{ review.book.image_url}}"></div>
@@ -16,6 +22,12 @@
           <br/>
         {% endif %}
         Read: {{ review.date_read | render_date }}
+
+        {%- if review.did_not_finish or review.is_favourite -%}
+          ,
+          {% if review.did_not_finish %}did not finish 😔{% endif %}
+          {% if review.is_favourite %}loved it! 😍{% endif %}
+        {% endif %}
       </div>
     </div>
   </div>

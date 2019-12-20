@@ -163,3 +163,48 @@ class Books {
     }
   }
 }
+
+class Reading {
+  constructor(container) {
+    this.container = container;
+    this.editing = null;
+  }
+
+  addEventListeners() {
+    [...document.querySelectorAll(".edit-reading")].forEach(item => {
+      item.addEventListener("click", evt => {
+        console.log(evt);
+        console.log(evt.target.dataset);
+        if (this.editing === null) {
+          this.editing = parseInt(evt.target.dataset["readingid"]);
+        } else {
+          this.editing = null;
+        }
+        this.renderEditing();
+      });
+    });
+    [...document.querySelectorAll(".cancel-edit")].forEach(item => {
+      item.addEventListener("click", evt => {
+        this.editing = null;
+        this.renderEditing();
+      });
+    });
+  }
+
+  renderEditing() {
+    console.log(this.editing);
+    const div = document.getElementById("reading-" + this.editing);
+
+    console.log(div);
+
+    if (this.editing) {
+      const form = div.querySelector(".reading-edit-form");
+
+      form.classList.remove("hidden");
+    } else {
+      [...document.querySelectorAll(".reading-edit-form")].forEach(item => {
+        item.classList.add("hidden");
+      });
+    }
+  }
+}

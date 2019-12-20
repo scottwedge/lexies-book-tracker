@@ -14,8 +14,8 @@
     >read</a>
       /
     <a
-      href="{{ url_for('get_reading', username=user.username) }}"
-      {% if request.path == url_for('get_reading', username=user.username) %}class="selected"{% endif %}
+      href="{{ url_for('list_reading', username=user.username) }}"
+      {% if request.path == url_for('list_reading', username=user.username) %}class="selected"{% endif %}
     >reading</a>
       /
     <a

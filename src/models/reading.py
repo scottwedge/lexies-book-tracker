@@ -24,7 +24,7 @@ class Reading(db.Model):
     __table_args__ = (db.UniqueConstraint("book_id", "user_id"),)
 
     @classmethod
-    def create(cls, *, note, date_started, book, user):
+    def create(cls, *, note, date_started=today(), book, user):
         reading = Reading.query.filter_by(book=book, user=user).first()
 
         if reading is not None:
@@ -37,7 +37,7 @@ class Reading(db.Model):
             db.session.commit()
             return new_reading
 
-    def mark_as_reviewed(self, *, review_text, date_read, did_not_finish, is_favourite):
+    def mark_as_read(self, *, review_text, date_read, did_not_finish, is_favourite):
         review = Review.create(
             review_text=review_text,
             date_read=date_read,

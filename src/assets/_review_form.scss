@@ -7,7 +7,7 @@
   }
 }
 
-.book-add-form form, .book-edit-form {
+.book-add-form form, .book-edit-form, .reading-edit-form, .mark-as-read-form {
   button {
     font-size: 1em;
     padding: 3px 7px;
@@ -56,7 +56,7 @@
   }
 }
 
-.book-edit-form {
+.book-edit-form, .reading-edit-form, .mark-as-read-form {
   border-top: 1px solid #00a892;
   background: rgba(255, 255, 255, 0.7);
   padding: 15px;

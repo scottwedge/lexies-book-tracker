@@ -1,41 +1,55 @@
-<style>
-  body {
-    font-family: monospace;
-  }
+<div class="book" id="reading-{{ reading.id }}">
+  <div class="info">
+    <div class="book-preview">
+      <div class="book-thumbnail"><img src="{{ reading.book.image_url}}"></div>
+      <div class="book-metadata">
+        <h3 class="book-title">
+          {{ reading.book.title }}
+        </h3>
+        {% if reading.book.author or reading.book.year %}
+          {{ reading.book.author }}
+          {%- if reading.book.author and reading.book.year %},{% endif %}
+          {{ reading.book.year }}
+        {% endif %}
 
-  div.reading {
-    border: 1px solid green;
-    display: inline-block;
-    margin: 1em;
-    border-radius: 5px;
-    padding: 10px;
-    background: rgba(0, 255, 0, 0.2);
-    width: 300px;
-  }
-</style>
+        <div class="book-note">
+          {% if reading.note %}
+            {% for line in reading.note.splitlines() %}
+              {% if line %}
+                <p>{{ line }}</p>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
 
-<div class="reading" id="reading-{{ reading.id }}">
-  <h2>
-    {{ reading.book.title }}
-  </h2>
+    {% if user == current_user %}
+    <div class="actions">
+      <button class="edit-reading" data-readingid="{{ reading.id }}">
+        edit
+      </button>
 
-  <p>{{ reading.book.author }}</p>
+      <button class="mark-as-read" data-readingid="{{ reading.id }}">
+        mark as read
+      </button>
 
-  <div class="image">
-    <img src="{{ reading.book.image_url }}" alt="Cover of {{ reading.book.title }}"/>
+      <form
+        action="{{ url_for('delete_reading', username=user.username, reading_id=reading.id) }}"
+        method="POST"
+        class="delete-button"
+        onsubmit="return confirmDeletion{{ reading.id }}();"
+      >
+        <button type="submit" class="delete-book">
+          delete
+        </button>
+      </form>
+    </div>
+    {% endif %}
+
   </div>
 
-  <p>{{ reading.note }}</p>
-
   {% if user == current_user %}
-    <button class="edit-reading" data-readingid="{{ reading.id }}">
-      edit
-    </button>
-
-    <button class="mark-as-read" data-readingid="{{ reading.id }}">
-      mark as read
-    </button>
-
     <script>
       function confirmDeletion{{ reading.id }}() {
         return confirm('Are you sure you want to remove ' + {{ reading.book.title|to_json|safe }} + '?');
@@ -43,25 +57,10 @@
     </script>
 
     <form
-      action="{{ url_for('delete_reading', username=user.username, reading_id=reading.id) }}"
-      method="POST"
-      class="delete-button"
-      onsubmit="return confirmDeletion{{ reading.id }}();"
-    >
-      <button type="submit" class="delete-book">
-        delete
-      </button>
-    </form>
-
-    <form
       action="{{ url_for('edit_reading', username=user.username, reading_id=reading.id) }}"
       method="POST"
-      class="hidden book-edit-form"
+      class="hidden reading-edit-form"
     >
-      <button type="button" class="cancel-edit">
-        Cancel
-      </button>
-
       {{ edit_form.hidden_tag() }}
 
       <p>
@@ -69,19 +68,20 @@
         <textarea id="note" name="note">{{ reading.note }}</textarea>
       </p>
 
+      <button type="button" class="cancel-edit">
+        cancel
+      </button>
+
       <button type="submit">
-        Update
+        update
       </button>
     </form>
 
-    <form
-      action="{{ url_for('mark_as_read', username=user.username, reading_id=reading.id) }}"
-      method="POST"
-      class="hidden add-review-form"
-    >
-      <button type="button" class="cancel-add-review">
-        Cancel
-      </button>
+      <form
+        action="{{ url_for('mark_as_read', username=user.username, reading_id=reading.id) }}"
+        method="POST"
+        class="hidden mark-as-read-form"
+      >
 
       {{ review_form.hidden_tag() }}
 
@@ -90,23 +90,26 @@
         <textarea id="review_text" name="review_text">{{ reading.note }}</textarea>
       </p>
 
-      <p>
-        {{ review_form.did_not_finish.label }}
-        {{ review_form.did_not_finish() }}
-      </p>
-
-      <p>
-        {{ review_form.is_favourite.label }}
+      <div class="half-width">
         {{ review_form.is_favourite() }}
-      </p>
+        {{ review_form.is_favourite.label }}
+      </div>
+      <div class="half-width">
+        {{ review_form.did_not_finish() }}
+        {{ review_form.did_not_finish.label }}
+      </div>
 
       <p>
-        {{ review_form.date_read.label }}
+        {{ review_form.date_read.label }}<br/>
         {{ review_form.date_read() }}
       </p>
 
+      <button type="button" class="cancel-add-review">
+        cancel
+      </button>
+
       <button type="submit">
-        Mark read
+        mark as read
       </button>
     </form>
   {% endif %}
