@@ -67,25 +67,22 @@ class Booksearch {
         text.innerHTML += titleHtml;
       }
 
-      if (result.isbn13 || result.isbn10) {
-        text.innerHTML += "<br/><span class=\"isbn\">";
-      }
+      let isbnString = "";
 
       if (result.isbn13) {
-        text.innerHTML += result.isbn13;
+        isbnString += result.isbn13;
       }
 
       if (result.isbn10 && result.isbn13) {
-        text.innerHTML += " / "
+        isbnString += " / "
       }
 
       if (result.isbn10) {
-        text.innerHTML += result.isbn10;
+        isbnString += result.isbn10;
       }
 
-
-      if (result.isbn13 || result.isbn10) {
-        text.innerHTML += "</span>";
+      if (isbnString !== "") {
+        text.innerHTML += "<br/><div class=\"isbn\">" + isbnString + "</div>";
       }
 
       li.appendChild(text);
