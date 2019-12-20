@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2019-12-20T08:18:04",
+      "recorded_at": "2019-12-20T08:20:06",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -22,11 +22,11 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.googleapis.com/books/v1/volumes?q=sVbeAAAACAAJ&key=%3CAPI_KEY%3E"
+        "uri": "https://www.googleapis.com/books/v1/volumes?q=sVbeAAAACAAJ&key=<API_KEY>"
       },
       "response": {
         "body": {
-          "base64_string": "H4sIAAAAAAAAAKvmUlBKLSrKL1KyUqjmUoByioG8aCAPLAQUTMnPTczMAwoqlRYnpqf6ZOZmlhQr6UAki1ITi/PBktmplZ55ZYk5mSkwudzUYpAGkKRTYopCUGphaWpxiRJIshZIxIKUKSXnp4BUmBgYgLk49dRy1XIBAHbQcHGwAAAA",
+          "base64_string": "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",
           "encoding": "UTF-8"
         },
         "headers": {
@@ -34,7 +34,7 @@
             "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000"
           ],
           "Cache-Control": [
-            "private, max-age=0"
+            "private, max-age=0, must-revalidate, no-transform"
           ],
           "Content-Encoding": [
             "gzip"
@@ -43,10 +43,13 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Fri, 20 Dec 2019 08:18:06 GMT"
+            "Fri, 20 Dec 2019 08:20:07 GMT"
+          ],
+          "ETag": [
+            "\"RgdeZjgALPmY2bwPiCXV_pRYTP0/SPXWHKv1kpfiNgXtpI71HV0EOWA\""
           ],
           "Expires": [
-            "Fri, 20 Dec 2019 08:18:06 GMT"
+            "Fri, 20 Dec 2019 08:20:07 GMT"
           ],
           "Server": [
             "GSE"
@@ -69,10 +72,270 @@
           ]
         },
         "status": {
-          "code": 400,
-          "message": "Bad Request"
+          "code": 200,
+          "message": "OK"
         },
-        "url": "https://www.googleapis.com/books/v1/volumes?q=sVbeAAAACAAJ&key=%3CAPI_KEY%3E"
+        "url": "https://www.googleapis.com/books/v1/volumes?q=sVbeAAAACAAJ&key=<API_KEY>"
+      }
+    },
+    {
+      "recorded_at": "2019-12-20T08:20:07",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "python-requests/2.22.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://openlibrary.org/api/books?bibkeys=ISBN%3A2869671954&jscmd=data&format=json"
+      },
+      "response": {
+        "body": {
+          "encoding": null,
+          "string": "{}"
+        },
+        "headers": {
+          "Access-Control-Allow-Method": [
+            "GET, OPTIONS"
+          ],
+          "Access-Control-Allow-Origin": [
+            "*"
+          ],
+          "Access-Control-Max-Age": [
+            "86400"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Type": [
+            "application/json"
+          ],
+          "Date": [
+            "Fri, 20 Dec 2019 08:20:09 GMT"
+          ],
+          "Server": [
+            "nginx/1.4.6 (Ubuntu)"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "X-OL-Stats": [
+            "\"IB 1 0.021 TT 0 0.021\""
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://openlibrary.org/api/books?bibkeys=ISBN%3A2869671954&jscmd=data&format=json"
+      }
+    },
+    {
+      "recorded_at": "2019-12-20T08:20:07",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "python-requests/2.22.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://openlibrary.org/api/books?bibkeys=ISBN%3A0900948434&jscmd=data&format=json"
+      },
+      "response": {
+        "body": {
+          "encoding": null,
+          "string": "{\"ISBN:0900948434\": {\"publishers\": [{\"name\": \"Heron\"}], \"pagination\": \"iii-xxiii, 390 p., 5 plates.\", \"identifiers\": {\"lccn\": [\"74472959\"], \"openlibrary\": [\"OL5159493M\"], \"isbn_10\": [\"0900948434\"], \"oclc\": [\"85841\"], \"goodreads\": [\"3269814\"], \"librarything\": [\"66581\"]}, \"subtitle\": \"[and], Brave new world revisited\", \"title\": \"Brave new world: a novel\", \"url\": \"https://openlibrary.org/books/OL5159493M/Brave_new_world_a_novel\", \"classifications\": {\"dewey_decimal_class\": [\"823/.9/12\"], \"lc_classifications\": [\"PZ3.H981 Bp32\", \"PR6015.U9 Bp32\"]}, \"number_of_pages\": 390, \"subjects\": [{\"url\": \"https://openlibrary.org/subjects/collectivism\", \"name\": \"Collectivism\"}, {\"url\": \"https://openlibrary.org/subjects/genetic_engineering\", \"name\": \"Genetic engineering\"}, {\"url\": \"https://openlibrary.org/subjects/fiction\", \"name\": \"Fiction\"}, {\"url\": \"https://openlibrary.org/subjects/totalitarianism\", \"name\": \"Totalitarianism\"}, {\"url\": \"https://openlibrary.org/subjects/passivity_(psychology)\", \"name\": \"Passivity (Psychology)\"}, {\"url\": \"https://openlibrary.org/subjects/internet_archive_wishlist\", \"name\": \"Internet Archive Wishlist\"}], \"publish_date\": \"1968\", \"key\": \"/books/OL5159493M\", \"authors\": [{\"url\": \"https://openlibrary.org/authors/OL19767A/Aldous_Huxley\", \"name\": \"Aldous Huxley\"}], \"by_statement\": \"with a general introduction by Malcolm Elwin; original illustrations by Lisbeth Kneen.\", \"publish_places\": [{\"name\": \"London\"}]}}"
+        },
+        "headers": {
+          "Access-Control-Allow-Method": [
+            "GET, OPTIONS"
+          ],
+          "Access-Control-Allow-Origin": [
+            "*"
+          ],
+          "Access-Control-Max-Age": [
+            "86400"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Type": [
+            "application/json"
+          ],
+          "Date": [
+            "Fri, 20 Dec 2019 08:20:09 GMT"
+          ],
+          "Server": [
+            "nginx/1.4.6 (Ubuntu)"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "X-OL-Stats": [
+            "\"IB 1 0.020 MC 3 0.001 TT 0 0.023\""
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://openlibrary.org/api/books?bibkeys=ISBN%3A0900948434&jscmd=data&format=json"
+      }
+    },
+    {
+      "recorded_at": "2019-12-20T08:20:07",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "python-requests/2.22.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://openlibrary.org/api/books?bibkeys=ISBN%3A0195582632&jscmd=data&format=json"
+      },
+      "response": {
+        "body": {
+          "encoding": null,
+          "string": "{}"
+        },
+        "headers": {
+          "Access-Control-Allow-Method": [
+            "GET, OPTIONS"
+          ],
+          "Access-Control-Allow-Origin": [
+            "*"
+          ],
+          "Access-Control-Max-Age": [
+            "86400"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Type": [
+            "application/json"
+          ],
+          "Date": [
+            "Fri, 20 Dec 2019 08:20:09 GMT"
+          ],
+          "Server": [
+            "nginx/1.4.6 (Ubuntu)"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "X-OL-Stats": [
+            "\"IB 1 0.054 TT 0 0.055\""
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://openlibrary.org/api/books?bibkeys=ISBN%3A0195582632&jscmd=data&format=json"
+      }
+    },
+    {
+      "recorded_at": "2019-12-20T08:20:07",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "python-requests/2.22.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://openlibrary.org/api/books?bibkeys=ISBN%3A8502007696&jscmd=data&format=json"
+      },
+      "response": {
+        "body": {
+          "encoding": null,
+          "string": "{\"ISBN:8502007696\": {\"publishers\": [{\"name\": \"Editora Saraiva\"}], \"pagination\": \"x, 97 p. ;\", \"identifiers\": {\"lccn\": [\"90743632\"], \"openlibrary\": [\"OL1991855M\"], \"isbn_10\": [\"8502007696\"], \"oclc\": [\"31218788\"]}, \"classifications\": {\"lc_classifications\": [\"IN PROCESS (ONLINE)\"]}, \"title\": \"Presunc\\u0327a\\u0303o de inoce\\u0302ncia e prisa\\u0303o cautelar\", \"url\": \"https://openlibrary.org/books/OL1991855M/Presunc\\u0327a\\u0303o_de_inoce\\u0302ncia_e_prisa\\u0303o_cautelar\", \"notes\": \"Includes bibliographical references (p. 87-97)\\r\\nOriginally presented as th author's thesis (doutor em direito processual penal)--Universidade de Sa\\u0303o Paulo.\\r\\nPRIORITY 3.\", \"number_of_pages\": 97, \"publish_date\": \"1991\", \"key\": \"/books/OL1991855M\", \"authors\": [{\"url\": \"https://openlibrary.org/authors/OL932807A/Antonio_Magalha\\u0303es_Gomes_Filho\", \"name\": \"Antonio Magalha\\u0303es Gomes Filho\"}], \"by_statement\": \"Antonio Magalha\\u0303es Gomes Filho.\", \"publish_places\": [{\"name\": \"Sa\\u0303o Paulo, SP\"}]}}"
+        },
+        "headers": {
+          "Access-Control-Allow-Method": [
+            "GET, OPTIONS"
+          ],
+          "Access-Control-Allow-Origin": [
+            "*"
+          ],
+          "Access-Control-Max-Age": [
+            "86400"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Type": [
+            "application/json"
+          ],
+          "Date": [
+            "Fri, 20 Dec 2019 08:20:09 GMT"
+          ],
+          "Server": [
+            "nginx/1.4.6 (Ubuntu)"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "X-OL-Stats": [
+            "\"IB 4 0.085 MC 6 0.011 TT 0 0.100\""
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://openlibrary.org/api/books?bibkeys=ISBN%3A8502007696&jscmd=data&format=json"
       }
     }
   ],
