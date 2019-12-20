@@ -2,30 +2,31 @@
 
 {% block content %}
 
+<p id="booklist_links">
+  <a
+    href="{{ url_for('list_reviews', username=user.username) }}"
+    {% if (request.path == url_for('list_reviews', username=user.username)) or (
+      request.path != url_for('list_reading', username=user.username) and
+      request.path != url_for('list_plans', username=user.username)
+    ) %}class="selected"{% endif %}
+  >read</a>
+    /
+  <a
+    href="{{ url_for('list_reading', username=user.username) }}"
+    {% if request.path == url_for('list_reading', username=user.username) %}class="selected"{% endif %}
+  >reading</a>
+    /
+  <a
+    href="{{ url_for('list_plans', username=user.username) }}"
+    {% if request.path == url_for('list_plans', username=user.username) %}class="selected"{% endif %}
+  >to read</a>
+</p>
+
 <div id="booklist_nav">
   <div id="booklist_title">
     <h2>{{ title }}</h2>
   </div>
 
-  <div id="booklist_links">
-    <a
-      href="{{ url_for('list_reviews', username=user.username) }}"
-      {% if (request.path == url_for('list_reviews', username=user.username)) or (
-        request.path != url_for('list_reading', username=user.username) and
-        request.path != url_for('list_plans', username=user.username)
-      ) %}class="selected"{% endif %}
-    >read</a>
-      /
-    <a
-      href="{{ url_for('list_reading', username=user.username) }}"
-      {% if request.path == url_for('list_reading', username=user.username) %}class="selected"{% endif %}
-    >reading</a>
-      /
-    <a
-      href="{{ url_for('list_plans', username=user.username) }}"
-      {% if request.path == url_for('list_plans', username=user.username) %}class="selected"{% endif %}
-    >to read</a>
-  </div>
 </div>
 
 {% if user == current_user %}
