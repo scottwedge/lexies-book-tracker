@@ -14,6 +14,9 @@ class Book(db.Model):
     source_id = db.Column(db.String(64), index=True, unique=True, nullable=False)
     image_url = db.Column(db.String(500))
 
+    isbn_10 = db.Column(db.String(25))
+    isbn_13 = db.Column(db.String(25))
+
     reviews = db.relationship("Review", backref="book", lazy="dynamic")
     reading = db.relationship("Reading", backref="book", lazy="dynamic")
     plans = db.relationship("Plan", backref="book", lazy="dynamic")
@@ -22,7 +25,7 @@ class Book(db.Model):
         return json.loads(self.identifiers_json)
 
     @classmethod
-    def create_or_get(cls, *, title, author, year, identifiers, source_id, image_url):
+    def create_or_get(cls, *, title, author, year, identifiers, isbn_10, isbn_13, source_id, image_url):
         """
         Get a book with these fields from the database -- creating one if
         it doesn't already exist.
@@ -41,6 +44,8 @@ class Book(db.Model):
                 # used anywhere yet, just kept as future-proofing -- if I want
                 # to bring in more metadata later, this is a good way to get it.
                 identifiers_json=json.dumps(identifiers),
+                isbn_10=isbn_10,
+                isbn_13=isbn_13,
                 source_id=source_id,
                 image_url=image_url,
             )

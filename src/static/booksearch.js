@@ -67,6 +67,27 @@ class Booksearch {
         text.innerHTML += titleHtml;
       }
 
+      if (result.isbn13 || result.isbn10) {
+        text.innerHTML += "<br/><span class=\"isbn\">";
+      }
+
+      if (result.isbn13) {
+        text.innerHTML += result.isbn13;
+      }
+
+      if (result.isbn10 && result.isbn13) {
+        text.innerHTML += " / "
+      }
+
+      if (result.isbn10) {
+        text.innerHTML += result.isbn10;
+      }
+
+
+      if (result.isbn13 || result.isbn10) {
+        text.innerHTML += "</span>";
+      }
+
       li.appendChild(text);
       this.results.appendChild(li);
     });

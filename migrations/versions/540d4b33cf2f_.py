@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: cc0e8a0e926e
+Revision ID: 540d4b33cf2f
 Revises: 
-Create Date: 2019-12-19 15:56:31.292316
+Create Date: 2019-12-20 11:02:44.300136
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'cc0e8a0e926e'
+revision = '540d4b33cf2f'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -26,6 +26,8 @@ def upgrade():
     sa.Column('identifiers_json', sa.String(length=500), nullable=True),
     sa.Column('source_id', sa.String(length=64), nullable=False),
     sa.Column('image_url', sa.String(length=500), nullable=True),
+    sa.Column('isbn_10', sa.String(length=25), nullable=True),
+    sa.Column('isbn_13', sa.String(length=25), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_book_source_id'), 'book', ['source_id'], unique=True)
@@ -33,9 +35,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(length=64), nullable=False),
     sa.Column('password_hash', sa.String(length=128), nullable=True),
-    sa.Column('email_address', sa.String(length=256), nullable=True),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('email_address')
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_user_username'), 'user', ['username'], unique=True)
     op.create_table('plan',

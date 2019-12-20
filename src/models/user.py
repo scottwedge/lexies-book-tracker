@@ -10,7 +10,6 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True, nullable=False)
     password_hash = db.Column(db.String(128))
-    email_address = db.Column(db.String(256), unique=True)
 
     reviews = db.relationship("Review", backref="user", lazy="dynamic")
     reading = db.relationship("Reading", backref="user", lazy="dynamic")

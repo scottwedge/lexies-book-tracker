@@ -35,6 +35,8 @@ class BookFormMixin:
     identifiers = StringField("identifiers")
     source_id = StringField("source_id")
     image_url = StringField("image_url")
+    isbn_10 = StringField("isbn_10")
+    isbn_13 = StringField("isbn_13")
 
 
 class ReviewFormMixin:

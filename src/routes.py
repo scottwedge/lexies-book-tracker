@@ -38,6 +38,8 @@ def add_review():
                 identifiers=review_form.identifiers.data,
                 source_id=review_form.source_id.data,
                 image_url=review_form.image_url.data,
+                isbn_10=review_form.isbn_10.data,
+                isbn_13=review_form.isbn_13.data,
             )
             Review.create(
                 review_text=review_form.review_text.data,
@@ -201,6 +203,8 @@ def add_plan():
             identifiers=plan_form.identifiers.data,
             source_id=plan_form.source_id.data,
             image_url=plan_form.image_url.data,
+            isbn_10=plan_form.isbn_10.data,
+            isbn_13=plan_form.isbn_13.data,
         )
         Plan.create(
             note=plan_form.note.data,
@@ -266,6 +270,8 @@ def add_reading():
         identifiers=reading_form.identifiers.data,
         source_id=reading_form.source_id.data,
         image_url=reading_form.image_url.data,
+        isbn_10=reading_form.isbn_10.data,
+        isbn_13=reading_form.isbn_13.data,
     )
 
     Reading.create(note=reading_form.note.data, book=book, user=user)

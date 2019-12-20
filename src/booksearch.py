@@ -5,6 +5,7 @@ import concurrent.futures
 import json
 import re
 
+import isbnlib
 import requests
 
 
@@ -100,6 +101,19 @@ def _get_identifiers(item):
         return []
 
 
+def _get_identifier(item, ident_type):
+    try:
+        ident = next(
+            ident
+            for ident in item["volumeInfo"]["industryIdentifiers"]
+            if ident["type"] == ident_type
+        )
+    except (StopIteration, KeyError):
+        return ""
+    else:
+        return ident["identifier"]
+
+
 def _get_published_year(item):
     try:
         published_date = item["volumeInfo"]["publishedDate"]
@@ -169,6 +183,13 @@ def lookup_google_books(*, sess=requests.Session(), api_key, search_query):
     except KeyError:
         return []
 
+    def _get_isbn(item, ident_type):
+        value = _get_identifier(item, ident_type=ident_type)
+        if value:
+            return isbnlib.mask(value)
+        else:
+            return ""
+
     def _create_item(item):
         return {
             "id": item["id"],
@@ -177,6 +198,8 @@ def lookup_google_books(*, sess=requests.Session(), api_key, search_query):
             "identifiers": _get_identifiers(item),
             "year": _get_published_year(item),
             "image_url": _get_image_url(sess, item=item),
+            "isbn13": _get_isbn(item, ident_type="ISBN_13"),
+            "isbn10": _get_isbn(item, ident_type="ISBN_10"),
         }
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
