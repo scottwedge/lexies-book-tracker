@@ -153,6 +153,8 @@ class Books {
     const div = document.getElementById("book-" + this.editing);
 
     if (this.editing) {
+      console.log(this.editing);
+      console.log(div);
       const form = div.querySelector(".book-edit-form");
 
       form.classList.remove("hidden");

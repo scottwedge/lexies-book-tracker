@@ -408,8 +408,15 @@ def logout():
 
 
 @app.route("/settings")
+@login_required
 def settings():
-    pass
+    return render_template("settings.html", user=current_user)
+
+
+@app.route("/export")
+@login_required
+def export():
+    return "boom"
 
 
 @app.route("/register", methods=["GET", "POST"])

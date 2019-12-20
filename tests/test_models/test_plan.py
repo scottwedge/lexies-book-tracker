@@ -74,7 +74,7 @@ def test_mark_as_reading(session, fake, book, user):
     assert reading.user == user
 
 
-def test_mark_as_reviewed(session, fake, book, user):
+def test_mark_as_read(session, fake, book, user):
     plan = Plan(note=fake.text(), book=book, user=user)
     session.add(plan)
     session.commit()
@@ -86,7 +86,7 @@ def test_mark_as_reviewed(session, fake, book, user):
     did_not_finish = fake.boolean()
     is_favourite = fake.boolean()
 
-    review = plan.mark_as_reviewed(
+    review = plan.mark_as_read(
         review_text=review_text,
         date_read=date_read,
         did_not_finish=did_not_finish,

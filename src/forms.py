@@ -29,6 +29,7 @@ class LoginForm(FlaskForm):
 
 
 class RegistrationForm(FlaskForm):
+    # Only allow signup with alphanumeric usernames
     username = StringField("username", validators=[DataRequired()])
     email_address = StringField("email", validators=[DataRequired(), Email()])
     password = PasswordField("password", validators=[DataRequired()])

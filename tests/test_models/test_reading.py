@@ -50,7 +50,7 @@ def test_does_not_create_duplicate_reading(session, fake, book, user):
         )
 
 
-def test_mark_as_reviewed(session, fake, book, user):
+def test_mark_as_read(session, fake, book, user):
     reading = Reading(note=fake.text(), book=book, user=user)
     session.add(reading)
     session.commit()
@@ -62,7 +62,7 @@ def test_mark_as_reviewed(session, fake, book, user):
     did_not_finish = fake.boolean()
     is_favourite = fake.boolean()
 
-    review = reading.mark_as_reviewed(
+    review = reading.mark_as_read(
         review_text=review_text,
         date_read=date_read,
         did_not_finish=did_not_finish,

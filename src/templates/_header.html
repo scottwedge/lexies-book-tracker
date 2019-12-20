@@ -7,7 +7,7 @@
 
       {% if current_user.is_anonymous %}
         <li><a href="{{ url_for('login') }}">log in</a></li>
-        <li><a href="{{ url_for('register') }}">register</a></li>
+        <li><a href="{{ url_for('register') }}">sign up</a></li>
       {% else %}
 
         <li>
