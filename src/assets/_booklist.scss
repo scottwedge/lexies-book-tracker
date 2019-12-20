@@ -40,6 +40,10 @@
     }
   }
 
+  .search-result-text {
+    width: calc(100% - 85px);
+  }
+
   .search-result-thumbnail {
     width: 75px;
     text-align: center;
