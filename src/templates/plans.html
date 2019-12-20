@@ -1,7 +1,7 @@
 {% extends "_booklist.html" %}
 
 {% block add_book_form %}
-<form method="POST" id="selected" action="{{ url_for('add_plan', username=user.username) }}" class="hidden">
+<form method="POST" id="selected" action="{{ url_for('add_plan') }}" class="hidden">
   {{ plan_form.hidden_tag() }}
   <div id="info">
 

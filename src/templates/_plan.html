@@ -35,7 +35,7 @@
       </button>
 
       <form
-        action="{{ url_for('move_plan_to_reading', username=user.username, plan_id=plan.id) }}"
+        action="{{ url_for('move_plan_to_reading', plan_id=plan.id) }}"
         method="POST">
         <button class="mark-as-reading" data-planid="{{ plan.id }}">
           mark as reading
@@ -43,7 +43,7 @@
       </form>
 
       <form
-        action="{{ url_for('delete_plan', username=user.username, plan_id=plan.id) }}"
+        action="{{ url_for('delete_plan', plan_id=plan.id) }}"
         method="POST"
         class="delete-button"
         onsubmit="return confirmDeletion{{ plan.id }}();"
@@ -65,7 +65,7 @@
     </script>
 
     <form
-      action="{{ url_for('edit_plan', username=user.username, plan_id=plan.id) }}"
+      action="{{ url_for('edit_plan', plan_id=plan.id) }}"
       method="POST"
       class="hidden plan-edit-form"
     >
@@ -86,7 +86,7 @@
     </form>
 
     <form
-      action="{{ url_for('mark_plan_as_read', username=user.username, plan_id=plan.id) }}"
+      action="{{ url_for('mark_plan_as_read', plan_id=plan.id) }}"
       method="POST"
       class="hidden mark-as-read-form"
     >

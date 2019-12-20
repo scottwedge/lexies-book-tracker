@@ -1,7 +1,7 @@
 {% extends "_booklist.html" %}
 
 {% block add_book_form %}
-<form method="POST" id="selected" action="{{ url_for('add_review', username=user.username) }}" class="hidden">
+<form method="POST" id="selected" action="{{ url_for('add_review') }}" class="hidden">
   {{ review_form.hidden_tag() }}
   <div id="info"></div>
 

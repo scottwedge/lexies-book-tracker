@@ -13,7 +13,6 @@ from .forms import (
     LoginForm,
     MarkAsReadForm,
     PlanForm,
-    RegistrationForm,
     ReviewForm,
 )
 from .models import Book, Reading, Plan, Review, User
@@ -24,9 +23,9 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/user/<username>/add-review", methods=["POST"])
-def add_review(username):
-    user = User.query.filter_by(username=username).first_or_404()
+@app.route("/add-review", methods=["POST"])
+def add_review():
+    user = User.query.get(1)
 
     if current_user == user:
         review_form = ReviewForm()
@@ -49,14 +48,14 @@ def add_review(username):
                 user=user,
             )
 
-        return redirect(url_for("list_reviews", username=username))
+        return redirect(url_for("list_reviews"))
     else:
         abort(401)
 
 
-@app.route("/user/<username>/edit-review", methods=["POST"])
-def edit_review(username):
-    user = User.query.filter_by(username=username).first_or_404()
+@app.route("/edit-review", methods=["POST"])
+def edit_review():
+    user = User.query.get(1)
 
     if current_user == user:
         edit_form = EditReviewForm()
@@ -72,14 +71,14 @@ def edit_review(username):
             review.is_favourite = edit_form.is_favourite.data
             db.session.commit()
 
-        return redirect(url_for("get_review", username=username, review_id=review.id))
+        return redirect(url_for("get_review", review_id=review.id))
     else:
         abort(401)
 
 
-@app.route("/user/<username>/delete-review/<review_id>", methods=["POST"])
-def delete_review(username, review_id):
-    user = User.query.filter_by(username=username).first_or_404()
+@app.route("/delete-review/<review_id>", methods=["POST"])
+def delete_review(review_id):
+    user = User.query.get(1)
 
     if current_user != user:
         abort(401)
@@ -89,12 +88,12 @@ def delete_review(username, review_id):
     db.session.delete(review)
     db.session.commit()
 
-    return redirect(url_for("list_reviews", username=username))
+    return redirect(url_for("list_reviews"))
 
 
-@app.route("/user/<username>")
-def list_reviews(username):
-    user = User.query.filter_by(username=username).first_or_404()
+@app.route("/read")
+def list_reviews():
+    user = User.query.get(1)
 
     if current_user == user:
         review_form = ReviewForm()
@@ -109,24 +108,15 @@ def list_reviews(username):
         reviews=user.reviews.order_by(Review.date_read.desc()).all(),
         review_form=review_form,
         edit_form=edit_form,
-        title=f"{user.username}’s books"
+        title=f"my books"
     )
 
 
-@app.route("/user/<username>/reviews/<review_id>")
-def get_review(username, review_id):
+@app.route("/reviews/<review_id>")
+def get_review(review_id):
     review = Review.query.filter_by(id=int(review_id)).first_or_404()
 
-    if review.user.username != username:
-        return redirect(
-            url_for(
-                "get_review",
-                username=review.user.username,
-                review_id=review_id
-            )
-        )
-
-    user = User.query.filter_by(username=username).first_or_404()
+    user = User.query.get(1)
 
     if current_user == user:
         review_form = ReviewForm()
@@ -141,14 +131,14 @@ def get_review(username, review_id):
         reviews=[review],
         review_form=review_form,
         edit_form=edit_form,
-        title=f"{user.username}’s books",
+        title=f"my review of {review.book.title}",
         show_reviews=True
     )
 
 
-@app.route("/user/<username>/reading")
-def list_reading(username):
-    user = User.query.filter_by(username=username).first_or_404()
+@app.route("/reading")
+def list_reading():
+    user = User.query.get(1)
 
     if current_user == user:
         reading_form = ReadingForm()
@@ -166,13 +156,13 @@ def list_reading(username):
         reading_form=reading_form,
         review_form=review_form,
         edit_form=edit_form,
-        title=f"what {user.username} is reading"
+        title=f"what i&rsquo;m is reading"
     )
 
 
-@app.route("/user/<username>/to-read")
-def list_plans(username):
-    user = User.query.filter_by(username=username).first_or_404()
+@app.route("/to-read")
+def list_plans():
+    user = User.query.get(1)
 
     if current_user == user:
         plan_form = PlanForm()
@@ -190,13 +180,13 @@ def list_plans(username):
         plan_form=plan_form,
         review_form=review_form,
         edit_form=edit_form,
-        title=f"what {user.username} wants to read"
+        title=f"what i want to read"
     )
 
 
-@app.route("/user/<username>/add-plan", methods=["POST"])
-def add_plan(username):
-    user = User.query.filter_by(username=username).first_or_404()
+@app.route("/add-plan", methods=["POST"])
+def add_plan():
+    user = User.query.get(1)
 
     if current_user != user:
         return abort(401)
@@ -218,12 +208,12 @@ def add_plan(username):
             user=user,
         )
 
-    return redirect(url_for("list_plans", username=username))
+    return redirect(url_for("list_plans"))
 
 
-@app.route("/user/<username>/edit-reading/<reading_id>", methods=["POST"])
-def edit_reading(username, reading_id):
-    user = User.query.filter_by(username=username).first_or_404()
+@app.route("/edit-reading/<reading_id>", methods=["POST"])
+def edit_reading(reading_id):
+    user = User.query.get(1)
 
     if current_user == user:
         edit_form = EditReadingForm()
@@ -236,14 +226,14 @@ def edit_reading(username, reading_id):
             reading.note = edit_form.note.data
             db.session.commit()
 
-        return redirect(url_for("list_reading", username=username))
+        return redirect(url_for("list_reading"))
     else:
         abort(401)
 
 
-@app.route("/user/<username>/edit-plan/<plan_id>", methods=["POST"])
-def edit_plan(username, plan_id):
-    user = User.query.filter_by(username=username).first_or_404()
+@app.route("/edit-plan/<plan_id>", methods=["POST"])
+def edit_plan(plan_id):
+    user = User.query.get(1)
 
     if current_user == user:
         edit_form = EditPlanForm()
@@ -255,14 +245,14 @@ def edit_plan(username, plan_id):
             plan.date_added = edit_form.date_added.data
             db.session.commit()
 
-        return redirect(url_for("list_plans", username=username))
+        return redirect(url_for("list_plans"))
     else:
         abort(401)
 
 
-@app.route("/user/<username>/add-reading", methods=["POST"])
-def add_reading(username):
-    user = User.query.filter_by(username=username).first_or_404()
+@app.route("/add-reading", methods=["POST"])
+def add_reading():
+    user = User.query.get(1)
 
     if current_user != user:
         abort(401)
@@ -280,12 +270,12 @@ def add_reading(username):
 
     Reading.create(note=reading_form.note.data, book=book, user=user)
 
-    return redirect(url_for("list_reading", username=username))
+    return redirect(url_for("list_reading"))
 
 
-@app.route("/user/<username>/delete-reading/<reading_id>", methods=["POST"])
-def delete_reading(username, reading_id):
-    user = User.query.filter_by(username=username).first_or_404()
+@app.route("/delete-reading/<reading_id>", methods=["POST"])
+def delete_reading(reading_id):
+    user = User.query.get(1)
 
     if current_user != user:
         abort(401)
@@ -295,12 +285,12 @@ def delete_reading(username, reading_id):
     db.session.delete(reading)
     db.session.commit()
 
-    return redirect(url_for("list_reading", username=username))
+    return redirect(url_for("list_reading"))
 
 
-@app.route("/user/<username>/delete-plan/<plan_id>", methods=["POST"])
+@app.route("/delete-plan/<plan_id>", methods=["POST"])
 def delete_plan(username, plan_id):
-    user = User.query.filter_by(username=username).first_or_404()
+    user = User.query.get(1)
 
     if current_user != user:
         abort(401)
@@ -310,12 +300,12 @@ def delete_plan(username, plan_id):
     db.session.delete(plan)
     db.session.commit()
 
-    return redirect(url_for("list_plans", username=username))
+    return redirect(url_for("list_plans"))
 
 
-@app.route("/user/<username>/mark_as_read/<reading_id>", methods=["POST"])
-def mark_as_read(username, reading_id):
-    user = User.query.filter_by(username=username).first_or_404()
+@app.route("/mark_as_read/<reading_id>", methods=["POST"])
+def mark_as_read(reading_id):
+    user = User.query.get(1)
 
     if current_user != user:
         abort(401)
@@ -333,12 +323,12 @@ def mark_as_read(username, reading_id):
             is_favourite=mark_as_read_form.is_favourite.data,
         )
 
-    return redirect(url_for("list_reviews", username=username))
+    return redirect(url_for("list_reviews"))
 
 
-@app.route("/user/<username>/mark_plan_as_read/<plan_id>", methods=["POST"])
-def mark_plan_as_read(username, plan_id):
-    user = User.query.filter_by(username=username).first_or_404()
+@app.route("/mark_plan_as_read/<plan_id>", methods=["POST"])
+def mark_plan_as_read(plan_id):
+    user = User.query.get(1)
 
     if current_user != user:
         abort(401)
@@ -356,12 +346,12 @@ def mark_plan_as_read(username, plan_id):
             is_favourite=mark_as_read_form.is_favourite.data,
         )
 
-    return redirect(url_for("list_reviews", username=username))
+    return redirect(url_for("list_reviews"))
 
 
-@app.route("/user/<username>/move_plan_to_reading/<plan_id>", methods=["POST"])
-def move_plan_to_reading(username, plan_id):
-    user = User.query.filter_by(username=username).first_or_404()
+@app.route("/move_plan_to_reading/<plan_id>", methods=["POST"])
+def move_plan_to_reading(plan_id):
+    user = User.query.get(1)
 
     if current_user != user:
         abort(401)
@@ -371,10 +361,11 @@ def move_plan_to_reading(username, plan_id):
     flash(f"You have started reading {plan.book.title}")
     plan.mark_as_reading()
 
-    return redirect(url_for("list_reading", username=username))
+    return redirect(url_for("list_reading"))
 
 
 @app.route("/booksearch")
+@login_required
 def search_books():
     search_query = request.args["search"]
 
@@ -388,7 +379,7 @@ def search_books():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("list_reviews", username=current_user.username))
+        return redirect(url_for("list_reviews"))
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -405,30 +396,3 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for("index"))
-
-
-@app.route("/settings")
-@login_required
-def settings():
-    return render_template("settings.html", user=current_user)
-
-
-@app.route("/export")
-@login_required
-def export():
-    return "boom"
-
-
-@app.route("/register", methods=["GET", "POST"])
-def register():
-    if current_user.is_authenticated:
-        return redirect(url_for("list_reviews", username=current_user.username))
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        user = User(username=form.username.data, email_address=form.email_address.data)
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        flash("Congratulations, you are now a registered user!")
-        return redirect(url_for("login"))
-    return render_template("register.html", title="Register", form=form)

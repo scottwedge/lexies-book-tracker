@@ -28,27 +28,6 @@ class LoginForm(FlaskForm):
     submit = SubmitField("sign in")
 
 
-class RegistrationForm(FlaskForm):
-    # Only allow signup with alphanumeric usernames
-    username = StringField("username", validators=[DataRequired()])
-    email_address = StringField("email", validators=[DataRequired(), Email()])
-    password = PasswordField("password", validators=[DataRequired()])
-    password2 = PasswordField(
-        "repeat password", validators=[DataRequired(), EqualTo("password")]
-    )
-    submit = SubmitField("register")
-
-    def validate_username(self, username):
-        user = User.query.filter_by(username=username.data).first()
-        if user is not None:
-            raise ValidationError("Please use a different username.")
-
-    def validate_email(self, email_address):
-        user = User.query.filter_by(email_address=email_address.data).first()
-        if user is not None:
-            raise ValidationError("Please use a different email address.")
-
-
 class BookFormMixin:
     title = StringField("title", validators=[DataRequired()])
     author = StringField("author")
