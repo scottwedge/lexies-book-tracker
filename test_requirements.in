@@ -3,6 +3,7 @@
 betamax
 betamax_serializers
 black
+bs4
 coverage
 faker
 flake8
