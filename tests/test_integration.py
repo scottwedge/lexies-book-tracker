@@ -4,8 +4,6 @@ I don't want to do browser testing quite yet, but this exists as a useful
 proof-of-concept if/when I want to try it.
 """
 
-import os
-
 from faker import Faker
 from flask_testing import LiveServerTestCase
 import pytest

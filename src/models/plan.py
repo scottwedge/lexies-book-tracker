@@ -2,7 +2,7 @@
 
 from src import db
 from .defaults import today
-from .reading import AlreadyReadingException, Reading
+from .reading import Reading
 from .review import Review
 
 

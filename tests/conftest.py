@@ -11,7 +11,7 @@ import pytest
 sys.path.append(str(pathlib.Path(__file__).parent.parent / "src"))
 
 from src import app, db as _db  # noqa
-from src.models import Book, User
+from src.models import Book, User  # noqa
 
 
 @pytest.fixture(scope="session")

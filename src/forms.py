@@ -12,9 +12,7 @@ from wtforms import (
     SubmitField,
     TextAreaField,
 )
-from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
-
-from .models import User
+from wtforms.validators import DataRequired
 
 
 def today():
