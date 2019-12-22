@@ -79,6 +79,8 @@ class TestCreateOrGet:
             identifiers=[{"type": "ISBN_10", "value": "1234567890"}],
             source_id=fake.numerify(),
             image_url=fake.uri(),
+            isbn_10="1234567890",
+            isbn_13="1234567890ABC",
         )
 
         assert Book.query.count() == 1
@@ -98,6 +100,8 @@ class TestCreateOrGet:
             "year": year,
             "source_id": source_id,
             "image_url": image_url,
+            "isbn_10": "1234567890",
+            "isbn_13": "1234567890ABC",
         }
 
         book = Book(identifiers_json=json.dumps(identifiers), **kwargs)

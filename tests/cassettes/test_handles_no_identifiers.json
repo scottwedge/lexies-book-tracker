@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2019-12-18T13:10:20",
+      "recorded_at": "2019-12-22T09:31:01",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -18,11 +18,11 @@
             "keep-alive"
           ],
           "User-Agent": [
-            "python-requests/2.22.0"
+            "alexwlchan's book tracker"
           ]
         },
         "method": "GET",
-        "uri": "https://www.googleapis.com/books/v1/volumes?q=PediaPress+Foo+Fighters&key=<API_KEY>"
+        "uri": "https://www.googleapis.com/books/v1/volumes?q=PediaPress+Foo+Fighters&key=<API_KEY>&country=UK"
       },
       "response": {
         "body": {
@@ -43,13 +43,13 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Wed, 18 Dec 2019 13:10:21 GMT"
+            "Sun, 22 Dec 2019 09:31:02 GMT"
           ],
           "ETag": [
             "\"RgdeZjgALPmY2bwPiCXV_pRYTP0/ePkD3qzbVZE7CpRGLxqkq5pVqnc\""
           ],
           "Expires": [
-            "Wed, 18 Dec 2019 13:10:21 GMT"
+            "Sun, 22 Dec 2019 09:31:02 GMT"
           ],
           "Server": [
             "GSE"
@@ -75,7 +75,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.googleapis.com/books/v1/volumes?q=PediaPress+Foo+Fighters&key=<API_KEY>"
+        "url": "https://www.googleapis.com/books/v1/volumes?q=PediaPress+Foo+Fighters&key=<API_KEY>&country=UK"
       }
     }
   ],

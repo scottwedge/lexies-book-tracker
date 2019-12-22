@@ -71,26 +71,3 @@ def test_different_usernames_are_allowed(session):
 
     session.commit()
     assert User.query.count() == 2
-
-
-def test_email_addresses_must_be_unique(session):
-    u1 = User(username="alice", email_address="alice@example.org")
-    session.add(u1)
-
-    u2 = User(username="eve", email_address="alice@example.org")
-    session.add(u2)
-
-    with pytest.raises(
-        IntegrityError, match="UNIQUE constraint failed: user.email_address"
-    ):
-        session.commit()
-
-
-def test_different_email_addresses_are_allowed(session):
-    u1 = User(username="alice", email_address="alice@example.org")
-    session.add(u1)
-    session.commit()
-
-    u2 = User(username="bob", email_address="bob@example.org")
-    session.add(u2)
-    session.commit()

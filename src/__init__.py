@@ -9,7 +9,6 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 import scss
-from scss.types import Color
 import smartypants
 
 from .config import Config
@@ -26,8 +25,8 @@ login.login_view = "login"
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-from . import routes
-from .models import User
+from . import routes  # noqa
+from .models import User  # noqa
 
 
 @login.user_loader

@@ -11,7 +11,7 @@ import pytest
 sys.path.append(str(pathlib.Path(__file__).parent.parent / "src"))
 
 from src import app, db as _db  # noqa
-from src.models import Book, User
+from src.models import Book, User  # noqa
 
 
 @pytest.fixture(scope="session")
@@ -76,7 +76,7 @@ def session(db, request):
 
 @pytest.fixture
 def user(session, fake):
-    u = User(username=fake.name(), email_address=fake.email())
+    u = User(username=fake.name())
     session.add(u)
     return u
 

@@ -110,7 +110,7 @@ def list_reviews():
         reviews=user.reviews.order_by(Review.date_read.desc()).all(),
         review_form=review_form,
         edit_form=edit_form,
-        title=f"my books"
+        title=f"my books",
     )
 
 
@@ -134,7 +134,7 @@ def get_review(review_id):
         review_form=review_form,
         edit_form=edit_form,
         title=f"my review of {review.book.title}",
-        show_reviews=True
+        show_reviews=True,
     )
 
 
@@ -158,7 +158,7 @@ def list_reading():
         reading_form=reading_form,
         review_form=review_form,
         edit_form=edit_form,
-        title=f"what i&rsquo;m is reading"
+        title=f"what i&rsquo;m is reading",
     )
 
 
@@ -182,7 +182,7 @@ def list_plans():
         plan_form=plan_form,
         review_form=review_form,
         edit_form=edit_form,
-        title=f"what i want to read"
+        title=f"what i want to read",
     )
 
 
@@ -207,9 +207,7 @@ def add_plan():
             isbn_13=plan_form.isbn_13.data,
         )
         Plan.create(
-            note=plan_form.note.data,
-            book=book,
-            user=user,
+            note=plan_form.note.data, book=book, user=user,
         )
 
     return redirect(url_for("list_plans"))
