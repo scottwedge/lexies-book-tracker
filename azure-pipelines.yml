@@ -24,7 +24,7 @@ steps:
   displayName: "Run linting"
 
 - script: |
-    black --check
+    black --check .
   displayName: "Check formatting with black"
 
 - script: |
