@@ -2,12 +2,17 @@
 
 import collections
 import concurrent.futures
+import html
 import json
 import re
 
 import isbnlib
 import requests
 from smartypants import smartypants
+
+
+def _apply_curly_quotes(s):
+    return html.unescape(smartypants(s))
 
 
 def _fix_encoding(s):
@@ -92,7 +97,7 @@ def _fix_encoding(s):
 
 def _get_authors(item):
     authors = item["volumeInfo"].get("authors", [])
-    return ", ".join(smartypants(aut) for aut in authors)
+    return ", ".join(_apply_curly_quotes(aut) for aut in authors)
 
 
 def _get_identifiers(item):
@@ -195,7 +200,7 @@ def lookup_google_books(*, sess=requests.Session(), api_key, search_query):
     def _create_item(item):
         return {
             "id": item["id"],
-            "title": smartypants(item["volumeInfo"]["title"]),
+            "title": _apply_curly_quotes(item["volumeInfo"]["title"]),
             "author": _get_authors(item),
             "identifiers": _get_identifiers(item),
             "year": _get_published_year(item),
