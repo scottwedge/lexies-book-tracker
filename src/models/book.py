@@ -25,7 +25,9 @@ class Book(db.Model):
         return json.loads(self.identifiers_json)
 
     @classmethod
-    def create_or_get(cls, *, title, author, year, identifiers, isbn_10, isbn_13, source_id, image_url):
+    def create_or_get(
+        cls, *, title, author, year, identifiers, isbn_10, isbn_13, source_id, image_url
+    ):
         """
         Get a book with these fields from the database -- creating one if
         it doesn't already exist.
