@@ -2,8 +2,10 @@
 
 betamax
 betamax_serializers
+black
 coverage
 faker
+flake8
 flask-testing
 pytest
 pytest-cov
