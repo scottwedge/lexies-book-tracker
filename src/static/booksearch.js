@@ -28,13 +28,14 @@ class Booksearch {
       this.searchBooks(this.input.value);
     });
     this.results.addEventListener("click", evt => {
-      console.log(evt);
       if (evt.target) {
         const book = this.books.find(book => book.id === evt.target.id);
         this.selected = book;
         this.books = [];
         this.renderResults();
         this.renderSelected();
+      } else {
+        console.log("No target on event: " + event);
       }
     });
   }
@@ -62,27 +63,31 @@ class Booksearch {
 
       const titleHtml = "<span class=\"book-title\" id=\"" + result.id + "\">" + result.title + "</span>";
       if (result.author !== "") {
-        text.innerHTML += titleHtml + "<span>&nbsp;&ndash; " + result.author + "</span>";
+        text.innerHTML += titleHtml + "<span id=\"" + result.id + "\">&nbsp;&ndash; " + result.author + "</span>";
       } else {
         text.innerHTML += titleHtml;
       }
 
-      let isbnString = "";
+      var isbnText = ""
+
+      if (result.isbn13 || result.isbn10) {
+        text.innerHTML
+      }
 
       if (result.isbn13) {
-        isbnString += result.isbn13;
+        isbnText += result.isbn13;
       }
 
       if (result.isbn10 && result.isbn13) {
-        isbnString += " / "
+        isbnText += " / "
       }
 
       if (result.isbn10) {
-        isbnString += result.isbn10;
+        isbnText += result.isbn10;
       }
 
-      if (isbnString !== "") {
-        text.innerHTML += "<br/><div class=\"isbn\">" + isbnString + "</div>";
+      if (isbnText !== "") {
+        text.innerHTML+= "<br/><div class=\"isbn\" id=\"" + result.id + "\">" + isbnText + "</div>";
       }
 
       li.appendChild(text);
