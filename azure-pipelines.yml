@@ -1,0 +1,33 @@
+trigger:
+- "development"
+
+pool:
+  vmImage: "ubuntu-latest"
+strategy:
+  matrix:
+    Python37:
+      python.version: "3.7"
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '$(python.version)'
+  displayName: 'Use Python $(python.version)'
+
+- script: |
+    python -m pip install --upgrade pip
+    pip install -r test_requirements.txt
+  displayName: "Install dependencies"
+
+- script: |
+    flake8
+  displayName: "Run linting"
+
+- script: |
+    black --check
+  displayName: "Check formatting with black"
+
+- script: |
+    coverage run -m py.test tests
+    coverage report
+  displayName: "Run tests"
