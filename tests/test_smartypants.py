@@ -4,7 +4,6 @@ Tests for the use of Smartypants and curly quotes throughout.
 """
 
 import bs4
-from flask import url_for
 
 from src.models import Plan
 
@@ -22,11 +21,7 @@ def test_plan_page_is_curly_quotes(client, book, user):
 
     book.title = book_title
 
-    plan = Plan.create(
-        note=note_text,
-        book=book,
-        user=user
-    )
+    Plan.create(note=note_text, book=book, user=user)
 
     resp = client.get("/to-read")
     soup = bs4.BeautifulSoup(resp.data, "html.parser")
