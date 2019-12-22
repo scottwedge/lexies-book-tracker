@@ -76,7 +76,7 @@ def session(db, request):
 
 @pytest.fixture
 def user(session, fake):
-    u = User(username=fake.name(), email_address=fake.email())
+    u = User(username=fake.name())
     session.add(u)
     return u
 
