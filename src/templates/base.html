@@ -9,7 +9,7 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
-    <title>{% if title %}{{ title }} {% endif %}📚 lexie&rsquo;s book tracker</title>
+    <title>{% if title %}{{ title | safe }} {% endif %}📚 lexie&rsquo;s book tracker</title>
   </head>
   <body>
     {% include "_header.html" %}

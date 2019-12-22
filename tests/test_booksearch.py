@@ -1,6 +1,8 @@
 # -*- encoding: utf-8
 
 import os
+import pathlib
+import time
 
 import betamax
 from betamax_serializers.pretty_json import PrettyJSONSerializer
@@ -23,8 +25,33 @@ def sanitize_google_books_api_key(interaction, _):  # pragma: no cover
 
 
 @pytest.fixture
-def api_key():
-    return os.environ.get("GOOGLE_BOOKS_API_KEY", "<API_KEY>")
+def cassette_name(request):
+    # This creates a cassette based on the pytest name.  Sometimes test
+    # data contains URLs (e.g. parametrised tests), and the node.name
+    # has slashes and colons (which are illegal in filesystems).
+    #
+    # Turn it into something usable.  It's very unlikely we'll have collisions,
+    # and if we do they'll cause a failing test.
+    return request.node.name.replace("/", "_").replace(":", "_")
+
+
+@pytest.fixture
+def api_key(cassette_name):
+    cassette = pathlib.Path("tests/cassettes") / f"{cassette_name}.json"
+
+    # Betamax creates a cassette file as soon as it starts recording.
+    # If the cassette was created recently, then assume this is a new test
+    # and we want a fresh response with a real API key -- if not, use
+    # the dummy API key saved in Betamax.
+    try:
+        is_cached = abs(time.time() - cassette.stat().st_mtime) > 10
+    except FileNotFoundError:  # pragma: no cover
+        is_cached = True
+
+    if is_cached:
+        return "<API_KEY>"
+    else:
+        return os.environ.get("GOOGLE_BOOKS_API_KEY", "<API_KEY>")
 
 
 betamax.Betamax.register_serializer(PrettyJSONSerializer)
@@ -37,16 +64,8 @@ with betamax.Betamax.configure() as config:
 
 
 @pytest.fixture
-def sess(request):
+def sess(cassette_name):
     session = requests.Session()
-
-    # This creates a cassette based on the pytest name.  Sometimes test
-    # data contains URLs (e.g. parametrised tests), and the node.name
-    # has slashes and colons (which are illegal in filesystems).
-    #
-    # Turn it into something usable.  It's very unlikely we'll have collisions,
-    # and if we do they'll cause a failing test.
-    cassette_name = request.node.name.replace("/", "_").replace(":", "_")
 
     with betamax.Betamax(session).use_cassette(cassette_name):
         yield session
@@ -158,3 +177,13 @@ def test_search_with_no_results_is_empty(sess, api_key):
     )
 
     assert result == []
+
+
+def test_renders_curly_quote_in_results(sess, api_key):
+    result = lookup_google_books(
+        sess=sess, api_key=api_key, search_query="9780571311873"
+    )
+
+    book = [r for r in result if r["isbn13"] == "978-0-571-31187-3"].pop()
+
+    assert book["title"] == "Old Possum’s Book of Practical Cats"

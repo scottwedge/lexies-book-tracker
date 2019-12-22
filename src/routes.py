@@ -158,7 +158,7 @@ def list_reading():
         reading_form=reading_form,
         review_form=review_form,
         edit_form=edit_form,
-        title=f"what i&rsquo;m is reading",
+        title=f"what i’m reading",
     )
 
 

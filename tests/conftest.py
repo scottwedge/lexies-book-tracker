@@ -41,6 +41,12 @@ def test_app(request):
 
 
 @pytest.fixture(scope="session")
+def client(test_app):
+    with test_app.test_client() as test_client:
+        yield test_client
+
+
+@pytest.fixture(scope="session")
 def db(test_app, request):
     """Session-wide test database."""
 
