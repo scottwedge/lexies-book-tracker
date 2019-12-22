@@ -139,7 +139,7 @@ class Booksearch {
       this.div.querySelector("#year").value = this.selected.year;
       this.div.querySelector("#author").value = this.selected.author;
       this.div.querySelector("#image_url").value = this.selected.image_url;
-      this.div.querySelector("#identifiers").value = this.selected.identifiers;
+      this.div.querySelector("#identifiers").value = JSON.stringify(this.selected.identifiers);
       this.div.querySelector("#source_id").value = this.selected.id;
     } else {
       this.div.classList.add("hidden");
