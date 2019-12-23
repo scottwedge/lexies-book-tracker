@@ -3,8 +3,6 @@
 import os
 import pathlib
 
-import requests
-
 
 basedir = pathlib.Path(__file__).parent.resolve()
 
@@ -20,5 +18,3 @@ class Config:
         SQLALCHEMY_DATABASE_URI = f"sqlite:///{basedir}/app.db"
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-
-    REQUESTS_SESSION = requests.Session()

@@ -438,12 +438,10 @@ def proxy(url):
     the URL is supplied as a URL-encoded path component.
 
     """
-    sess = app.config["REQUESTS_SESSION"]
-
     url = unquote_plus(url)
 
     try:
-        resp = sess.get(url)
+        resp = requests.get(url)
         resp.raise_for_status()
     except requests.HTTPError as err:
         print(err)
