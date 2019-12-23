@@ -7,3 +7,11 @@
     {% endfor %}
   {% endif %}
 {%- endmacro %}
+
+{% macro render_thumbnail(book) -%}
+  <div class="book-thumbnail">
+    {% if book.image_url %}
+    <img src="{{ url_for('proxy', url=book.image_url | quote_plus) }}">
+    {% endif %}
+  </div>
+{%- endmacro %}

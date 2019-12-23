@@ -7,11 +7,7 @@
 >
   <div class="info">
     <div class="book-preview">
-      <div class="book-thumbnail">
-        {% if review.book.image_url %}
-        <img src="{{ url_for('proxy', url=review.book.image_url | quote_plus) }}">
-        {% endif %}
-      </div>
+      {{ macros.render_thumbnail(review.book) }}
       <div class="book-metadata">
         <h3 class="book-title">
           <a
