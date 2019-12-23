@@ -3,6 +3,7 @@
 import datetime as dt
 import json
 import pathlib
+from urllib.parse import quote_plus
 
 from flask import Flask
 from flask_login import LoginManager
@@ -18,6 +19,7 @@ app.config.from_object(Config)
 
 app.jinja_env.filters["to_json"] = json.dumps
 app.jinja_env.filters["smartypants"] = smartypants.smartypants
+app.jinja_env.filters["quote_plus"] = quote_plus
 
 login = LoginManager(app)
 login.login_view = "login"
