@@ -7,11 +7,7 @@
 >
   <div class="info">
     <div class="book-preview">
-      <div class="book-thumbnail">
-        {% if review.book.image_url %}
-        <img src="{{ url_for('proxy', url=review.book.image_url | quote_plus) }}">
-        {% endif %}
-      </div>
+      {{ macros.render_thumbnail(review.book) }}
       <div class="book-metadata">
         <h3 class="book-title">
           <a
@@ -38,11 +34,7 @@
 
   {% if show_reviews %}
     <div class="book-description">
-      {% for line in review.review_text.splitlines() %}
-        {% if line %}
-          <p class="review">{{ line | smartypants | safe }}</p>
-        {% endif %}
-      {% endfor %}
+      {{ macros.render_text(review.review_text) }}
     </div>
 
     {% if user == current_user %}

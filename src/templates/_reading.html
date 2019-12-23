@@ -1,11 +1,7 @@
 <div class="book" id="reading-{{ reading.id }}">
   <div class="info">
     <div class="book-preview">
-      <div class="book-thumbnail">
-        {% if reading.book.image_url %}
-        <img src="{{ url_for('proxy', url=reading.book.image_url | quote_plus) }}">
-        {% endif %}
-      </div>
+      {{ macros.render_thumbnail(reading.book) }}
       <div class="book-metadata">
         <h3 class="book-title">
           {{ reading.book.title }}
@@ -17,13 +13,7 @@
         {% endif %}
 
         <div class="reading-note">
-          {% if reading.note %}
-            {% for line in reading.note.splitlines() %}
-              {% if line %}
-                <p>{{ line | smartypants | safe }}</p>
-              {% endif %}
-            {% endfor %}
-          {% endif %}
+          {{ macros.render_text(reading.note) }}
         </div>
       </div>
     </div>

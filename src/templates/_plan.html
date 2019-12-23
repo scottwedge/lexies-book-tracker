@@ -1,11 +1,7 @@
 <div class="book" id="plan-{{ plan.id }}">
   <div class="info">
     <div class="book-preview">
-      <div class="book-thumbnail">
-        {% if plan.book.image_url %}
-        <img src="{{ url_for('proxy', url=plan.book.image_url | quote_plus) }}">
-        {% endif %}
-      </div>
+      {{ macros.render_thumbnail(plan.book) }}
       <div class="book-metadata">
         <h3 class="book-title">
           {{ plan.book.title }}
@@ -17,13 +13,7 @@
         {% endif %}
 
         <div class="plan-note">
-          {% if plan.note %}
-            {% for line in plan.note.splitlines() %}
-              {% if line %}
-                <p>{{ line | smartypants | safe }}</p>
-              {% endif %}
-            {% endfor %}
-          {% endif %}
+          {{ macros.render_text(plan.note) }}
         </div>
       </div>
     </div>

@@ -1,0 +1,17 @@
+{% macro render_text(txt) -%}
+  {% if txt %}
+    {% for line in txt.splitlines() %}
+      {% if line %}
+        <p>{{ line | render_text | safe }}</p>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{%- endmacro %}
+
+{% macro render_thumbnail(book) -%}
+  <div class="book-thumbnail">
+    {% if book.image_url %}
+    <img src="{{ url_for('proxy', url=book.image_url | quote_plus) }}">
+    {% endif %}
+  </div>
+{%- endmacro %}
