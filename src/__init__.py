@@ -5,6 +5,7 @@ import json
 import pathlib
 from urllib.parse import quote_plus
 
+from autolink import linkify
 from flask import Flask
 from flask_login import LoginManager
 from flask_migrate import Migrate
@@ -18,7 +19,6 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 app.jinja_env.filters["to_json"] = json.dumps
-app.jinja_env.filters["smartypants"] = smartypants.smartypants
 app.jinja_env.filters["quote_plus"] = quote_plus
 
 login = LoginManager(app)
@@ -34,6 +34,11 @@ from .models import User  # noqa
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+
+@app.template_filter("render_text")
+def render_text(s):
+    return linkify(smartypants.smartypants(s))
 
 
 @app.template_filter("render_date")

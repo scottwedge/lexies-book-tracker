@@ -38,11 +38,7 @@
 
   {% if show_reviews %}
     <div class="book-description">
-      {% for line in review.review_text.splitlines() %}
-        {% if line %}
-          <p class="review">{{ line | smartypants | safe }}</p>
-        {% endif %}
-      {% endfor %}
+      {{ macros.render_text(review.review_text) }}
     </div>
 
     {% if user == current_user %}

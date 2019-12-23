@@ -17,13 +17,7 @@
         {% endif %}
 
         <div class="plan-note">
-          {% if plan.note %}
-            {% for line in plan.note.splitlines() %}
-              {% if line %}
-                <p>{{ line | smartypants | safe }}</p>
-              {% endif %}
-            {% endfor %}
-          {% endif %}
+          {{ macros.render_text(plan.note) }}
         </div>
       </div>
     </div>

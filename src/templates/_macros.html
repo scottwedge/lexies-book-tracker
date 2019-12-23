@@ -1,0 +1,9 @@
+{% macro render_text(txt) -%}
+  {% if txt %}
+    {% for line in txt.splitlines() %}
+      {% if line %}
+        <p>{{ line | render_text | safe }}</p>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{%- endmacro %}
