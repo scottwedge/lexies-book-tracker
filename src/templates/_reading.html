@@ -1,7 +1,11 @@
 <div class="book" id="reading-{{ reading.id }}">
   <div class="info">
     <div class="book-preview">
-      <div class="book-thumbnail"><img src="{{ reading.book.image_url}}"></div>
+      <div class="book-thumbnail">
+        {% if reading.book.image_url %}
+        <img src="{{ url_for('proxy', url=reading.book.image_url | quote_plus) }}">
+        {% endif %}
+      </div>
       <div class="book-metadata">
         <h3 class="book-title">
           {{ reading.book.title }}

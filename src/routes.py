@@ -1,7 +1,20 @@
 # -*- encoding: utf-8
 
-from flask import abort, flash, jsonify, redirect, render_template, request, url_for
+import hashlib
+from urllib.parse import unquote_plus
+
+from flask import (
+    abort,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    Response,
+    url_for,
+)
 from flask_login import current_user, login_required, login_user, logout_user
+import requests
 
 from . import app, db
 from .booksearch import lookup_google_books
@@ -16,6 +29,12 @@ from .forms import (
     ReviewForm,
 )
 from .models import Book, Reading, Plan, Review, User
+
+
+def md5(s):
+    h = hashlib.md5()
+    h.update(s.encode("utf8"))
+    return h.hexdigest()
 
 
 @app.route("/")
@@ -400,3 +419,47 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for("index"))
+
+
+@app.route("/proxy/<url>")
+def proxy(url):
+    """
+    When loading images, we have two issues with loading them directly from
+    the source URL:
+
+    1.  CORS headers on my web server are pretty restrictive
+    2.  Sources may not set the correct caching headers, so the browser reloads
+        all the images at once!
+
+    This proxy method intercepts a URL it receives, adds long caching headers,
+    then returns the original data.
+
+    Because browsers only cache on the basis of paths, not query parameters,
+    the URL is supplied as a URL-encoded path component.
+
+    """
+    url = unquote_plus(url)
+
+    try:
+        resp = requests.get(url)
+        resp.raise_for_status()
+    except requests.HTTPError as err:
+        print(err)
+        return abort(400)
+
+    headers_to_keep = {
+        "content-type",
+        "content-length",
+    }
+
+    headers = {
+        name: value
+        for (name, value) in resp.raw.headers.items()
+        if name.lower() in headers_to_keep
+    }
+
+    if resp.status_code == 200:
+        headers["Cache-Control"] = "public, max-age=31536000"
+        headers["ETag"] = md5(url)
+
+    return Response(response=resp.content, status=resp.status_code, headers=headers)
