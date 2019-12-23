@@ -1,74 +1,8 @@
 # -*- encoding: utf-8
 
-import os
-import pathlib
-import time
-
-import betamax
-from betamax_serializers.pretty_json import PrettyJSONSerializer
 import pytest
-import requests
 
 from booksearch import lookup_google_books
-
-
-def sanitize_google_books_api_key(interaction, _):  # pragma: no cover
-    req = interaction.data["request"]
-    req["uri"] = req["uri"].replace(
-        os.environ.get("GOOGLE_BOOKS_API_KEY", "<API_KEY>"), "<API_KEY>"
-    )
-
-    resp = interaction.data["response"]
-    resp["url"] = resp["url"].replace(
-        os.environ.get("GOOGLE_BOOKS_API_KEY", "<API_KEY>"), "<API_KEY>"
-    )
-
-
-@pytest.fixture
-def cassette_name(request):
-    # This creates a cassette based on the pytest name.  Sometimes test
-    # data contains URLs (e.g. parametrised tests), and the node.name
-    # has slashes and colons (which are illegal in filesystems).
-    #
-    # Turn it into something usable.  It's very unlikely we'll have collisions,
-    # and if we do they'll cause a failing test.
-    return request.node.name.replace("/", "_").replace(":", "_")
-
-
-@pytest.fixture
-def api_key(cassette_name):
-    cassette = pathlib.Path("tests/cassettes") / f"{cassette_name}.json"
-
-    # Betamax creates a cassette file as soon as it starts recording.
-    # If the cassette was created recently, then assume this is a new test
-    # and we want a fresh response with a real API key -- if not, use
-    # the dummy API key saved in Betamax.
-    try:
-        is_cached = abs(time.time() - cassette.stat().st_mtime) > 10
-    except FileNotFoundError:  # pragma: no cover
-        is_cached = True
-
-    if is_cached:
-        return "<API_KEY>"
-    else:
-        return os.environ.get("GOOGLE_BOOKS_API_KEY", "<API_KEY>")
-
-
-betamax.Betamax.register_serializer(PrettyJSONSerializer)
-
-with betamax.Betamax.configure() as config:
-    config.cassette_library_dir = "tests/cassettes"
-    config.before_record(callback=sanitize_google_books_api_key)
-
-    config.default_cassette_options["serialize_with"] = PrettyJSONSerializer.name
-
-
-@pytest.fixture
-def sess(cassette_name):
-    session = requests.Session()
-
-    with betamax.Betamax(session).use_cassette(cassette_name):
-        yield session
 
 
 def test_can_make_api_request(sess, api_key):

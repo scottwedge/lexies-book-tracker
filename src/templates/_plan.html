@@ -2,7 +2,9 @@
   <div class="info">
     <div class="book-preview">
       <div class="book-thumbnail">
+        {% if plan.book.image_url %}
         <img src="{{ url_for('proxy', url=plan.book.image_url | quote_plus) }}">
+        {% endif %}
       </div>
       <div class="book-metadata">
         <h3 class="book-title">
