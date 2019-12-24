@@ -101,17 +101,38 @@ Do not ask me for troubleshooting advice.
 
 <h2 id="interesting">Interesting pieces (aka what to copy)</h2>
 
-*   I'm using the autolink and smartypants libraries to turn user-supplied text into a slightly prettier representation when rendered as HTML.
+I don't expect anybody will want to use this app directly, but some of the ideas and code might be useful in other projects.
+Here's what you might want to use elsewhere:
+
+*   **The autolink and smartypants libraries.**
+    I use these libraries to turn user-supplied text into a slightly prettier representation when rendered as HTML.
 
     For example, when I'm recording a book I want to read, I might link to a tweet or blog post that suggested it.
-    These two libraries give me nice typography (smartypants) and turn that link into a `<a>` tag that I can click.
+    These two libraries give me nice typography ([smartypants](https://pypi.org/project/smartypants/)) and turn that link into a `<a>` tag that I can click ([autolink](https://pypi.org/project/autolink/)).
 
-*   The isbnlib library means I don't have to worry about the display logic for ISBNs.
+*   **The [isbnlib library](https://pypi.org/project/isbnlib/).**
+    So I don't have to worry about the display logic for ISBNs.
 
-*   betamax is a library for recording interactions with requests, and replaying them in tests -- I don't have to create mocks, I record real responses!
+*   **Sanitising sensitive credentials with betamax.**
+    The [betamax library](https://pypi.org/project/betamax/) lets you record interactions with requests, and replaying them in tests -- I don't have to create mocks, I record real responses!
 
     When I'm making real requests, I send my Google Books API key, which I don't want to check into a public repo.
     If you look in `tests/conftest.py`, you can see how I'm sanitising the recorded interactions, so they only contain `<API_KEY>`, not my real key.
+
+*   **Adding caching headers to proxied requests in Flask.**
+    The app shows thumbnails of book covers, which is a hot-link to an image in Goodreads or Google Books, something like:
+
+    ```html
+    <img src="http://books.google.com/books/content?id=GwAWS6C33O4C&printsec=frontcover&img=1">
+    ```
+
+    Whenever you visit the app, your browser will try to reload *every* image.
+    Those images rarely change, so that's a waste of bandwidth.
+
+    To get round this, the app proxies every request for those images, and adds an aggressive `Cache-Control` header -- so the app loads faster, and makes fewer requests to the original site.
+    This also gets around the tight CORS headers I set on my web server.
+
+    Look at the `proxy()` route in `src/routes.py` for how this is implemented.
 
 
 
