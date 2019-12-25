@@ -32,7 +32,7 @@ If I was designing my ideal book tracker, I'd have three lists:
 *   **What I've read.**
     I might write a couple of sentences about the book -- possibly a review, possibly just some notes (so I don't love that Goodreads describes this as "review").
 
-    I find 5-star ratings have two many options, so here there are just three:
+    I find 5-star ratings have too many options, so here there are just three:
 
     *   I loved it! 😍
     *   I didn’t finish 😔
