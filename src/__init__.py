@@ -1,6 +1,7 @@
 # -*- encoding: utf-8
 
 import datetime as dt
+import itertools
 import json
 import pathlib
 from urllib.parse import quote_plus
@@ -53,6 +54,12 @@ def render_date(date_val):
         return f"{delta.days} days ago"
     else:
         return date_val.strftime("%d %B %Y")
+
+
+@app.template_filter("group_by_year")
+def group_by_year(reviews):
+    for year, revs in itertools.groupby(reviews, key=lambda r: r.date_read.year):
+        yield year, list(revs)
 
 
 @app.before_first_request

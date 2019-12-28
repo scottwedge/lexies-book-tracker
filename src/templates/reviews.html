@@ -39,8 +39,13 @@
 {% block booklist_content %}
   {% if reviews %}
     <div class="books">
-    {% for review in reviews %}
-      {% include "_review.html" %}
+    {% for year, matching_reviews in reviews|group_by_year %}
+      {% set count = matching_reviews|length %}
+      <h3>the {{ matching_reviews|length }} book{% if count != 1 %}s{% endif %} i read in {{ year }}</h3>
+
+      {% for review in matching_reviews %}
+        {% include "_review.html" %}
+      {% endfor %}
     {% endfor %}
     </div>
   {% else %}
