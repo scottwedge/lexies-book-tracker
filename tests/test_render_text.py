@@ -1,5 +1,3 @@
-# -*- encoding: utf-8
-
 import pytest
 
 from src import render_text

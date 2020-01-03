@@ -12,7 +12,7 @@ from wtforms import (
     SubmitField,
     TextAreaField,
 )
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Optional
 
 
 def today():
@@ -39,7 +39,7 @@ class BookFormMixin:
 
 class ReviewFormMixin:
     review_text = TextAreaField("review")
-    date_read = DateField("date read", default=today)
+    date_read = DateField("date read", default=today, validators=[Optional()])
     did_not_finish = BooleanField("didn’t finish 😔", default=False)
     is_favourite = BooleanField("loved it! 😍", default=False)
 

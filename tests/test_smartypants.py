@@ -1,4 +1,3 @@
-# -*- encoding: utf-8
 """
 Tests for the use of Smartypants and curly quotes throughout.
 """

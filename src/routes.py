@@ -68,6 +68,8 @@ def add_review():
                 book=book,
                 user=user,
             )
+        else:
+            abort(400)
 
         return redirect(url_for("list_reviews"))
     else:
@@ -91,6 +93,8 @@ def edit_review():
             review.did_not_finish = edit_form.did_not_finish.data
             review.is_favourite = edit_form.is_favourite.data
             db.session.commit()
+        else:
+            abort(400)
 
         return redirect(url_for("get_review", review_id=review.id))
     else:

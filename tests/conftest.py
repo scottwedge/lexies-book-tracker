@@ -3,11 +3,13 @@
 import os
 import pathlib
 import random
+import secrets
 import sys
 import time
 
 import betamax
 from betamax_serializers.pretty_json import PrettyJSONSerializer
+import bs4
 from faker import Faker
 from faker.providers import date_time, internet, misc
 import pytest
@@ -93,6 +95,33 @@ def user(session, fake):
 
 
 @pytest.fixture
+def logged_in_user(session, client, user):
+    password = secrets.token_hex()
+    user.set_password(password)
+    session.commit()
+
+    resp = client.get("/login")
+
+    if resp.status_code == 302:
+        return user
+
+    soup = bs4.BeautifulSoup(resp.data, "html.parser")
+
+    csrf_token = soup.find("input", attrs={"id": "csrf_token"}).attrs["value"]
+
+    client.post(
+        "/login",
+        data={
+            "username": user.username,
+            "password": password,
+            "csrf_token": csrf_token,
+        }
+    )
+
+    return user
+
+
+@pytest.fixture
 def book(session, fake):
     bk = Book(
         title=fake.name(),
@@ -143,7 +172,7 @@ def api_key(cassette_name):
 
     if is_cached:
         return "<API_KEY>"
-    else:
+    else:  # pragma: no cover
         return os.environ.get("GOOGLE_BOOKS_API_KEY", "<API_KEY>")
 
 
