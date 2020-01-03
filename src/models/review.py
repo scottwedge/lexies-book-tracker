@@ -1,7 +1,6 @@
 # -*- encoding: utf-8
 
 from src import db
-from .defaults import today
 
 
 class Review(db.Model):

@@ -27,13 +27,13 @@ def test_can_add_book_without_read_date(client, logged_in_user, book, fake):
             "isbn_13": book.isbn_13,
             "review_text": fake.text(),
             "date_read": "",
-        }
+        },
     )
 
     assert resp.status_code == 302
 
     resp = client.get("/read")
-    assert b'I haven&rsquo;t read any books yet!' not in resp.data, resp.data
+    assert b"I haven&rsquo;t read any books yet!" not in resp.data, resp.data
 
     soup = bs4.BeautifulSoup(resp.data, "html.parser")
     title = soup.find("h3", attrs={"book-title"})

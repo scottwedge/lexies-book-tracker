@@ -115,7 +115,7 @@ def logged_in_user(session, client, user):
             "username": user.username,
             "password": password,
             "csrf_token": csrf_token,
-        }
+        },
     )
 
     return user
