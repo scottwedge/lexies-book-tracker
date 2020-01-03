@@ -53,10 +53,8 @@ def client(test_app):
         yield test_client
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def db(test_app, request):
-    """Session-wide test database."""
-
     def teardown():
         _db.drop_all()
 
@@ -87,14 +85,14 @@ def session(db, request):
     return session
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def user(session, fake):
     u = User(username=fake.name())
     session.add(u)
     return u
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def logged_in_user(session, client, user):
     password = secrets.token_hex()
     user.set_password(password)
@@ -121,7 +119,7 @@ def logged_in_user(session, client, user):
     return user
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def book(session, fake):
     bk = Book(
         title=fake.name(),

@@ -70,7 +70,8 @@ def group_by_year(reviews):
     ):
         yield year, list(revs)
 
-    yield None, list(reversed(reviews_without_date))
+    if reviews_without_date:
+        yield None, list(reversed(reviews_without_date))
 
 
 @app.before_first_request

@@ -1,7 +1,5 @@
 # -*- encoding: utf-8
 
-import datetime as dt
-
 from src.models import Review
 
 
@@ -16,13 +14,13 @@ def test_can_store_and_retrieve_review(session, fake, book, user):
     assert Review.query.get(review.id) == review
 
 
-def test_review_defaults(session, fake, book, user):
+def test_default_review_date_is_empty(session, fake, book, user):
     review = Review(review_text=fake.text(), book=book, user=user)
     session.add(review)
 
     session.commit()
 
-    assert review.date_read == dt.datetime.now().date()
+    assert review.date_read is None
     assert not review.did_not_finish
     assert not review.is_favourite
 
