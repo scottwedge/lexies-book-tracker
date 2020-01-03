@@ -1,5 +1,3 @@
-# -*- encoding: utf-8
-
 import pytest
 
 from booksearch import lookup_google_books

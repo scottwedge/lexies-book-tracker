@@ -1,4 +1,3 @@
-# -*- encoding: utf-8
 """
 I don't want to do browser testing quite yet, but this exists as a useful
 proof-of-concept if/when I want to try it.
