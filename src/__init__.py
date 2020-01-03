@@ -58,8 +58,24 @@ def render_date(date_val):
 
 @app.template_filter("group_by_year")
 def group_by_year(reviews):
-    for year, revs in itertools.groupby(reviews, key=lambda r: r.date_read.year):
+    reviews_with_date = sorted([
+        rev
+        for rev in reviews
+        if rev.date_read is not None
+    ], key=lambda rev: rev.date_read.year)
+
+    reviews_without_date = [
+        rev
+        for rev in reviews
+        if rev.date_read is None
+    ]
+
+    for year, revs in itertools.groupby(
+        reviews_with_date, key=lambda r: r.date_read.year
+    ):
         yield year, list(revs)
+
+    yield None, list(reversed(reviews_without_date))
 
 
 @app.before_first_request

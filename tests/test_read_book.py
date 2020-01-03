@@ -4,7 +4,7 @@ Tests for the "read book" page.
 
 import bs4
 
-from src.models import Book
+from src.models import Review
 
 
 def test_can_add_book_without_read_date(client, logged_in_user, book, fake):
@@ -39,6 +39,8 @@ def test_can_add_book_without_read_date(client, logged_in_user, book, fake):
     title = soup.find("h3", attrs={"book-title"})
     assert book.title in title.text
 
-    stored_book = Book.query.get(1)
-    print(stored_book)
-    assert 0
+    review = Review.query.get(1)
+    assert review.date_read is None
+
+    h3_text = {h3_tag.text.strip() for h3_tag in soup.find_all("h3")}
+    assert "the 1 book i read at another time" in h3_text

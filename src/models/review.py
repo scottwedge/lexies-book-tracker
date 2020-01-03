@@ -7,7 +7,7 @@ from .defaults import today
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     review_text = db.Column(db.Text)
-    date_read = db.Column(db.Date, index=True, default=today)
+    date_read = db.Column(db.Date, index=True, nullable=True)
 
     did_not_finish = db.Column(db.Boolean, default=False)
     is_favourite = db.Column(db.Boolean, default=False)
