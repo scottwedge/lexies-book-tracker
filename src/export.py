@@ -42,9 +42,7 @@ BOOK_CSV_FIELDS = [
 
 
 def reviews_as_csv():
-    fieldnames = (
-        ["review_id"] + BOOK_CSV_FIELDS + ["review_text", "date_read",]
-    )
+    fieldnames = ["review_id"] + BOOK_CSV_FIELDS + ["review_text", "date_read"]
 
     def _rows():
         for review in Review.query.all():
@@ -103,7 +101,7 @@ def plans_as_csv():
 
             row = _book_as_csv_row(plan.book)
             row.update(
-                {"plan_id": plan.id, "note": plan.note, "date_added": date_added,}
+                {"plan_id": plan.id, "note": plan.note, "date_added": date_added}
             )
 
             yield row

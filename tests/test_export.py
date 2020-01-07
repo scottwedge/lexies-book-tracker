@@ -80,10 +80,7 @@ def test_review_date_is_isoformat(client, session, fake, book, logged_in_user):
     book.isbn_10 = ""
     book.isbn_13 = ""
     review = Review(
-        review_text=fake.text(),
-        date_read=today(),
-        book=book,
-        user=logged_in_user,
+        review_text=fake.text(), date_read=today(), book=book, user=logged_in_user,
     )
 
     session.add(review)
