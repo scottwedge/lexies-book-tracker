@@ -52,6 +52,9 @@
       {% endfor %}
     {% endfor %}
     </div>
+    <p>
+      <a href="{{ url_for('export_reviews_as_csv') }}">download as a spreadsheet</a>
+    </p>
   {% else %}
     <p>
       I haven&rsquo;t read any books yet!

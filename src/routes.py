@@ -11,12 +11,13 @@ from flask import (
     render_template,
     request,
     Response,
+    send_file,
     url_for,
 )
 from flask_login import current_user, login_required, login_user, logout_user
 import requests
 
-from . import app, db
+from . import app, db, export
 from .booksearch import lookup_google_books
 from .forms import (
     ReadingForm,
@@ -158,6 +159,17 @@ def get_review(review_id):
         edit_form=edit_form,
         title=f"my review of {review.book.title}",
         show_reviews=True,
+    )
+
+
+@app.route("/export/reviews")
+def export_reviews_as_csv():
+    csv_buf = export.reviews_as_csv()
+    return send_file(
+        csv_buf,
+        attachment_filename="reviews.csv",
+        as_attachment=True,
+        mimetype="Content-Type: text/csv; charset=utf-8",
     )
 
 
