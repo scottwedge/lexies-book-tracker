@@ -1,7 +1,7 @@
 import csv
 import io
 
-from src.models import Review
+from .models import Review
 
 
 def reviews_as_csv():

@@ -2,7 +2,6 @@
 
 import os
 import pathlib
-import random
 import secrets
 import sys
 import time
@@ -14,6 +13,8 @@ from faker import Faker
 from faker.providers import date_time, internet, misc
 import pytest
 import requests
+
+import helpers
 
 sys.path.append(str(pathlib.Path(__file__).parent.parent / "src"))
 
@@ -121,15 +122,7 @@ def logged_in_user(session, client, user):
 
 @pytest.fixture(scope="function")
 def book(session, fake):
-    bk = Book(
-        title=fake.name(),
-        author=", ".join(fake.name() for _ in range(random.randint(0, 5))),
-        year=fake.numerify("####"),
-        identifiers='[{"type": "ISBN_10", "value": "1234567890"}]',
-        source_id=fake.numerify(),
-    )
-    session.add(bk)
-    return bk
+    return helpers.create_book(session=session, fake=fake)
 
 
 @pytest.fixture
