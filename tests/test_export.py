@@ -1,9 +1,13 @@
 import csv
-import datetime as dt
+import datetime
 import io
 
 from helpers import create_book
-from src.models import Review
+from src.models import Plan, Review
+
+
+def today():
+    return datetime.datetime.now().date()
 
 
 def test_can_export_reviews(client, session, fake, logged_in_user):
@@ -77,7 +81,7 @@ def test_review_date_is_isoformat(client, session, fake, book, logged_in_user):
     book.isbn_13 = ""
     review = Review(
         review_text=fake.text(),
-        date_read=dt.datetime.now().date(),
+        date_read=today(),
         book=book,
         user=logged_in_user,
     )
@@ -91,4 +95,52 @@ def test_review_date_is_isoformat(client, session, fake, book, logged_in_user):
     csv_rows = [dict(row) for row in csv.DictReader(csv_buf)]
 
     row = csv_rows[0]
-    assert row["date_read"] == dt.datetime.now().strftime("%Y-%m-%d")
+    assert row["date_read"] == today().strftime("%Y-%m-%d")
+
+
+def test_can_export_plans(client, session, fake, logged_in_user):
+    book1 = create_book(
+        session=session, fake=fake, isbn_10=fake.numerify(), isbn_13=fake.numerify()
+    )
+    book2 = create_book(
+        session=session, fake=fake, isbn_10=fake.numerify(), isbn_13=fake.numerify()
+    )
+
+    plan1 = Plan(note=fake.text(), book=book1, user=logged_in_user, date_added=today())
+    plan2 = Plan(note=fake.text(), book=book2, user=logged_in_user, date_added=today())
+
+    session.add(plan1)
+    session.add(plan2)
+    session.commit()
+
+    resp = client.get("/export/plans")
+    csv_buf = io.StringIO(resp.data.decode("utf-8"))
+
+    csv_rows = [dict(row) for row in csv.DictReader(csv_buf)]
+
+    assert csv_rows == [
+        {
+            "plan_id": str(plan1.id),
+            "title": book1.title,
+            "author": book1.author,
+            "year": book1.year,
+            "source_id": book1.source_id,
+            "image_url": book1.image_url,
+            "isbn_10": book1.isbn_10,
+            "isbn_13": book1.isbn_13,
+            "note": plan1.note,
+            "date_added": today().strftime("%Y-%m-%d"),
+        },
+        {
+            "plan_id": str(plan2.id),
+            "title": book2.title,
+            "author": book2.author,
+            "year": book2.year,
+            "source_id": book2.source_id,
+            "image_url": book2.image_url,
+            "isbn_10": book2.isbn_10,
+            "isbn_13": book2.isbn_13,
+            "note": plan2.note,
+            "date_added": today().strftime("%Y-%m-%d"),
+        },
+    ]

@@ -221,6 +221,17 @@ def list_plans():
     )
 
 
+@app.route("/export/plans")
+def export_plans_as_csv():
+    csv_buf = export.plans_as_csv()
+    return send_file(
+        csv_buf,
+        attachment_filename="plans.csv",
+        as_attachment=True,
+        mimetype="Content-Type: text/csv; charset=utf-8",
+    )
+
+
 @app.route("/add-plan", methods=["POST"])
 def add_plan():
     user = User.query.get(1)
