@@ -177,9 +177,17 @@ def _get_image_url(sess, item):
 
 
 def lookup_google_books(*, sess=requests.Session(), api_key, search_query):
+    params = [
+        ("q", search_query),
+        ("country", "UK"),
+    ]
+
+    if api_key is not None:
+        params.append(("key", api_key))
+
     resp = sess.get(
         "https://www.googleapis.com/books/v1/volumes",
-        params=[("q", search_query), ("key", api_key), ("country", "UK")],
+        params=params,
         headers={"User-Agent": "alexwlchan's book tracker"},
     )
     resp.raise_for_status()

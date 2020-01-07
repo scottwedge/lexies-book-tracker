@@ -22,7 +22,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://www.googleapis.com/books/v1/volumes?q=2lBxWxua9H0C&key=<API_KEY>&country=UK"
+        "uri": "https://www.googleapis.com/books/v1/volumes?q=2lBxWxua9H0C&country=UK&key=<API_KEY>"
       },
       "response": {
         "body": {
@@ -75,7 +75,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.googleapis.com/books/v1/volumes?q=2lBxWxua9H0C&key=<API_KEY>&country=UK"
+        "url": "https://www.googleapis.com/books/v1/volumes?q=2lBxWxua9H0C&country=UK&key=<API_KEY>"
       }
     }
   ],
