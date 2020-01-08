@@ -11,12 +11,13 @@ from flask import (
     render_template,
     request,
     Response,
+    send_file,
     url_for,
 )
 from flask_login import current_user, login_required, login_user, logout_user
 import requests
 
-from . import app, db
+from . import app, db, export
 from .booksearch import lookup_google_books
 from .forms import (
     ReadingForm,
@@ -161,6 +162,17 @@ def get_review(review_id):
     )
 
 
+@app.route("/export/reviews")
+def export_reviews_as_csv():
+    csv_buf = export.reviews_as_csv()
+    return send_file(
+        csv_buf,
+        attachment_filename="reviews.csv",
+        as_attachment=True,
+        mimetype="Content-Type: text/csv; charset=utf-8",
+    )
+
+
 @app.route("/reading")
 def list_reading():
     user = User.query.get(1)
@@ -181,7 +193,18 @@ def list_reading():
         reading_form=reading_form,
         review_form=review_form,
         edit_form=edit_form,
-        title=f"what i’m reading",
+        title="what i’m reading",
+    )
+
+
+@app.route("/export/reading")
+def export_reading_as_csv():
+    csv_buf = export.reading_as_csv()
+    return send_file(
+        csv_buf,
+        attachment_filename="reading.csv",
+        as_attachment=True,
+        mimetype="Content-Type: text/csv; charset=utf-8",
     )
 
 
@@ -205,7 +228,18 @@ def list_plans():
         plan_form=plan_form,
         review_form=review_form,
         edit_form=edit_form,
-        title=f"what i want to read",
+        title="what i want to read",
+    )
+
+
+@app.route("/export/plans")
+def export_plans_as_csv():
+    csv_buf = export.plans_as_csv()
+    return send_file(
+        csv_buf,
+        attachment_filename="plans.csv",
+        as_attachment=True,
+        mimetype="Content-Type: text/csv; charset=utf-8",
     )
 
 
