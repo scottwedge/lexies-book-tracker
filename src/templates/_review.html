@@ -23,7 +23,7 @@
         {% endif %}
         {% if review.date_read %}
           Read: {{ review.date_read | render_date }}
-        {% endif %}
+        {%- endif -%}
 
         {%- if review.did_not_finish or review.is_favourite -%}
           ,
