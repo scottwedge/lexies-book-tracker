@@ -34,9 +34,15 @@ class Book(db.Model):
         """
         book = Book.query.filter_by(source_id=source_id).first()
 
+        if not isinstance(identifiers, str):
+            identifiers_json = json.dumps(identifiers)
+        else:
+            identifiers_json = identifiers
+
         if book is not None:
             return book
         else:
+            print(identifiers)
             new_book = Book(
                 title=title,
                 author=author,
@@ -45,7 +51,7 @@ class Book(db.Model):
                 # because it might be useful for something later on.  It isn't
                 # used anywhere yet, just kept as future-proofing -- if I want
                 # to bring in more metadata later, this is a good way to get it.
-                identifiers_json=json.dumps(identifiers),
+                identifiers_json=identifiers_json,
                 isbn_10=isbn_10,
                 isbn_13=isbn_13,
                 source_id=source_id,
