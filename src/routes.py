@@ -193,7 +193,18 @@ def list_reading():
         reading_form=reading_form,
         review_form=review_form,
         edit_form=edit_form,
-        title=f"what i’m reading",
+        title="what i’m reading",
+    )
+
+
+@app.route("/export/reading")
+def export_reading_as_csv():
+    csv_buf = export.reading_as_csv()
+    return send_file(
+        csv_buf,
+        attachment_filename="reading.csv",
+        as_attachment=True,
+        mimetype="Content-Type: text/csv; charset=utf-8",
     )
 
 
@@ -217,7 +228,7 @@ def list_plans():
         plan_form=plan_form,
         review_form=review_form,
         edit_form=edit_form,
-        title=f"what i want to read",
+        title="what i want to read",
     )
 
 

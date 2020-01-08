@@ -3,7 +3,7 @@ import datetime
 import io
 
 from helpers import create_book
-from src.models import Plan, Review
+from src.models import Plan, Reading, Review
 
 
 def today():
@@ -139,5 +139,57 @@ def test_can_export_plans(client, session, fake, logged_in_user):
             "isbn_13": book2.isbn_13,
             "note": plan2.note,
             "date_added": today().strftime("%Y-%m-%d"),
+        },
+    ]
+
+
+def test_can_export_reading(client, session, fake, logged_in_user):
+    book1 = create_book(
+        session=session, fake=fake, isbn_10=fake.numerify(), isbn_13=fake.numerify()
+    )
+    book2 = create_book(
+        session=session, fake=fake, isbn_10=fake.numerify(), isbn_13=fake.numerify()
+    )
+
+    reading1 = Reading(
+        note=fake.text(), book=book1, user=logged_in_user, date_started=today()
+    )
+    reading2 = Reading(
+        note=fake.text(), book=book2, user=logged_in_user, date_started=today()
+    )
+
+    session.add(reading1)
+    session.add(reading2)
+    session.commit()
+
+    resp = client.get("/export/reading")
+    csv_buf = io.StringIO(resp.data.decode("utf-8"))
+
+    csv_rows = [dict(row) for row in csv.DictReader(csv_buf)]
+
+    assert csv_rows == [
+        {
+            "reading_id": str(reading1.id),
+            "title": book1.title,
+            "author": book1.author,
+            "year": book1.year,
+            "source_id": book1.source_id,
+            "image_url": book1.image_url,
+            "isbn_10": book1.isbn_10,
+            "isbn_13": book1.isbn_13,
+            "note": reading1.note,
+            "date_started": today().strftime("%Y-%m-%d"),
+        },
+        {
+            "reading_id": str(reading2.id),
+            "title": book2.title,
+            "author": book2.author,
+            "year": book2.year,
+            "source_id": book2.source_id,
+            "image_url": book2.image_url,
+            "isbn_10": book2.isbn_10,
+            "isbn_13": book2.isbn_13,
+            "note": reading2.note,
+            "date_started": today().strftime("%Y-%m-%d"),
         },
     ]
