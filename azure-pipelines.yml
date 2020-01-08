@@ -20,7 +20,7 @@ steps:
   displayName: "Install dependencies"
 
 - script: |
-    flake8 --ignore=E501 --max-complexity=10
+    flake8 --ignore=E501,W503 --max-complexity=10
   displayName: "Run linting"
 
 - script: |
