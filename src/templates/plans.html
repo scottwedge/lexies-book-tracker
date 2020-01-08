@@ -42,8 +42,8 @@
   <script>
     const container = document.querySelector(".books");
     if (container) {
-      const plans = new Plans(container);
-      plans.addEventListeners();
+      const editor = new BookEditor(container, "plan");
+      editor.addEventListeners();
     }
   </script>
 

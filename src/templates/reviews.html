@@ -64,8 +64,8 @@
   <script>
     const container = document.querySelector(".books");
     if (container) {
-      const books = new Books(container);
-      books.addEventListeners();
+      const editor = new BookEditor(container, "book");
+      editor.addEventListeners();
     }
   </script>
 {% endblock %}

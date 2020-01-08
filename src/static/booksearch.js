@@ -149,127 +149,42 @@ class Booksearch {
   }
 }
 
-class Books {
-  constructor(container) {
+class BookEditor {
+  constructor(container, bookType) {
     this.container = container;
-    this.editing = null;
+    this.bookType = bookType;
+    this.editing = null
   }
 
   addEventListeners() {
-    [...document.querySelectorAll(".edit-book")].forEach(item => {
+    [...document.querySelectorAll(".edit-" + this.bookType)].forEach(item => {
       item.addEventListener("click", evt => {
         if (this.editing === null) {
-          this.editing = parseInt(evt.target.dataset["bookid"]);
+          this.editing = parseInt(evt.target.dataset[this.bookType + "id"]);
         } else {
           this.editing = null;
         }
         this.renderEditing();
-      });
+      })
     });
     [...document.querySelectorAll(".cancel-edit")].forEach(item => {
       item.addEventListener("click", evt => {
         this.editing = null;
         this.renderEditing();
-      });
-    });
+      })
+    })
   }
 
   renderEditing() {
-    const div = document.getElementById("book-" + this.editing);
+    const div = document.getElementById(this.bookType + "-" + this.editing);
+    const editFormClass = "." + this.bookType + "-edit-form";
 
     if (this.editing) {
-      console.log(this.editing);
-      console.log(div);
-      const form = div.querySelector(".book-edit-form");
+      const form = div.querySelector(editFormClass);
 
       form.classList.remove("hidden");
     } else {
-      [...document.querySelectorAll(".book-edit-form")].forEach(item => {
-        item.classList.add("hidden");
-      });
-    }
-  }
-}
-
-class Reading {
-  constructor(container) {
-    this.container = container;
-    this.editing = null;
-  }
-
-  addEventListeners() {
-    [...document.querySelectorAll(".edit-reading")].forEach(item => {
-      item.addEventListener("click", evt => {
-        if (this.editing === null) {
-          this.editing = parseInt(evt.target.dataset["readingid"]);
-        } else {
-          this.editing = null;
-        }
-        this.renderEditing();
-      });
-    });
-    [...document.querySelectorAll(".cancel-edit")].forEach(item => {
-      item.addEventListener("click", evt => {
-        this.editing = null;
-        this.renderEditing();
-      });
-    });
-  }
-
-  renderEditing() {
-    console.log(this.editing);
-    const div = document.getElementById("reading-" + this.editing);
-
-    console.log(div);
-
-    if (this.editing) {
-      const form = div.querySelector(".reading-edit-form");
-
-      form.classList.remove("hidden");
-    } else {
-      [...document.querySelectorAll(".reading-edit-form")].forEach(item => {
-        item.classList.add("hidden");
-      });
-    }
-  }
-}
-
-class Plans {
-  constructor(container) {
-    this.container = container;
-    this.editing = null;
-  }
-
-  addEventListeners() {
-    [...document.querySelectorAll(".edit-plan")].forEach(item => {
-      item.addEventListener("click", evt => {
-        console.log(evt);
-        if (this.editing === null) {
-          this.editing = parseInt(evt.target.dataset["planid"]);
-          console.log(this.editing);
-        } else {
-          this.editing = null;
-        }
-        this.renderEditing();
-      });
-    });
-    [...document.querySelectorAll(".cancel-edit")].forEach(item => {
-      item.addEventListener("click", evt => {
-        this.editing = null;
-        this.renderEditing();
-      });
-    });
-  }
-
-  renderEditing() {
-    const div = document.getElementById("plan-" + this.editing);
-
-    if (this.editing) {
-      const form = div.querySelector(".plan-edit-form");
-
-      form.classList.remove("hidden");
-    } else {
-      [...document.querySelectorAll(".plan-edit-form")].forEach(item => {
+      [...document.querySelectorAll(editFormClass)].forEach(item => {
         item.classList.add("hidden");
       });
     }
