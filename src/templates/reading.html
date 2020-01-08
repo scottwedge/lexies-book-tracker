@@ -30,6 +30,9 @@
       {% include "_reading.html" %}
     {% endfor %}
     </div>
+    <p>
+      <a href="{{ url_for('export_reading_as_csv') }}">download as a spreadsheet</a>
+    </p>
   {% else %}
     <p>
       I&rsquo;m not reading any books right now!
