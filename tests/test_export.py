@@ -113,6 +113,11 @@ def test_review_date_is_isoformat(client, session, fake, book, user):
     assert row["date_read"] == today().strftime("%Y-%m-%d")
 
 
+def test_only_shows_export_link_if_have_reviews(client, session, user):
+    download_link = _find_download_link(client, path="/read")
+    assert download_link is None
+
+
 def test_can_export_plans(client, session, fake, user):
     book1 = create_book(
         session=session, fake=fake, isbn_10=fake.numerify(), isbn_13=fake.numerify()
@@ -164,7 +169,12 @@ def test_can_export_plans(client, session, fake, user):
     ]
 
 
-def test_can_export_reading(client, session, fake, logged_in_user):
+def test_only_shows_export_link_if_have_plans(client, session, user):
+    download_link = _find_download_link(client, path="/to-read")
+    assert download_link is None
+
+
+def test_can_export_reading(client, session, fake, user):
     book1 = create_book(
         session=session, fake=fake, isbn_10=fake.numerify(), isbn_13=fake.numerify()
     )
@@ -172,12 +182,8 @@ def test_can_export_reading(client, session, fake, logged_in_user):
         session=session, fake=fake, isbn_10=fake.numerify(), isbn_13=fake.numerify()
     )
 
-    reading1 = Reading(
-        note=fake.text(), book=book1, user=logged_in_user, date_started=today()
-    )
-    reading2 = Reading(
-        note=fake.text(), book=book2, user=logged_in_user, date_started=today()
-    )
+    reading1 = Reading(note=fake.text(), book=book1, user=user, date_started=today())
+    reading2 = Reading(note=fake.text(), book=book2, user=user, date_started=today())
 
     session.add(reading1)
     session.add(reading2)
@@ -217,3 +223,8 @@ def test_can_export_reading(client, session, fake, logged_in_user):
             "date_started": today().strftime("%Y-%m-%d"),
         },
     ]
+
+
+def test_only_shows_export_link_if_have_reading(client, session, user):
+    download_link = _find_download_link(client, path="/reading")
+    assert download_link is None
