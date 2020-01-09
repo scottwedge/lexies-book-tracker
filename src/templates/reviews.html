@@ -41,20 +41,25 @@
     <div class="books">
     {% for year, matching_reviews in reviews|group_by_year %}
       {% set count = matching_reviews|length %}
+      {% if not is_single_review %}
       <h3>
         the {{ matching_reviews|length }} book{% if count != 1 %}s{% endif %} i read
         {%- if year %} in {{ year }}
         {%- else %} at another time{%- endif -%}
       </h3>
+      {% endif %}
 
       {% for review in matching_reviews %}
         {% include "_review.html" %}
       {% endfor %}
     {% endfor %}
     </div>
+
+    {% if not is_single_review %}
     <p>
       <a href="{{ url_for('export_reviews_as_csv') }}">download as a spreadsheet</a>
     </p>
+    {% endif %}
   {% else %}
     <p>
       I haven&rsquo;t read any books yet!

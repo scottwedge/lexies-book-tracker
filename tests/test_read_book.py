@@ -95,7 +95,7 @@ def test_shows_books_in_review_order(client, session, fake, book, user):
     session.commit()
 
     resp = client.get("/read")
-    soup = bs4.BeautifulSoup(resp.data)
+    soup = bs4.BeautifulSoup(resp.data, "html.parser")
 
     h3_titles = [h3_tag.text.strip() for h3_tag in soup.find_all("h3")]
 

@@ -158,6 +158,7 @@ def get_review(review_id):
         review_form=review_form,
         edit_form=edit_form,
         title=f"my review of {review.book.title}",
+        is_single_review=True,
         show_reviews=True,
     )
 
