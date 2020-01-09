@@ -61,6 +61,7 @@ def group_by_year(reviews):
     reviews_with_date = sorted(
         [rev for rev in reviews if rev.date_read is not None],
         key=lambda rev: rev.date_read.year,
+        reverse=True,
     )
 
     reviews_without_date = [rev for rev in reviews if rev.date_read is None]

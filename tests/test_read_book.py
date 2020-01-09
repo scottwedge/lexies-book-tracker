@@ -78,3 +78,29 @@ def test_only_shows_another_time_list_if_nonempty(client, logged_in_user, book, 
 
     h3_text = {h3_tag.text.strip() for h3_tag in soup.find_all("h3")}
     assert "the 1 book i read at another time" not in h3_text
+
+
+def test_shows_books_in_review_order(client, session, fake, book, user):
+    review1 = Review(
+        review_text=fake.text(), date_read=dt.datetime(2001, 1, 1), book=book, user=user
+    )
+    review2 = Review(
+        review_text=fake.text(), date_read=dt.datetime(2002, 1, 1), book=book, user=user
+    )
+    review3 = Review(review_text=fake.text(), date_read=None, book=book, user=user)
+
+    session.add(review1)
+    session.add(review2)
+    session.add(review3)
+    session.commit()
+
+    resp = client.get("/read")
+    soup = bs4.BeautifulSoup(resp.data)
+
+    h3_titles = [h3_tag.text.strip() for h3_tag in soup.find_all("h3")]
+
+    assert (
+        h3_titles.index("the 1 book i read in 2002")
+        < h3_titles.index("the 1 book i read in 2001")
+        < h3_titles.index("the 1 book i read at another time")
+    )
