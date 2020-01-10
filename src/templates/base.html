@@ -14,19 +14,18 @@
   <body>
     {% include "_header.html" %}
 
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul id="messages">
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    <hr>
-    {% endif %}
-
-    {% endwith %}
-
     <main>
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <div id="messages">
+        {% for message in messages %}
+        <div>{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% endwith %}
+
       {% block content %}{% endblock %}
     </main>
 

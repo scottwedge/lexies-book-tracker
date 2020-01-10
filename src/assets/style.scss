@@ -58,6 +58,17 @@ button.delete-book {
   display: inline-block;
 }
 
+// flashed messages
+
+#messages div {
+  background: rgba(61, 174, 76, 0.25);
+  border: 1px solid #248f32;
+  color: #14521d;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-bottom: 1em;
+}
+
 @import "_aside.scss";
 @import "_booklist.scss";
 @import "_booksearch.scss";
