@@ -136,7 +136,7 @@ def list_reviews():
         review_form=review_form,
         edit_form=edit_form,
         title="my books",
-        today=datetime.datetime.now().date()
+        today=datetime.datetime.now().date(),
     )
 
 
@@ -196,7 +196,7 @@ def list_reading():
         reading_form=reading_form,
         review_form=review_form,
         edit_form=edit_form,
-        title="what i’m reading"
+        title="what i’m reading",
     )
 
 
