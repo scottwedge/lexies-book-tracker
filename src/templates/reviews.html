@@ -40,10 +40,14 @@
   {% if reviews %}
     <div class="books">
     {% for year, matching_reviews in reviews|group_by_year %}
+      <div class="reviews_by_year">
       {% set count = matching_reviews|length %}
       {% if not is_single_review %}
       <h3>
-        the {{ matching_reviews|length }} book{% if count != 1 %}s{% endif %} i read
+        the {{ matching_reviews|length }} book{% if count != 1 %}s{% endif %}
+
+        {%- if year and year == today.year %} i&rsquo;ve read so far{% else %} i read{% endif %}
+
         {%- if year %} in {{ year }}
         {%- else %} at another time{%- endif -%}
       </h3>
@@ -52,6 +56,7 @@
       {% for review in matching_reviews %}
         {% include "_review.html" %}
       {% endfor %}
+      </div>
     {% endfor %}
     </div>
 

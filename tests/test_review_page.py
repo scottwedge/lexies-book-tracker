@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 
 from src.models import Review
@@ -22,3 +24,12 @@ def test_no_spreadsheet_on_single_review(client, review):
     resp = client.get(f"/reviews/{review.id}")
 
     assert b"download as a spreadsheet" not in resp.data
+
+
+def test_this_years_review_is_special(client, session, review):
+    review.date_read = datetime.datetime.now().date()
+    session.commit()
+
+    resp = client.get("/read")
+    expected_text = f"the 1 book i&rsquo;ve read so far in {review.date_read.year}"
+    assert expected_text.encode("utf8") in resp.data

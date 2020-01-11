@@ -1,5 +1,6 @@
 # -*- encoding: utf-8
 
+import datetime
 import hashlib
 from urllib.parse import unquote_plus
 
@@ -134,7 +135,8 @@ def list_reviews():
         reviews=user.reviews.order_by(Review.date_read.desc()).all(),
         review_form=review_form,
         edit_form=edit_form,
-        title=f"my books",
+        title="my books",
+        today=datetime.datetime.now().date()
     )
 
 
@@ -194,7 +196,7 @@ def list_reading():
         reading_form=reading_form,
         review_form=review_form,
         edit_form=edit_form,
-        title="what i’m reading",
+        title="what i’m reading"
     )
 
 
