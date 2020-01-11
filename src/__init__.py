@@ -6,7 +6,7 @@ import json
 import pathlib
 from urllib.parse import quote_plus
 
-from autolink import linkify
+from .vendor.autolink import linkify
 from flask import Flask
 from flask_login import LoginManager
 from flask_migrate import Migrate
