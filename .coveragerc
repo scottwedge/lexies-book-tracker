@@ -4,6 +4,8 @@ include =
     src/*.py
     src/**/*.py
     tests/*.py
+omit =
+    src/vendor/*.py
 
 [report]
 show_missing = true
