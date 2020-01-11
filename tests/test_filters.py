@@ -19,6 +19,10 @@ import pytest
             "This link is in parens (https://example.org)",
             'This link is in parens (<a href="https://example.org">https://example.org</a>)',
         ),
+        (
+            "This link is in parens (https://example.org/my_file), and then another clause",
+            'This link is in parens (<a href="https://example.org/my_file">https://example.org/my_file</a>), and then another clause',
+        ),
     ],
 )
 def test_render_text(source_text, expected_text):

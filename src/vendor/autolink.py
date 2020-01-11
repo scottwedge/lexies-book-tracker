@@ -12,6 +12,13 @@ the version installed by pip, and fix any imports that use this file.
 Also, if this is the last vendored file, remove the vendor exclusions in the
 black/flake8 config for CI.
 
+It also has a me-specific punctuation fix, for URLs of the form
+
+    (https://example.org),
+
+I haven't offered an upstream fix yet, because I haven't been able to satisfactorily
+debug why autolink is doing this.
+
 Tracked by https://github.com/alexwlchan/lexies-book-tracker/issues/27
 
 """
@@ -83,11 +90,11 @@ def linkify(text, attrs={}):
             return '', s, ''
 
     def link_repl(url, proto='http://'):
-        opening, url, closing = separate_parentheses(url)
-
         punct = re_find(punct_re, url)
         if punct:
             url = url[:-len(punct)]
+
+        opening, url, closing = separate_parentheses(url)
 
         if re.search(proto_re, url):
             href = url
@@ -97,8 +104,7 @@ def linkify(text, attrs={}):
 
         repl = u'{0!s}<a href="{1!s}"{2!s}>{3!s}</a>{4!s}{5!s}'
         return repl.format(opening,
-                           href, attrs_text, url, punct,
-                           closing)
+                           href, attrs_text, url, closing, punct)
 
     def repl(match):
         matches = match.groupdict()
