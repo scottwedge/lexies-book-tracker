@@ -53,7 +53,7 @@ def render_date(date_val):
     elif delta.days <= 7:
         return f"{delta.days} days ago"
     else:
-        return date_val.strftime("%d %B %Y")
+        return date_val.strftime("%-d %B %Y")
 
 
 @app.template_filter("group_by_year")

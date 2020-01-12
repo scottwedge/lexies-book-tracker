@@ -1,4 +1,6 @@
-from src import render_text
+import datetime as dt
+
+from src import render_date, render_text
 
 import pytest
 
@@ -27,3 +29,17 @@ import pytest
 )
 def test_render_text(source_text, expected_text):
     assert render_text(source_text) == expected_text
+
+
+@pytest.mark.parametrize(
+    "date_val, expected_text",
+    [
+        (dt.datetime.now(), "today"),
+        (dt.datetime.now() - dt.timedelta(days=1), "yesterday"),
+        (dt.datetime.now() - dt.timedelta(days=5), "5 days ago"),
+        (dt.datetime.now() - dt.timedelta(days=7), "7 days ago"),
+        (dt.datetime(2019, 12, 1), "1 December 2019"),
+    ],
+)
+def test_render_date(date_val, expected_text):
+    assert render_date(date_val.date()) == expected_text

@@ -33,3 +33,12 @@ def test_this_years_review_is_special(client, session, review):
     resp = client.get("/read")
     expected_text = f"the 1 book i&rsquo;ve read so far in {review.date_read.year}"
     assert expected_text.encode("utf8") in resp.data
+
+
+def test_no_leading_zero_on_dates(client, session, review):
+    review.date_read = datetime.datetime(2019, 12, 1).date()
+    session.commit()
+
+    resp = client.get("/read")
+    assert b"Read: 1 December 2019" in resp.data
+    assert b"Read: 01 December 2019" not in resp.data
