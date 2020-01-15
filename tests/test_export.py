@@ -169,6 +169,34 @@ def test_can_export_plans(client, session, fake, user):
     ]
 
 
+def test_export_plan_uses_empty_string_for_missing_date(client, session, plan):
+    plan.date_added = None
+    session.commit()
+
+    download_link = _find_download_link(client, path="/to-read")
+    assert download_link is not None
+
+    resp = client.get(download_link)
+    csv_buf = io.StringIO(resp.data.decode("utf-8"))
+
+    csv_rows = [dict(row) for row in csv.DictReader(csv_buf)]
+
+    assert csv_rows == [
+        {
+            "plan_id": str(plan.id),
+            "title": plan.book.title,
+            "author": plan.book.author,
+            "year": plan.book.year,
+            "source_id": plan.book.source_id,
+            "image_url": plan.book.image_url,
+            "isbn_10": plan.book.isbn_10,
+            "isbn_13": plan.book.isbn_13,
+            "note": plan.note,
+            "date_added": "",
+        },
+    ]
+
+
 def test_only_shows_export_link_if_have_plans(client, session, user):
     download_link = _find_download_link(client, path="/to-read")
     assert download_link is None
@@ -221,6 +249,34 @@ def test_can_export_reading(client, session, fake, user):
             "isbn_13": book2.isbn_13,
             "note": reading2.note,
             "date_started": today().strftime("%Y-%m-%d"),
+        },
+    ]
+
+
+def test_export_reading_uses_empty_string_for_missing_date(client, session, reading):
+    reading.date_started = None
+    session.commit()
+
+    download_link = _find_download_link(client, path="/reading")
+    assert download_link is not None
+
+    resp = client.get(download_link)
+    csv_buf = io.StringIO(resp.data.decode("utf-8"))
+
+    csv_rows = [dict(row) for row in csv.DictReader(csv_buf)]
+
+    assert csv_rows == [
+        {
+            "reading_id": str(reading.id),
+            "title": reading.book.title,
+            "author": reading.book.author,
+            "year": reading.book.year,
+            "source_id": reading.book.source_id,
+            "image_url": reading.book.image_url,
+            "isbn_10": reading.book.isbn_10,
+            "isbn_13": reading.book.isbn_13,
+            "note": reading.note,
+            "date_started": "",
         },
     ]
 

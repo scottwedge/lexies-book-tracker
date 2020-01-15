@@ -65,22 +65,25 @@ def reviews_as_csv():
     return _create_stringio_csv(fieldnames=fieldnames, rows=_rows())
 
 
+def _format_date(d):
+    try:
+        return d.isoformat()
+    except AttributeError:
+        assert d is None, d
+        return ""
+
+
 def reading_as_csv():
     fieldnames = ["reading_id"] + BOOK_CSV_FIELDS + ["note", "date_started"]
 
     def _rows():
         for reading in Reading.query.all():
-            try:
-                date_started = reading.date_started.isoformat()
-            except AttributeError:
-                date_started = ""
-
             row = _book_as_csv_row(reading.book)
             row.update(
                 {
                     "reading_id": reading.id,
                     "note": reading.note,
-                    "date_started": date_started,
+                    "date_started": _format_date(reading.date_started),
                 }
             )
 
@@ -94,14 +97,13 @@ def plans_as_csv():
 
     def _rows():
         for plan in Plan.query.all():
-            try:
-                date_added = plan.date_added.isoformat()
-            except AttributeError:
-                date_added = ""
-
             row = _book_as_csv_row(plan.book)
             row.update(
-                {"plan_id": plan.id, "note": plan.note, "date_added": date_added}
+                {
+                    "plan_id": plan.id,
+                    "note": plan.note,
+                    "date_added": _format_date(plan.date_added),
+                }
             )
 
             yield row
