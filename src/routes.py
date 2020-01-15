@@ -437,14 +437,18 @@ def login():
         return redirect(url_for("list_reviews"))
 
     form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user is None or not user.check_password(form.password.data):
-            flash("Unrecognised username or password")
-            return redirect(url_for("login"))
+
+    if not form.validate_on_submit():
+        return render_template("login.html", title="Log In", form=form)
+
+    user = User.query.filter_by(username=form.username.data).first()
+
+    if (user is not None) and user.check_password(form.password.data):
         login_user(user, remember=form.remember_me.data)
         return redirect(url_for("list_reviews", username=user.username))
-    return render_template("login.html", title="Log In", form=form)
+    else:
+        flash("Unrecognised username or password")
+        return redirect(url_for("login"))
 
 
 @app.route("/logout")
