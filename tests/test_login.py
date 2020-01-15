@@ -24,9 +24,7 @@ def test_can_log_out(client, logged_in_user):
 
 def test_already_logged_in_user_goes_to_reviews(client, logged_in_user):
     resp = client.get("/login")
-
-    assert resp.status_code == 302
-    assert resp.headers["Location"].endswith("/read")
+    assert helpers.is_redirect(resp, location="/read")
 
 
 def test_logging_in_as_unknown_user_is_error(client, session):
@@ -41,8 +39,7 @@ def test_logging_in_as_unknown_user_is_error(client, session):
         },
     )
 
-    assert resp.status_code == 302
-    assert resp.headers["Location"].endswith("/login")
+    assert helpers.is_redirect(resp, location="/login")
 
     resp = client.get("/login")
     assert b"Unrecognised username or password" in resp.data
@@ -63,8 +60,7 @@ def test_logging_in_with_wrong_password_is_error(client, session, user):
         },
     )
 
-    assert resp.status_code == 302
-    assert resp.headers["Location"].endswith("/login")
+    assert helpers.is_redirect(resp, location="/login")
 
     resp = client.get("/login")
     assert b"Unrecognised username or password" in resp.data
