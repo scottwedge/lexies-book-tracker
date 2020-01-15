@@ -1,5 +1,6 @@
 import datetime
 
+import bs4
 import pytest
 
 
@@ -31,3 +32,10 @@ def test_no_leading_zero_on_dates(client, session, review):
     resp = client.get("/read")
     assert b"Read: 1 December 2019" in resp.data
     assert b"Read: 01 December 2019" not in resp.data
+
+
+def test_no_add_review_form_if_not_logged_in(client, session, user):
+    resp = client.get("/read")
+
+    soup = bs4.BeautifulSoup(resp.data, "html.parser")
+    assert soup.find("div", attrs={"book-add-form"}) is None

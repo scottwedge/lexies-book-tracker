@@ -30,7 +30,7 @@ def fake():
     return faker_inst
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def test_app(request):
     """Session-wide test `Flask` application."""
     app.config["TESTING"] = True
@@ -47,7 +47,7 @@ def test_app(request):
     return app
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def client(test_app):
     with test_app.test_client() as test_client:
         yield test_client
@@ -108,10 +108,6 @@ def logged_in_user(session, client, user):
     session.commit()
 
     resp = client.get("/login")
-
-    if resp.status_code == 302:
-        return user
-
     csrf_token = helpers.get_csrf_token(resp.data)
 
     client.post(
