@@ -1,5 +1,7 @@
 import random
 
+import bs4
+
 from src.models import Book
 
 
@@ -19,3 +21,9 @@ def create_book(session, fake, isbn_10=None, isbn_13=None):
     )
     session.add(bk)
     return bk
+
+
+def get_csrf_token(html):
+    soup = bs4.BeautifulSoup(html, "html.parser")
+
+    return soup.find("input", attrs={"id": "csrf_token"}).attrs["value"]

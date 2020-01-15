@@ -8,7 +8,6 @@ import time
 
 import betamax
 from betamax_serializers.pretty_json import PrettyJSONSerializer
-import bs4
 from faker import Faker
 from faker.providers import date_time, internet, misc
 import pytest
@@ -19,7 +18,7 @@ import helpers
 sys.path.append(str(pathlib.Path(__file__).parent.parent / "src"))
 
 from src import app, db as _db  # noqa
-from src.models import Book, User  # noqa
+from src.models import Book, Review, User  # noqa
 
 
 @pytest.fixture(scope="session")
@@ -93,6 +92,15 @@ def user(session, fake):
     return u
 
 
+@pytest.fixture
+def review(session, fake, book, user):
+    review = Review(review_text=fake.text(), date_read=None, book=book, user=user)
+    session.add(review)
+    session.commit()
+
+    return review
+
+
 @pytest.fixture(scope="function")
 def logged_in_user(session, client, user):
     password = secrets.token_hex()
@@ -104,9 +112,7 @@ def logged_in_user(session, client, user):
     if resp.status_code == 302:
         return user
 
-    soup = bs4.BeautifulSoup(resp.data, "html.parser")
-
-    csrf_token = soup.find("input", attrs={"id": "csrf_token"}).attrs["value"]
+    csrf_token = helpers.get_csrf_token(resp.data)
 
     client.post(
         "/login",

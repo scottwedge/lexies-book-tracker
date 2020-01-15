@@ -62,7 +62,7 @@ def add_review():
                 isbn_10=review_form.isbn_10.data,
                 isbn_13=review_form.isbn_13.data,
             )
-            Review.create(
+            review = Review.create(
                 review_text=review_form.review_text.data,
                 date_read=review_form.date_read.data,
                 did_not_finish=review_form.did_not_finish.data,
@@ -73,7 +73,7 @@ def add_review():
         else:
             abort(400)
 
-        return redirect(url_for("list_reviews"))
+        return redirect(url_for("list_reviews") + f"#book-{review.id}")
     else:
         abort(401)
 
