@@ -89,18 +89,6 @@ def add_review():
     return redirect(url_for("list_reviews"))
 
 
-@app.route("/delete-review/<review_id>", methods=["POST"])
-@must_be_primary_user
-def delete_review(review_id):
-    user = User.query.get(1)
-    review = Review.query.filter_by(id=review_id, user_id=user.id).first_or_404()
-
-    db.session.delete(review)
-    db.session.commit()
-
-    return redirect(url_for("list_reviews"))
-
-
 @app.route("/read")
 def list_reviews():
     user = User.query.get(1)
@@ -335,6 +323,18 @@ def add_reading():
         abort(400)
 
     return redirect(url_for("list_reading"))
+
+
+@app.route("/delete-review/<review_id>", methods=["POST"])
+@must_be_primary_user
+def delete_review(review_id):
+    user = User.query.get(1)
+    review = Review.query.filter_by(id=review_id, user_id=user.id).first_or_404()
+
+    db.session.delete(review)
+    db.session.commit()
+
+    return redirect(url_for("list_reviews"))
 
 
 @app.route("/delete-reading/<reading_id>", methods=["POST"])

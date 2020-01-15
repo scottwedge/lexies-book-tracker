@@ -205,3 +205,33 @@ class TestEditRoutes:
         )
 
         assert resp.status_code == 404
+
+
+class TestDeleteRoutes:
+    def test_can_delete_review(self, client, session, logged_in_user, review):
+        resp = client.post(f"/delete-review/{review.id}")
+
+        assert helpers.is_redirect(resp, location="/read")
+        assert Review.query.get(review.id) is None
+
+    def test_can_delete_reading(self, client, session, logged_in_user, reading):
+        resp = client.post(f"/delete-reading/{reading.id}")
+
+        assert helpers.is_redirect(resp, location="/reading")
+        assert Reading.query.get(reading.id) is None
+
+    def test_can_delete_plan(self, client, session, logged_in_user, plan):
+        resp = client.post(f"/delete-plan/{plan.id}")
+
+        assert helpers.is_redirect(resp, location="/to-read")
+        assert Plan.query.get(plan.id) is None
+
+    @pytest.mark.parametrize(
+        "path", ["/delete-review/1", "/delete-reading/1", "/delete-plan/1"]
+    )
+    def test_deleting_nonexistent_object_is_404(
+        self, client, session, logged_in_user, path
+    ):
+        resp = client.post(path)
+
+        assert resp.status_code == 404
