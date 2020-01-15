@@ -48,34 +48,34 @@ def index():
 def add_review():
     user = User.query.get(1)
 
-    if current_user == user:
-        review_form = ReviewForm()
-
-        if review_form.validate_on_submit():
-            book = Book.create_or_get(
-                title=review_form.title.data,
-                author=review_form.author.data,
-                year=review_form.year.data,
-                identifiers=review_form.identifiers.data,
-                source_id=review_form.source_id.data,
-                image_url=review_form.image_url.data,
-                isbn_10=review_form.isbn_10.data,
-                isbn_13=review_form.isbn_13.data,
-            )
-            review = Review.create(
-                review_text=review_form.review_text.data,
-                date_read=review_form.date_read.data,
-                did_not_finish=review_form.did_not_finish.data,
-                is_favourite=review_form.is_favourite.data,
-                book=book,
-                user=user,
-            )
-        else:
-            abort(400)
-
-        return redirect(url_for("list_reviews") + f"#book-{review.id}")
-    else:
+    if current_user != user:
         abort(401)
+
+    review_form = ReviewForm()
+
+    if review_form.validate_on_submit():
+        book = Book.create_or_get(
+            title=review_form.title.data,
+            author=review_form.author.data,
+            year=review_form.year.data,
+            identifiers=review_form.identifiers.data,
+            source_id=review_form.source_id.data,
+            image_url=review_form.image_url.data,
+            isbn_10=review_form.isbn_10.data,
+            isbn_13=review_form.isbn_13.data,
+        )
+        review = Review.create(
+            review_text=review_form.review_text.data,
+            date_read=review_form.date_read.data,
+            did_not_finish=review_form.did_not_finish.data,
+            is_favourite=review_form.is_favourite.data,
+            book=book,
+            user=user,
+        )
+    else:
+        abort(400)
+
+    return redirect(url_for("list_reviews") + f"#book-{review.id}")
 
 
 @app.route("/edit-review", methods=["POST"])
@@ -297,19 +297,19 @@ def edit_reading(reading_id):
 def edit_plan(plan_id):
     user = User.query.get(1)
 
-    if current_user == user:
-        edit_form = EditPlanForm()
-
-        if edit_form.validate_on_submit():
-            plan = Plan.query.filter_by(id=plan_id, user_id=user.id).first_or_404()
-
-            plan.note = edit_form.note.data
-            plan.date_added = edit_form.date_added.data
-            db.session.commit()
-
-        return redirect(url_for("list_plans"))
-    else:
+    if current_user != user:
         abort(401)
+
+    edit_form = EditPlanForm()
+
+    if edit_form.validate_on_submit():
+        plan = Plan.query.filter_by(id=plan_id, user_id=user.id).first_or_404()
+
+        plan.note = edit_form.note.data
+        plan.date_added = edit_form.date_added.data
+        db.session.commit()
+
+    return redirect(url_for("list_plans"))
 
 
 @app.route("/add-reading", methods=["POST"])
@@ -321,20 +321,23 @@ def add_reading():
 
     reading_form = ReadingForm()
 
-    book = Book.create_or_get(
-        title=reading_form.title.data,
-        author=reading_form.author.data,
-        year=reading_form.year.data,
-        identifiers=reading_form.identifiers.data,
-        source_id=reading_form.source_id.data,
-        image_url=reading_form.image_url.data,
-        isbn_10=reading_form.isbn_10.data,
-        isbn_13=reading_form.isbn_13.data,
-    )
+    if reading_form.validate_on_submit():
+        book = Book.create_or_get(
+            title=reading_form.title.data,
+            author=reading_form.author.data,
+            year=reading_form.year.data,
+            identifiers=reading_form.identifiers.data,
+            source_id=reading_form.source_id.data,
+            image_url=reading_form.image_url.data,
+            isbn_10=reading_form.isbn_10.data,
+            isbn_13=reading_form.isbn_13.data,
+        )
 
-    Reading.create(note=reading_form.note.data, book=book, user=user)
+        reading = Reading.create(note=reading_form.note.data, book=book, user=user)
 
-    return redirect(url_for("list_reading"))
+        return redirect(url_for("list_reading") + f"#reading-{reading.id}")
+    else:
+        abort(400)
 
 
 @app.route("/delete-reading/<reading_id>", methods=["POST"])

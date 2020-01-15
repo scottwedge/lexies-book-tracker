@@ -18,7 +18,7 @@ import helpers
 sys.path.append(str(pathlib.Path(__file__).parent.parent / "src"))
 
 from src import app, db as _db  # noqa
-from src.models import Book, Review, User  # noqa
+from src.models import Book, Reading, Review, User  # noqa
 
 
 @pytest.fixture(scope="session")
@@ -99,6 +99,15 @@ def review(session, fake, book, user):
     session.commit()
 
     return review
+
+
+@pytest.fixture
+def reading(session, fake, book, user):
+    reading = Reading(note=fake.text(), date_started=None, book=book, user=user)
+    session.add(reading)
+    session.commit()
+
+    return reading
 
 
 @pytest.fixture(scope="function")
