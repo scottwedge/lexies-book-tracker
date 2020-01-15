@@ -89,29 +89,6 @@ def add_review():
     return redirect(url_for("list_reviews"))
 
 
-@app.route("/edit-review", methods=["POST"])
-@must_be_primary_user
-def edit_review():
-    user = User.query.get(1)
-
-    edit_form = EditReviewForm()
-
-    if edit_form.validate_on_submit():
-        review = Review.query.filter_by(
-            id=edit_form.review_id.data, user_id=user.id
-        ).first_or_404()
-
-        review.review_text = edit_form.review_text.data
-        review.date_read = edit_form.date_read.data
-        review.did_not_finish = edit_form.did_not_finish.data
-        review.is_favourite = edit_form.is_favourite.data
-        db.session.commit()
-    else:
-        abort(400)
-
-    return redirect(url_for("get_review", review_id=review.id))
-
-
 @app.route("/delete-review/<review_id>", methods=["POST"])
 @must_be_primary_user
 def delete_review(review_id):
@@ -278,22 +255,43 @@ def add_plan():
     return redirect(url_for("list_plans"))
 
 
+@app.route("/edit-review", methods=["POST"])
+@must_be_primary_user
+def edit_review():
+    user = User.query.get(1)
+    edit_form = EditReviewForm()
+
+    if not edit_form.validate_on_submit():
+        abort(400)
+
+    review = Review.query.filter_by(
+        id=edit_form.review_id.data, user_id=user.id
+    ).first_or_404()
+
+    review.review_text = edit_form.review_text.data
+    review.date_read = edit_form.date_read.data
+    review.did_not_finish = edit_form.did_not_finish.data
+    review.is_favourite = edit_form.is_favourite.data
+    db.session.commit()
+
+    return redirect(url_for("get_review", review_id=review.id))
+
+
 @app.route("/edit-reading/<reading_id>", methods=["POST"])
 @must_be_primary_user
 def edit_reading(reading_id):
     user = User.query.get(1)
-
     edit_form = EditReadingForm()
 
-    if edit_form.validate_on_submit():
-        reading = Reading.query.filter_by(id=reading_id, user_id=user.id).first_or_404()
-
-        reading.note = edit_form.note.data
-        db.session.commit()
-    else:
+    if not edit_form.validate_on_submit():
         abort(400)
 
-    return redirect(url_for("list_reading"))
+    reading = Reading.query.filter_by(id=reading_id, user_id=user.id).first_or_404()
+
+    reading.note = edit_form.note.data
+    db.session.commit()
+
+    return redirect(url_for("list_reading") + f"#reading-{reading.id}")
 
 
 @app.route("/edit-plan/<plan_id>", methods=["POST"])
@@ -302,16 +300,16 @@ def edit_plan(plan_id):
     user = User.query.get(1)
     edit_form = EditPlanForm()
 
-    if edit_form.validate_on_submit():
-        plan = Plan.query.filter_by(id=plan_id, user_id=user.id).first_or_404()
-
-        plan.note = edit_form.note.data
-        plan.date_added = edit_form.date_added.data
-        db.session.commit()
-    else:
+    if not edit_form.validate_on_submit():
         abort(400)
 
-    return redirect(url_for("list_plans"))
+    plan = Plan.query.filter_by(id=plan_id, user_id=user.id).first_or_404()
+
+    plan.note = edit_form.note.data
+    plan.date_added = edit_form.date_added.data
+    db.session.commit()
+
+    return redirect(url_for("list_plans") + f"#plan-{plan.id}")
 
 
 @app.route("/add-reading", methods=["POST"])

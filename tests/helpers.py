@@ -27,3 +27,7 @@ def get_csrf_token(client, *, path):
     resp = client.get(path)
     soup = bs4.BeautifulSoup(resp.data, "html.parser")
     return soup.find("input", attrs={"id": "csrf_token"}).attrs["value"]
+
+
+def is_redirect(resp, *, location):
+    return resp.status_code == 302 and resp.headers["Location"].endswith(location)
