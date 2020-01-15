@@ -251,7 +251,7 @@ def add_plan():
     user = User.query.get(1)
 
     if current_user != user:
-        return abort(401)
+        abort(401)
 
     plan_form = PlanForm()
 
@@ -266,31 +266,33 @@ def add_plan():
             isbn_10=plan_form.isbn_10.data,
             isbn_13=plan_form.isbn_13.data,
         )
-        Plan.create(
+        plan = Plan.create(
             note=plan_form.note.data, book=book, user=user,
         )
+    else:
+        abort(400)
 
-    return redirect(url_for("list_plans"))
+    return redirect(url_for("list_plans") + f"#plan-{plan.id}")
 
 
 @app.route("/edit-reading/<reading_id>", methods=["POST"])
 def edit_reading(reading_id):
     user = User.query.get(1)
 
-    if current_user == user:
-        edit_form = EditReadingForm()
-
-        if edit_form.validate_on_submit():
-            reading = Reading.query.filter_by(
-                id=reading_id, user_id=user.id
-            ).first_or_404()
-
-            reading.note = edit_form.note.data
-            db.session.commit()
-
-        return redirect(url_for("list_reading"))
-    else:
+    if current_user != user:
         abort(401)
+
+    edit_form = EditReadingForm()
+
+    if edit_form.validate_on_submit():
+        reading = Reading.query.filter_by(id=reading_id, user_id=user.id).first_or_404()
+
+        reading.note = edit_form.note.data
+        db.session.commit()
+    else:
+        abort(400)
+
+    return redirect(url_for("list_reading") + f"#{reading_id}")
 
 
 @app.route("/edit-plan/<plan_id>", methods=["POST"])
@@ -308,8 +310,10 @@ def edit_plan(plan_id):
         plan.note = edit_form.note.data
         plan.date_added = edit_form.date_added.data
         db.session.commit()
+    else:
+        abort(400)
 
-    return redirect(url_for("list_plans"))
+    return redirect(url_for("list_plans") + f"#{plan.id}")
 
 
 @app.route("/add-reading", methods=["POST"])
@@ -356,7 +360,7 @@ def delete_reading(reading_id):
 
 
 @app.route("/delete-plan/<plan_id>", methods=["POST"])
-def delete_plan(username, plan_id):
+def delete_plan(plan_id):
     user = User.query.get(1)
 
     if current_user != user:
