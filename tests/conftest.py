@@ -19,7 +19,7 @@ import helpers
 sys.path.append(str(pathlib.Path(__file__).parent.parent / "src"))
 
 from src import app, db as _db  # noqa
-from src.models import Book, User  # noqa
+from src.models import Book, Plan, Reading, Review, User  # noqa
 
 
 @pytest.fixture(scope="session")
@@ -91,6 +91,33 @@ def user(session, fake):
     u = User(username=fake.name())
     session.add(u)
     return u
+
+
+@pytest.fixture
+def review(session, fake, book, user):
+    review = Review(review_text=fake.text(), date_read=None, book=book, user=user)
+    session.add(review)
+    session.commit()
+
+    return review
+
+
+@pytest.fixture
+def reading(session, fake, book, user):
+    reading = Reading(note=fake.text(), date_started=None, book=book, user=user)
+    session.add(reading)
+    session.commit()
+
+    return reading
+
+
+@pytest.fixture
+def plan(session, fake, book, user):
+    plan = Plan(note=fake.text(), date_added=None, book=book, user=user)
+    session.add(plan)
+    session.commit()
+
+    return plan
 
 
 @pytest.fixture(scope="function")
