@@ -119,3 +119,10 @@ def test_renders_curly_quote_in_results(sess, api_key):
     book = [r for r in result if r["isbn13"] == "978-0-571-31187-3"].pop()
 
     assert book["title"] == "Old Possum’s Book of Practical Cats"
+
+
+def test_can_search_without_api_key(sess, api_key):
+    result1 = lookup_google_books(sess=sess, search_query="cats", api_key=api_key)
+    result2 = lookup_google_books(sess=sess, search_query="cats", api_key=None)
+
+    assert result1 == result2
