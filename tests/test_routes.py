@@ -1,4 +1,5 @@
 import datetime
+import json
 import re
 
 import bs4
@@ -474,3 +475,20 @@ class TestTransitions:
         assert helpers.is_flashed(
             resp, expected_message=f"You have started reading {plan.book.title}"
         )
+
+
+class TestSearchBooks:
+    def test_cannot_search_books_if_not_logged_in(self, client, session, user):
+        resp = client.get("/booksearch")
+        assert helpers.is_redirect(resp, location="/login?next=%2Fbooksearch")
+
+    def test_no_search_query_is_400(self, client, session, logged_in_user):
+        resp = client.get("/booksearch")
+        assert resp.status_code == 400
+
+    def test_can_search_for_books(self, client, session, logged_in_user):
+        resp = client.get("/booksearch?search=cats")
+
+        books_data = json.loads(resp.data)
+        assert books_data.keys() == {"books"}
+        assert len(books_data["books"]) == 10

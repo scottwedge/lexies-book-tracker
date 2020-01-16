@@ -31,10 +31,10 @@ def fake():
 
 
 @pytest.fixture(scope="function")
-def test_app(request):
-    """Session-wide test `Flask` application."""
+def test_app(request, sess):
     app.config["TESTING"] = True
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
+    app.config["REQUESTS_SESSION"] = sess
 
     # Establish an application context before running the tests.
     ctx = app.app_context()

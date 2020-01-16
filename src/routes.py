@@ -416,10 +416,15 @@ def move_plan_to_reading(plan_id):
 @app.route("/booksearch")
 @login_required
 def search_books():
+    # This endpoint requires a login, even though it's not affecting any
+    # state in the database -- you can't do anything useful with it, and it
+    # avoids somebody else using up your Google Books API usage quota.
     search_query = request.args["search"]
 
     lookup_result = lookup_google_books(
-        api_key=app.config["GOOGLE_BOOKS_API_KEY"], search_query=search_query
+        api_key=app.config["GOOGLE_BOOKS_API_KEY"],
+        search_query=search_query,
+        sess=app.config["REQUESTS_SESSION"],
     )
 
     return jsonify({"books": lookup_result})
