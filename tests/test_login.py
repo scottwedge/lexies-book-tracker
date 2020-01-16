@@ -42,7 +42,9 @@ def test_logging_in_as_unknown_user_is_error(client, session):
     assert helpers.is_redirect(resp, location="/login")
 
     resp = client.get("/login")
-    assert b"Unrecognised username or password" in resp.data
+    assert helpers.is_flashed(
+        resp, expected_message="Unrecognised username or password"
+    )
 
 
 def test_logging_in_with_wrong_password_is_error(client, session, user):
@@ -63,4 +65,6 @@ def test_logging_in_with_wrong_password_is_error(client, session, user):
     assert helpers.is_redirect(resp, location="/login")
 
     resp = client.get("/login")
-    assert b"Unrecognised username or password" in resp.data
+    assert helpers.is_flashed(
+        resp, expected_message="Unrecognised username or password"
+    )

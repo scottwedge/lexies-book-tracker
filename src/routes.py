@@ -365,18 +365,18 @@ def mark_as_read(reading_id):
 
     mark_as_read_form = MarkAsReadForm()
 
-    if mark_as_read_form.validate_on_submit():
-        flash(f"Marking {reading.book.title} as read")
-        reading.mark_as_read(
-            review_text=mark_as_read_form.review_text.data,
-            date_read=mark_as_read_form.date_read.data,
-            did_not_finish=mark_as_read_form.did_not_finish.data,
-            is_favourite=mark_as_read_form.is_favourite.data,
-        )
-    else:
+    if not mark_as_read_form.validate_on_submit():
         abort(400)
 
-    return redirect(url_for("list_reviews"))
+    flash(f"Marked {reading.book.title} as read")
+    review = reading.mark_as_read(
+        review_text=mark_as_read_form.review_text.data,
+        date_read=mark_as_read_form.date_read.data,
+        did_not_finish=mark_as_read_form.did_not_finish.data,
+        is_favourite=mark_as_read_form.is_favourite.data,
+    )
+
+    return redirect(url_for("list_reviews") + f"#book-{review.id}")
 
 
 @app.route("/mark_plan_as_read/<plan_id>", methods=["POST"])
@@ -387,18 +387,18 @@ def mark_plan_as_read(plan_id):
 
     mark_as_read_form = MarkAsReadForm()
 
-    if mark_as_read_form.validate_on_submit():
-        flash(f"Marking {plan.book.title} as read")
-        plan.mark_as_read(
-            review_text=mark_as_read_form.review_text.data,
-            date_read=mark_as_read_form.date_read.data,
-            did_not_finish=mark_as_read_form.did_not_finish.data,
-            is_favourite=mark_as_read_form.is_favourite.data,
-        )
-    else:
+    if not mark_as_read_form.validate_on_submit():
         abort(400)
 
-    return redirect(url_for("list_reviews"))
+    flash(f"Marked {plan.book.title} as read")
+    review = plan.mark_as_read(
+        review_text=mark_as_read_form.review_text.data,
+        date_read=mark_as_read_form.date_read.data,
+        did_not_finish=mark_as_read_form.did_not_finish.data,
+        is_favourite=mark_as_read_form.is_favourite.data,
+    )
+
+    return redirect(url_for("list_reviews") + f"#book-{review.id}")
 
 
 @app.route("/move_plan_to_reading/<plan_id>", methods=["POST"])
@@ -408,9 +408,9 @@ def move_plan_to_reading(plan_id):
     plan = Plan.query.filter_by(id=plan_id, user_id=user.id).first_or_404()
 
     flash(f"You have started reading {plan.book.title}")
-    plan.mark_as_reading()
+    reading = plan.mark_as_reading()
 
-    return redirect(url_for("list_reading"))
+    return redirect(url_for("list_reading") + f"#reading-{reading.id}")
 
 
 @app.route("/booksearch")
