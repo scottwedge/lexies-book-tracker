@@ -5,7 +5,6 @@ import datetime
 from flask_wtf import FlaskForm
 from wtforms import (
     DateField,
-    IntegerField,
     StringField,
     PasswordField,
     BooleanField,
@@ -49,7 +48,7 @@ class ReviewForm(ReviewFormMixin, BookFormMixin, FlaskForm):
 
 
 class EditReviewForm(ReviewFormMixin, FlaskForm):
-    review_id = IntegerField("id", validators=[DataRequired()])
+    pass
 
 
 class ReadingFormMixin:

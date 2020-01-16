@@ -64,13 +64,11 @@
     </div>
 
     <form
-      action="{{ url_for('edit_review') }}"
+      action="{{ url_for('edit_review', review_id=review.id) }}"
       method="POST"
       class="hidden book-edit-form"
     >
       {{ edit_form.hidden_tag() }}
-
-      {{ edit_form.review_id(value=review.id, type="hidden") }}
 
       <p>
         {{ edit_form.review_text.label }}
