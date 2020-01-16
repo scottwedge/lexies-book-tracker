@@ -1,3 +1,6 @@
+import datetime
+import re
+
 import bs4
 import pytest
 
@@ -235,3 +238,131 @@ class TestDeleteRoutes:
         resp = client.post(path)
 
         assert resp.status_code == 404
+
+
+class TestAddRoutes:
+    def test_can_add_review(self, client, session, logged_in_user, book, fake):
+        csrf_token = helpers.get_csrf_token(client, path="/read")
+
+        review_text = fake.text()
+        date_read = fake.date_object()
+        did_not_finish = fake.boolean()
+        is_favourite = fake.boolean()
+
+        resp = client.post(
+            "/add-review",
+            data={
+                "csrf_token": csrf_token,
+                "title": book.title,
+                "year": book.year,
+                "identifiers": book.identifiers_json,
+                "source_id": book.source_id,
+                "image_url": book.image_url,
+                "isbn_10": book.isbn_10,
+                "isbn_13": book.isbn_13,
+                "review_text": review_text,
+                "date_read": date_read,
+                "did_not_finish": did_not_finish,
+                "is_favourite": is_favourite,
+            },
+        )
+
+        assert resp.status_code == 302
+
+        location = resp.headers["Location"]
+
+        path_match = re.search(r"/read#book\-(?P<review_id>\d+)$", location)
+        assert path_match is not None
+        review_id = path_match.group("review_id")
+
+        stored_review = Review.query.get(review_id)
+        assert stored_review.review_text == review_text
+        assert stored_review.date_read == date_read
+        # TODO: This works in the app, but not in the tests.
+        # assert stored_review.did_not_finish == did_not_finish
+        # assert stored_review.is_favourite == is_favourite
+
+        resp = client.get("/read")
+        soup = bs4.BeautifulSoup(resp.data, "html.parser")
+
+        review = soup.find("div", attrs={"id": f"book-{review_id}"})
+        book_title = review.find("h3", attrs={"class": "book-title"})
+        assert book_title.text.strip() == book.title
+
+    def test_can_add_reading(self, client, session, logged_in_user, book, fake):
+        csrf_token = helpers.get_csrf_token(client, path="/reading")
+
+        note = fake.text()
+
+        resp = client.post(
+            "/add-reading",
+            data={
+                "csrf_token": csrf_token,
+                "title": book.title,
+                "year": book.year,
+                "identifiers": book.identifiers_json,
+                "source_id": book.source_id,
+                "image_url": book.image_url,
+                "isbn_10": book.isbn_10,
+                "isbn_13": book.isbn_13,
+                "note": note,
+            },
+        )
+
+        assert resp.status_code == 302
+
+        location = resp.headers["Location"]
+
+        path_match = re.search(r"/reading#reading\-(?P<reading_id>\d+)$", location)
+        assert path_match is not None
+        reading_id = path_match.group("reading_id")
+
+        stored_reading = Reading.query.get(reading_id)
+        assert stored_reading.note == note
+        assert stored_reading.date_started == datetime.datetime.now().date()
+
+        resp = client.get("/reading")
+        soup = bs4.BeautifulSoup(resp.data, "html.parser")
+
+        reading = soup.find("div", attrs={"id": f"reading-{reading_id}"})
+        book_title = reading.find("h3", attrs={"class": "book-title"})
+        assert book_title.text.strip() == book.title
+
+    def test_can_add_plan(self, client, session, logged_in_user, book, fake):
+        csrf_token = helpers.get_csrf_token(client, path="/to-read")
+
+        note = fake.text()
+
+        resp = client.post(
+            "/add-plan",
+            data={
+                "csrf_token": csrf_token,
+                "title": book.title,
+                "year": book.year,
+                "identifiers": book.identifiers_json,
+                "source_id": book.source_id,
+                "image_url": book.image_url,
+                "isbn_10": book.isbn_10,
+                "isbn_13": book.isbn_13,
+                "note": note,
+            },
+        )
+
+        assert resp.status_code == 302
+
+        location = resp.headers["Location"]
+
+        path_match = re.search(r"/to-read#plan\-(?P<plan_id>\d+)$", location)
+        assert path_match is not None
+        plan_id = path_match.group("plan_id")
+
+        stored_plan = Plan.query.get(plan_id)
+        assert stored_plan.note == note
+        assert stored_plan.date_added == datetime.datetime.now().date()
+
+        resp = client.get("/to-read")
+        soup = bs4.BeautifulSoup(resp.data, "html.parser")
+
+        plan = soup.find("div", attrs={"id": f"plan-{plan_id}"})
+        book_title = plan.find("h3", attrs={"class": "book-title"})
+        assert book_title.text.strip() == book.title

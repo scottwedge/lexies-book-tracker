@@ -33,7 +33,7 @@ def test_can_add_book_without_read_date(client, logged_in_user, book, fake):
         },
     )
 
-    assert helpers.is_redirect(resp, location="/read")
+    assert helpers.is_redirect(resp, location="/read#book-1")
 
     resp = client.get("/read")
     assert b"I haven&rsquo;t read any books yet!" not in resp.data, resp.data
@@ -72,7 +72,7 @@ def test_only_shows_another_time_list_if_nonempty(client, logged_in_user, book, 
         },
     )
 
-    assert helpers.is_redirect(resp, location="/read")
+    assert helpers.is_redirect(resp, location="/read#book-1")
 
     resp = client.get("/read")
     assert b"I haven&rsquo;t read any books yet!" not in resp.data, resp.data
