@@ -19,7 +19,7 @@ from src.models import Plan, Reading, Review
         "/delete-review/1",
         "/edit-plan/1",
         "/edit-reading/1",
-        "/edit-review",
+        "/edit-review/1",
         "/mark_as_read/1",
         "/mark_plan_as_read/1",
         "/move_plan_to_reading/1",
@@ -30,9 +30,7 @@ def test_cannot_post_to_route_if_not_logged_in(client, session, user, path):
     assert resp.status_code == 401
 
 
-@pytest.mark.parametrize(
-    "path", ["/add-plan", "/add-reading", "/add-review", "/edit-review"],
-)
+@pytest.mark.parametrize("path", ["/add-plan", "/add-reading", "/add-review"])
 def test_invalid_form_data_is_error(client, session, logged_in_user, path):
     resp = client.post(path, data={})
     assert resp.status_code == 400
@@ -41,7 +39,7 @@ def test_invalid_form_data_is_error(client, session, logged_in_user, path):
 def test_cannot_edit_review_with_invalid_form_data(
     client, session, logged_in_user, review
 ):
-    resp = client.post("/edit-review", data={})
+    resp = client.post("/edit-review/1", data={})
     assert resp.status_code == 400
 
 
@@ -82,10 +80,9 @@ class TestEditRoutes:
         csrf_token = helpers.get_csrf_token(client, path=f"/reviews/{review.id}")
 
         resp = client.post(
-            "/edit-review",
+            f"/edit-review/{review.id}",
             data={
                 "csrf_token": csrf_token,
-                "review_id": review.id,
                 "review_text": new_review_text,
                 "date_read": new_date_read.isoformat(),
                 "did_not_finish": new_did_not_finish,
@@ -108,7 +105,7 @@ class TestEditRoutes:
         csrf_token = helpers.get_csrf_token(client, path=f"/reviews/{review.id}")
 
         resp = client.post(
-            "/edit-review",
+            f"/edit-review/{review.id + 1}",
             data={
                 "csrf_token": csrf_token,
                 "review_id": review.id + 1,

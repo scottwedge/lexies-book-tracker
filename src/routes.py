@@ -266,18 +266,16 @@ def add_plan():
     return redirect(url_for("list_plans") + f"#plan-{plan.id}")
 
 
-@app.route("/edit-review", methods=["POST"])
+@app.route("/edit-review/<review_id>", methods=["POST"])
 @must_be_primary_user
-def edit_review():
+def edit_review(review_id):
     user = User.query.get(1)
     edit_form = EditReviewForm()
 
     if not edit_form.validate_on_submit():
         abort(400)
 
-    review = Review.query.filter_by(
-        id=edit_form.review_id.data, user_id=user.id
-    ).first_or_404()
+    review = Review.query.filter_by(id=review_id, user_id=user.id).first_or_404()
 
     review.review_text = edit_form.review_text.data
     review.date_read = edit_form.date_read.data
