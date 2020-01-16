@@ -3,7 +3,6 @@ import json
 import re
 
 import bs4
-import hyperlink
 import pytest
 
 import helpers
