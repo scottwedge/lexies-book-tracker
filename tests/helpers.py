@@ -31,3 +31,10 @@ def get_csrf_token(client, *, path):
 
 def is_redirect(resp, *, location):
     return resp.status_code == 302 and resp.headers["Location"].endswith(location)
+
+
+def is_flashed(resp, *, expected_message):
+    soup = bs4.BeautifulSoup(resp.data, "html.parser")
+    messages = soup.find("div", attrs={"id": "messages"})
+    message_text = [div.text.strip() for div in messages.find_all("div")]
+    return expected_message in message_text
